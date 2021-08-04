@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/googleapis/java-retail/compare/v1.1.2...v1.2.0) (2021-08-04)
+
+
+### Features
+
+* configure initial sp version ([#154](https://www.github.com/googleapis/java-retail/issues/154)) ([4a6b2e7](https://www.github.com/googleapis/java-retail/commit/4a6b2e75f58f48ecbc377452a54e59bda0989bc2))
+
 ### [1.1.2](https://www.github.com/googleapis/java-retail/compare/v1.1.1...v1.1.2) (2021-07-01)
 
 
