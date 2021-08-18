@@ -4,15 +4,15 @@
       "git": {
         "name": ".",
         "remote": "https://github.com/googleapis/java-retail.git",
-        "sha": "6e0ebca0b2516489090f548383b1bbaec7b0d1d5"
+        "sha": "d15ad58fbbb8805a748322dc764be3b3a7800127"
       }
     },
     {
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "a47f0a4aa9ef834edf40d5b8269e9b6c277bb699",
-        "internalRef": "388769359"
+        "sha": "e1738ee972b49fd0c4d4718b035444495142b781",
+        "internalRef": "391407209"
       }
     },
     {
