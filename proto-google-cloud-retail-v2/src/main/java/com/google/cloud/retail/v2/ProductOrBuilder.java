@@ -399,6 +399,8 @@ public interface ProductOrBuilder
    * The Global Trade Item Number (GTIN) of the product.
    * This field must be a UTF-8 encoded string with a length limit of 128
    * characters. Otherwise, an INVALID_ARGUMENT error is returned.
+   * This field must be a Unigram. Otherwise, an INVALID_ARGUMENT error is
+   * returned.
    * Google Merchant Center property
    * [gtin](https://support.google.com/merchants/answer/6324461).
    * Schema.org property
@@ -422,6 +424,8 @@ public interface ProductOrBuilder
    * The Global Trade Item Number (GTIN) of the product.
    * This field must be a UTF-8 encoded string with a length limit of 128
    * characters. Otherwise, an INVALID_ARGUMENT error is returned.
+   * This field must be a Unigram. Otherwise, an INVALID_ARGUMENT error is
+   * returned.
    * Google Merchant Center property
    * [gtin](https://support.google.com/merchants/answer/6324461).
    * Schema.org property
@@ -1650,7 +1654,7 @@ public interface ProductOrBuilder
    * <pre>
    * The pattern or graphic print of the product. For example, "striped", "polka
    * dot", "paisley".
-   * A maximum of 5 values are allowed per
+   * A maximum of 20 values are allowed per
    * [Product][google.cloud.retail.v2.Product]. Each value must be a UTF-8
    * encoded string with a length limit of 128 characters. Otherwise, an
    * INVALID_ARGUMENT error is returned.
@@ -1670,7 +1674,7 @@ public interface ProductOrBuilder
    * <pre>
    * The pattern or graphic print of the product. For example, "striped", "polka
    * dot", "paisley".
-   * A maximum of 5 values are allowed per
+   * A maximum of 20 values are allowed per
    * [Product][google.cloud.retail.v2.Product]. Each value must be a UTF-8
    * encoded string with a length limit of 128 characters. Otherwise, an
    * INVALID_ARGUMENT error is returned.
@@ -1690,7 +1694,7 @@ public interface ProductOrBuilder
    * <pre>
    * The pattern or graphic print of the product. For example, "striped", "polka
    * dot", "paisley".
-   * A maximum of 5 values are allowed per
+   * A maximum of 20 values are allowed per
    * [Product][google.cloud.retail.v2.Product]. Each value must be a UTF-8
    * encoded string with a length limit of 128 characters. Otherwise, an
    * INVALID_ARGUMENT error is returned.
@@ -1711,7 +1715,7 @@ public interface ProductOrBuilder
    * <pre>
    * The pattern or graphic print of the product. For example, "striped", "polka
    * dot", "paisley".
-   * A maximum of 5 values are allowed per
+   * A maximum of 20 values are allowed per
    * [Product][google.cloud.retail.v2.Product]. Each value must be a UTF-8
    * encoded string with a length limit of 128 characters. Otherwise, an
    * INVALID_ARGUMENT error is returned.
