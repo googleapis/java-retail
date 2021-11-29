@@ -57,8 +57,7 @@ public final class UserEventProto {
   static {
     java.lang.String[] descriptorData = {
       "\n"
-          + "\'google/cloud/retail/v2/user_event.prot"
-          + "o\022\026google.cloud.retail.v2\032\034google/api/annotations.proto\032\037google/api/field_behavior.proto\032#google/cloud/retail/v2/common.proto\032$google/cloud/retail/v2/product.proto\032\037google/protobuf/timestamp.proto\032\036google/protobuf/wrappers.proto\"\207\006\n"
+          + "\'google/cloud/retail/v2/user_event.proto\022\026google.cloud.retail.v2\032\034google/api/annotations.proto\032\037google/api/field_behavior.proto\032#google/cloud/retail/v2/common.proto\032$google/cloud/retail/v2/product.proto\032\037google/protobuf/timestamp.proto\032\036google/protobuf/wrappers.proto\"\207\006\n"
           + "\tUserEvent\022\027\n\n"
           + "event_type\030\001 \001(\tB\003\340A\002\022\027\n\n"
           + "visitor_id\030\002 \001(\tB\003\340A\002\022\022\n\n"
