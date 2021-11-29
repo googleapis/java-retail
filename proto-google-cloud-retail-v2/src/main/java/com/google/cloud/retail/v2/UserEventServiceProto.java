@@ -58,8 +58,7 @@ public final class UserEventServiceProto {
     java.lang.String[] descriptorData = {
       "\n"
           + "/google/cloud/retail/v2/user_event_serv"
-          + "ice.proto\022\026google.cloud.retail.v2\032\034googl"
-          + "e/api/annotations.proto\032\027google/api/client.proto\032\037google/api/field_behavior.proto\032\031google/api/httpbody.proto\032*google/cloud/retail/v2/import_config.proto\032)google/cloud/retail/v2/purge_config.proto\032\'google/cloud/retail/v2/user_event.proto\032#google/longrunning/operations.proto\"h\n"
+          + "ice.proto\022\026google.cloud.retail.v2\032\034google/api/annotations.proto\032\027google/api/client.proto\032\037google/api/field_behavior.proto\032\031google/api/httpbody.proto\032*google/cloud/retail/v2/import_config.proto\032)google/cloud/retail/v2/purge_config.proto\032\'google/cloud/retail/v2/user_event.proto\032#google/longrunning/operations.proto\"h\n"
           + "\025WriteUserEventRequest\022\023\n"
           + "\006parent\030\001 \001(\tB\003\340A\002\022:\n\n"
           + "user_event\030\002 \001(\0132!.google.cloud.retail.v2.UserEventB\003\340A\002\"a\n"
