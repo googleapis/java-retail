@@ -81,8 +81,7 @@ public final class CommonProto {
   static {
     java.lang.String[] descriptorData = {
       "\n"
-          + "#google/cloud/retail/v2/common.proto\022\026g"
-          + "oogle.cloud.retail.v2\032\034google/api/annotations.proto\032\037google/api/field_behavior.proto\032\037google/protobuf/timestamp.proto\"/\n"
+          + "#google/cloud/retail/v2/common.proto\022\026google.cloud.retail.v2\032\034google/api/annotations.proto\032\037google/api/field_behavior.proto\032\037google/protobuf/timestamp.proto\"/\n"
           + "\010Audience\022\017\n"
           + "\007genders\030\001 \003(\t\022\022\n\n"
           + "age_groups\030\002 \003(\t\"3\n"
