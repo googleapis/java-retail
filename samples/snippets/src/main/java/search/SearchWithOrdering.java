@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  * [START retail_search_for_products_with_ordering]
- * Call Retail API to search for a products in a catalog, order the results by different product fields.
+ * Call Retail API to search for a products in a catalog,
+ * order the results by different product fields.
  */
 
 package search;
@@ -26,33 +27,73 @@ import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class SearchWithOrdering {
 
-  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv(
+      "PROJECT_NUMBER");
+
+  /**
+   * This variable describes endpoint for send requests.
+   */
   private static final String ENDPOINT = "retail.googleapis.com:443";
+
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog",
+          YOUR_PROJECT_NUMBER);
+
+  /**
+   * This variable describes default search placement name. Using for identify
+   * the Serving Config name.
+   */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
+
+  /**
+   * This variable describes a unique identifier to track visitors.
+   */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  // get search service client
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
+  /**
+   * Get search service client.
+   *
+   * @return SearchServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static SearchServiceClient getSearchServiceClient()
+      throws IOException {
     SearchServiceSettings settings = SearchServiceSettings.newBuilder()
         .setEndpoint(ENDPOINT)
         .build();
     return SearchServiceClient.create(settings);
   }
 
-  // get search service request
-  public static SearchRequest getSearchRequest(String query, String orderBy) {
+  /**
+   * Get search service request.
+   *
+   * @param query   search keyword.
+   * @param orderBy option on what order by.
+   * @return SearchRequest.
+   */
+  public static SearchRequest getSearchRequest(final String query,
+      final String orderBy) {
+
+    int pageSize = 10;
+
     SearchRequest searchRequest = SearchRequest.newBuilder()
         .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
         .setQuery(query)
         .setOrderBy(orderBy)
         .setVisitorId(VISITOR_ID) // A unique identifier to track visitors
-        .setPageSize(10)
+        .setPageSize(pageSize)
         .build();
 
     System.out.println("Search request: " + searchRequest);
@@ -60,14 +101,20 @@ public class SearchWithOrdering {
     return searchRequest;
   }
 
-  // call the Retail Search:
-  public static SearchResponse search() throws IOException, InterruptedException {
+  /**
+   * Call the retail search.
+   *
+   * @return SearchResponse.
+   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   */
+  public static SearchResponse search() throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
     String order = "price desc";
 
     SearchRequest searchRequest = getSearchRequest("Hoodie", order);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(searchRequest).getPage()
+    SearchResponse searchResponse = getSearchServiceClient().search(
+            searchRequest).getPage()
         .getResponse();
 
     System.out.println("Search response: " + searchResponse);
@@ -75,7 +122,12 @@ public class SearchWithOrdering {
     return searchResponse;
   }
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  /**
+   * Executable tutorial class.
+   *
+   * @throws IOException from the called method.
+   */
+  public static void main(final String[] args) throws IOException {
     search();
   }
 }

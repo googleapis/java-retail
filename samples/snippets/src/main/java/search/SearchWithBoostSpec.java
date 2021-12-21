@@ -28,28 +28,67 @@ import com.google.cloud.retail.v2.SearchServiceClient;
 import com.google.cloud.retail.v2.SearchServiceSettings;
 import java.io.IOException;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class SearchWithBoostSpec {
 
-  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv(
+      "PROJECT_NUMBER");
+
+  /**
+   * This variable describes endpoint for send requests.
+   */
   private static final String ENDPOINT = "retail.googleapis.com:443";
+
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog",
+          YOUR_PROJECT_NUMBER);
+
+  /**
+   * This variable describes default search placement name. Using for identify
+   * the Serving Config name.
+   */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
+
+  /**
+   * This variable describes a unique identifier to track visitors.
+   */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  // get search service client
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
+  /**
+   * Get search service client.
+   *
+   * @return SearchServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static SearchServiceClient getSearchServiceClient()
+      throws IOException {
     SearchServiceSettings settings = SearchServiceSettings.newBuilder()
         .setEndpoint(ENDPOINT)
         .build();
     return SearchServiceClient.create(settings);
   }
 
-  // get search service request
-  public static SearchRequest getSearchRequest(String query, String condition,
-      float boostStrength) {
+  /**
+   * Get search service request.
+   *
+   * @param query         search keyword.
+   * @param condition     provides search clarification.
+   * @param boostStrength is a rate of boost strength.
+   * @return SearchRequest.
+   */
+  public static SearchRequest getSearchRequest(final String query,
+      final String condition, final float boostStrength) {
+
+    int pageSize = 10;
 
     BoostSpec boostSpec = BoostSpec.newBuilder()
         .addConditionBoostSpecs(ConditionBoostSpec.newBuilder()
@@ -59,12 +98,11 @@ public class SearchWithBoostSpec {
         .build();
 
     SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(
-            DEFAULT_SEARCH_PLACEMENT_NAME) // Placement is used to identify the Serving Config name.
+        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
         .setQuery(query)
-        .setVisitorId(VISITOR_ID) // A unique identifier to track visitors
+        .setVisitorId(VISITOR_ID)
         .setBoostSpec(boostSpec)
-        .setPageSize(10)
+        .setPageSize(pageSize)
         .build();
 
     System.out.println("Search request: " + searchRequest);
@@ -72,23 +110,33 @@ public class SearchWithBoostSpec {
     return searchRequest;
   }
 
-  // call the Retail Search:
-  public static SearchResponse search() throws IOException, InterruptedException {
+  /**
+   * Call the retail search.
+   *
+   * @return SearchResponse.
+   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   */
+  public static SearchResponse search() throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String condition = "(colorFamily: ANY(\"Blue\"))";
     float boost = 0.0f;
 
     SearchRequest searchRequest = getSearchRequest("Tee", condition, boost);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(searchRequest).getPage()
-        .getResponse();
+    SearchResponse searchResponse = getSearchServiceClient().search(
+        searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
     return searchResponse;
   }
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  /**
+   * Executable tutorial class.
+   *
+   * @throws IOException from the called method.
+   */
+  public static void main(final String[] args) throws IOException {
     search();
   }
 }

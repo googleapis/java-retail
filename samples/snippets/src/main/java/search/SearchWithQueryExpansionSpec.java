@@ -15,7 +15,8 @@
  *
  * [START retail_search_for_products_with_query_expansion_specification]
  * Call Retail API to search for a products in a catalog,
- * enabling the query expansion feature to let the Google Retail Search build an automatic query expansion.
+ * enabling the query expansion feature to let the Google Retail Search
+ * build an automatic query expansion.
  */
 
 package search;
@@ -29,38 +30,77 @@ import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class SearchWithQueryExpansionSpec {
 
-  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv(
+      "PROJECT_NUMBER");
+
+  /**
+   * This variable describes endpoint for send requests.
+   */
   private static final String ENDPOINT = "retail.googleapis.com:443";
+
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog",
+          YOUR_PROJECT_NUMBER);
+
+  /**
+   * This variable describes default search placement name. Using for identify
+   * the Serving Config name.
+   */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
+
+  /**
+   * This variable describes a unique identifier to track visitors.
+   */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  // get search service client
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
+  /**
+   * Get search service client.
+   *
+   * @return SearchServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static SearchServiceClient getSearchServiceClient()
+      throws IOException {
     SearchServiceSettings settings = SearchServiceSettings.newBuilder()
         .setEndpoint(ENDPOINT)
         .build();
     return SearchServiceClient.create(settings);
   }
 
-  // get search service request
-  public static SearchRequest getSearchRequest(String query, Condition condition) {
+  /**
+   * Get search service request.
+   *
+   * @param query     search keyword.
+   * @param condition provides search clarification.
+   * @return SearchRequest.
+   */
+  public static SearchRequest getSearchRequest(final String query,
+      final Condition condition) {
+
+    int pageSize = 10;
+
     QueryExpansionSpec queryExpansionSpec = QueryExpansionSpec.newBuilder()
         .setCondition(condition)
         .build();
 
     SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(
-            DEFAULT_SEARCH_PLACEMENT_NAME) // Placement is used to identify the Serving Config name.
+        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
         .setQuery(query)
-        .setVisitorId(VISITOR_ID) // A unique identifier to track visitors
+        .setVisitorId(VISITOR_ID)
         .setQueryExpansionSpec(queryExpansionSpec)
-        .setPageSize(10)
+        .setPageSize(pageSize)
         .build();
 
     System.out.println("Search request: " + searchRequest);
@@ -68,22 +108,33 @@ public class SearchWithQueryExpansionSpec {
     return searchRequest;
   }
 
-  // call the Retail Search
-  public static SearchResponse search() throws IOException, InterruptedException {
+  /**
+   * Call the retail search.
+   *
+   * @return SearchResponse.
+   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   */
+  public static SearchResponse search() throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
 
-    SearchRequest searchRequest = getSearchRequest("Google Youth Hero Tee Grey", condition);
+    SearchRequest searchRequest = getSearchRequest("Google Youth Hero Tee Grey",
+        condition);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(searchRequest).getPage()
-        .getResponse();
+    SearchResponse searchResponse = getSearchServiceClient().search(
+        searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
     return searchResponse;
   }
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  /**
+   * Executable tutorial class.
+   *
+   * @throws IOException from the called method.
+   */
+  public static void main(final String[] args) throws IOException {
     search();
   }
 }
