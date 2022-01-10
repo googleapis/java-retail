@@ -32,8 +32,8 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+//import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public final class ImportProductsBigQueryTable {
 
@@ -152,11 +152,10 @@ public final class ImportProductsBigQueryTable {
     Operation operation = operationsClient.getOperation(operationName);
 
     while (!operation.getDone()) {
-      // Polling operation delay until the import task is done.
-      final int awaitDuration = 30;
+      // Keep polling the operation periodically until the import task is done.
+      final int awaitDuration = 30000;
 
-      getProductServiceClient().awaitTermination(awaitDuration,
-          TimeUnit.SECONDS);
+      Thread.sleep(awaitDuration);
 
       operation = operationsClient.getOperation(operationName);
     }

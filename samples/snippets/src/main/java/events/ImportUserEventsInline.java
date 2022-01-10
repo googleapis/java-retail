@@ -21,6 +21,7 @@
 
 package events;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportUserEventsRequest;
 import com.google.cloud.retail.v2.ImportUserEventsResponse;
@@ -28,8 +29,6 @@ import com.google.cloud.retail.v2.UserEvent;
 import com.google.cloud.retail.v2.UserEventInlineSource;
 import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-import com.google.longrunning.Operation;
-import com.google.longrunning.OperationsClient;
 import com.google.protobuf.Timestamp;
 
 import java.io.IOException;
@@ -130,57 +129,49 @@ public final class ImportUserEventsInline {
    * Call the Retail API to import user events.
    *
    * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
    * @throws InterruptedException when a thread is waiting, sleeping, or
    *                              otherwise occupied, and the thread is
    *                              interrupted, either before or during the
    *                              activity.
    */
   public static void importUserEventsFromInlineSource()
-      throws IOException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
+
+    final int awaitDuration = 30;
 
     ImportUserEventsRequest importInlineRequest =
         getImportEventsInlineSourceRequest(
             getUserEvents());
 
-    UserEventServiceClient serviceClient = getUserEventsServiceClient();
+    OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
+        getUserEventsServiceClient().importUserEventsAsync(
+            importInlineRequest);
 
-    String operationName = serviceClient
-        .importUserEventsCallable()
-        .call(importInlineRequest)
-        .getName();
+    System.out.printf("The operation was started: %s%n",
+        importOperation.getName());
 
-    System.out.printf("OperationName = %s\n", operationName);
+    System.out.println("Please wait till operation is done.");
 
-    OperationsClient operationsClient = serviceClient.getOperationsClient();
+    getUserEventsServiceClient().awaitTermination(awaitDuration,
+        TimeUnit.SECONDS);
 
-    Operation operation = operationsClient.getOperation(operationName);
+    System.out.println("Import user events operation is done.");
 
-    while (!operation.getDone()) {
-      // Polling operation delay until the import task is done.
-      final int awaitDuration = 30;
+    if (importOperation.getMetadata().get() != null) {
+      System.out.printf("Number of successfully imported events: %s%n",
+          importOperation.getMetadata().get().getSuccessCount());
 
-      getUserEventsServiceClient().awaitTermination(awaitDuration,
-          TimeUnit.SECONDS);
-
-      operation = operationsClient.getOperation(operationName);
+      System.out.printf("Number of failures during the importing: %s%n",
+          importOperation.getMetadata().get().getFailureCount());
+    } else {
+      System.out.println("Metadata in bigQuery operation is empty.");
     }
-
-    if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata()
-          .unpack(ImportMetadata.class);
-
-      System.out.printf("Number of successfully imported events: %s\n",
-          metadata.getSuccessCount());
-
-      System.out.printf("Number of failures during the importing: %s\n",
-          metadata.getFailureCount());
-    }
-
-    if (operation.hasResponse()) {
-      ImportUserEventsResponse response = operation.getResponse()
-          .unpack(ImportUserEventsResponse.class);
-
-      System.out.printf("Operation result: %s%n", response);
+    if (importOperation.get() != null) {
+      System.out.printf("Operation result: %s%n", importOperation.get());
+    } else {
+      System.out.println("Operation result is empty.");
     }
   }
 
