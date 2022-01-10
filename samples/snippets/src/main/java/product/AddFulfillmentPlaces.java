@@ -15,12 +15,13 @@
  */
 
 /*
- * [START add_fulfillment_places]
+ * [START retail_add_fulfillment_places]
  */
 
 package product;
 
 import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
@@ -29,6 +30,7 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 public final class AddFulfillmentPlaces {
@@ -57,6 +59,15 @@ public final class AddFulfillmentPlaces {
   private static final Timestamp REQUEST_TIME = Timestamp.newBuilder()
       .setSeconds(Instant.now().getEpochSecond())
       .setNanos(Instant.now().getNano()).build();
+
+  /**
+   * The time when the fulfillment updates are issued, If set with outdated time (yesterday),
+   * the fulfillment information will not updated.
+   */
+//  private static final Timestamp REQUEST_TIME = Timestamp.newBuilder()
+//      .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
+//      .setNanos(Instant.now().getNano())
+//      .build();
 
   private AddFulfillmentPlaces() {
   }
@@ -138,7 +149,9 @@ public final class AddFulfillmentPlaces {
     addFulfillmentPlaces(PRODUCT_NAME);
 
     getProduct(PRODUCT_NAME);
+
+    // deleteProduct(PRODUCT_NAME);
   }
 }
 
-// [END add_fulfillment_places]
+// [END retail_add_fulfillment_places]
