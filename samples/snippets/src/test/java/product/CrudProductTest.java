@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,21 +58,21 @@ public class CrudProductTest {
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Created product.*?id: \"crud_product_id\".*)$"));
+        "(?s)^(.*Created product.*?id:.*)$"));
 
     Assert.assertTrue(
         output.matches("(?s)^(.*Created product.*?title: \"Nest Mini\".*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Get product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/crud_product_id.*)$"));
+        "(?s)^(.*Get product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Get product response.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/crud_product_id.*)$"));
+        "(?s)^(.*Get product response.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
 
     Assert.assertTrue(output.matches("(?s)^(.*Update product request.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Update product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/crud_product_id\".*)$"));
+        "(?s)^(.*Update product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
 
     Assert.assertTrue(output.matches(
         "(?s)^(.*Update product request.*?title: \"Updated Nest Mini\".*)$"));
@@ -87,7 +87,7 @@ public class CrudProductTest {
         output.matches("(?s)^(.*Updated product.*?price.*?20.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Delete product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/crud_product_id\".*)$"));
+        "(?s)^(.*Delete product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
 
     Assert.assertTrue(output.matches("(?s)^(.*Product was deleted.*)$"));
   }

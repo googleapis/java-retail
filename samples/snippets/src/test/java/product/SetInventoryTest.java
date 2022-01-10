@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,5 @@ public class SetInventoryTest {
 
     Assert.assertTrue(output.matches(
         "(?s)^(.*Get product response:.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
-
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Product projects/.*/locations/global/catalogs/default_catalog/branches/default_branch/products/inventory_test_product_id was deleted.*)$"));
   }
 }

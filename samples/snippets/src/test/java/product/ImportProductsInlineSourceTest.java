@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,6 @@ public class ImportProductsInlineSourceTest {
   public void testImportProductsInlineSource() {
     Assert.assertTrue(output.matches(
         "(?s)^(.*Import products from inline source request.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
 
     Assert.assertTrue(output.matches(
         "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));

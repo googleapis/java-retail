@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@
 
 package product;
 
-import static setup.SetupCleanup.tryToDeleteProductIfExists;
-
 import com.google.cloud.retail.v2.CreateProductRequest;
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.GetProductRequest;
@@ -35,6 +33,7 @@ import com.google.cloud.retail.v2.UpdateProductRequest;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 public final class CrudProduct {
 
@@ -44,9 +43,10 @@ public final class CrudProduct {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes defined product id for field setting.
+   * This variable describes generated product id for field setting.
    */
-  private static final String PRODUCT_ID = "crud_product_id";
+  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
+      .toString();
 
   /**
    * This variable describes default branch name.
@@ -59,7 +59,7 @@ public final class CrudProduct {
    * This variable describes product name.
    */
   private static final String PRODUCT_NAME = String.format("%s/products/%s",
-      DEFAULT_BRANCH_NAME, PRODUCT_ID);
+      DEFAULT_BRANCH_NAME, GENERATED_PRODUCT_ID);
 
   private CrudProduct() {
   }
@@ -118,7 +118,7 @@ public final class CrudProduct {
         .build();
 
     return Product.newBuilder()
-        .setId(PRODUCT_ID)
+        .setId(GENERATED_PRODUCT_ID)
         .setName(PRODUCT_NAME)
         .setTitle("Updated Nest Mini")
         .setType(Type.PRIMARY)
@@ -140,7 +140,7 @@ public final class CrudProduct {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
-            .setProductId(PRODUCT_ID)
+            .setProductId(GENERATED_PRODUCT_ID)
             .setParent(DEFAULT_BRANCH_NAME)
             .build();
 
@@ -178,10 +178,9 @@ public final class CrudProduct {
   /**
    * Update product.
    *
-   * @return Product.
    * @throws IOException from the called method.
    */
-  public static Product updateProduct() throws IOException {
+  public static void updateProduct() throws IOException {
     UpdateProductRequest updateProductRequest =
         UpdateProductRequest.newBuilder()
             .setProduct(generateProductForUpdate())
@@ -195,7 +194,6 @@ public final class CrudProduct {
 
     System.out.printf("Updated product: %s%n", updatedProduct);
 
-    return updatedProduct;
   }
 
   /**
@@ -224,8 +222,6 @@ public final class CrudProduct {
    * @param args command line arguments.
    */
   public static void main(final String[] args) throws IOException {
-    tryToDeleteProductIfExists(PRODUCT_NAME);
-
     createProduct();
 
     getProduct();

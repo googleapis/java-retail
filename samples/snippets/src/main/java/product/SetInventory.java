@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 /*
- * [START add_fulfillment_places]
+ * [START retail_set_inventory]
  */
 
 package product;
@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
@@ -173,9 +172,7 @@ public final class SetInventory {
     setInventory(PRODUCT_NAME);
 
     getProduct(PRODUCT_NAME);
-
-    deleteProduct(PRODUCT_NAME);
   }
 }
 
-// [END add_fulfillment_places]
+// [END retail_set_inventory]

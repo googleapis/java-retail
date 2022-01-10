@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,8 +98,8 @@ public final class PurgeUserEvent {
    */
   public static void callPurgeUserEvents()
       throws IOException, ExecutionException, InterruptedException {
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation
-        = getUserEventsServiceClient().purgeUserEventsAsync(
+    OperationFuture<PurgeUserEventsResponse, PurgeMetadata>
+        purgeOperation = getUserEventsServiceClient().purgeUserEventsAsync(
         getPurgeUserEventRequest());
 
     System.out.printf("The purge operation was started: %s%n",

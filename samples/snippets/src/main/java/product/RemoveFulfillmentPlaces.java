@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
+import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
 public final class RemoveFulfillmentPlaces {
 
@@ -128,6 +128,8 @@ public final class RemoveFulfillmentPlaces {
    */
   public static void main(final String[] args)
       throws IOException, InterruptedException {
+    tryToDeleteProductIfExists(PRODUCT_NAME);
+
     createProduct(PRODUCT_ID);
 
     final int awaitDuration = 30;
@@ -137,8 +139,6 @@ public final class RemoveFulfillmentPlaces {
     removeFulfillmentPlaces(PRODUCT_NAME);
 
     getProduct(PRODUCT_NAME);
-
-    deleteProduct(PRODUCT_NAME);
   }
 }
 

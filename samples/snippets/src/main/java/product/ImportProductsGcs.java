@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 
 package product;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -31,6 +30,8 @@ import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
@@ -124,55 +125,55 @@ public final class ImportProductsGcs {
    * Call the Retail API to import products.
    *
    * @throws IOException          from the called method.
-   * @throws ExecutionException   when attempting to retrieve the result of a
-   *                              task that aborted by throwing an exception.
    * @throws InterruptedException when a thread is waiting, sleeping, or
    *                              otherwise occupied, and the thread is
    *                              interrupted, either before or during the
    *                              activity.
    */
   public static void importProductsFromGcs()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, InterruptedException {
     ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(
         GCS_PRODUCTS_OBJECT);
 
-    OperationFuture<ImportProductsResponse, ImportMetadata> gcsOperation =
-        getProductServiceClient()
-            .importProductsAsync(importGcsRequest);
+    ProductServiceClient serviceClient = getProductServiceClient();
 
-    System.out.printf("The operation was started: %s%n",
-        gcsOperation.getName());
+    String operationName = serviceClient
+        .importProductsCallable()
+        .call(importGcsRequest)
+        .getName();
 
-    while (!gcsOperation.isDone()) {
-      System.out.println("Please wait till operation is done");
+    System.out.printf("OperationName = %s\n", operationName);
 
-      final int awaitDuration = 5;
+    OperationsClient operationsClient = serviceClient.getOperationsClient();
+
+    Operation operation = operationsClient.getOperation(operationName);
+
+    while (!operation.getDone()) {
+      // Polling operation delay until the import task is done.
+      final int awaitDuration = 30;
 
       getProductServiceClient().awaitTermination(awaitDuration,
           TimeUnit.SECONDS);
 
-      System.out.println("Import products operation is done.");
+      operation = operationsClient.getOperation(operationName);
+    }
 
-      if (gcsOperation.getMetadata().get() != null) {
-        System.out.printf("Number of successfully imported products: %s%n",
-            gcsOperation.getMetadata().get().getSuccessCount());
+    if (operation.hasMetadata()) {
+      ImportMetadata metadata = operation.getMetadata()
+          .unpack(ImportMetadata.class);
 
-        System.out.printf("Number of failures during the importing: %s%n",
-            gcsOperation.getMetadata().get().getFailureCount());
-      } else {
-        System.out.println("Metadata in bigQuery operation is empty.");
-      }
-      if (gcsOperation.get() != null) {
-        System.out.printf("Operation result: %s%n", gcsOperation.get());
-      } else {
-        System.out.println("Operation result is empty.");
-      }
+      System.out.printf("Number of successfully imported products: %s\n",
+          metadata.getSuccessCount());
 
-      // The imported products needs to be indexed in the catalog
-      // before they become available for search.
-      System.out.println(
-          "Wait 2 -5 minutes till products become indexed in the catalog, "
-              + "after that they will be available for search");
+      System.out.printf("Number of failures during the importing: %s\n",
+          metadata.getFailureCount());
+    }
+
+    if (operation.hasResponse()) {
+      ImportProductsResponse response = operation.getResponse()
+          .unpack(ImportProductsResponse.class);
+
+      System.out.printf("Operation result: %s%n", response);
     }
   }
 

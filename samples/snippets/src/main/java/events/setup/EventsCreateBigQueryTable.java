@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,11 @@
 
 package events.setup;
 
+import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJsonFiles;
+import static setup.SetupCleanup.createBqDataset;
+import static setup.SetupCleanup.createBqTable;
+import static setup.SetupCleanup.uploadDataToBqTable;
+
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldList;
 import com.google.cloud.bigquery.LegacySQLTypeName;
@@ -23,16 +28,10 @@ import com.google.cloud.bigquery.Schema;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
-
-import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJsonFiles;
-import static setup.SetupCleanup.createBqDataset;
-import static setup.SetupCleanup.createBqTable;
-import static setup.SetupCleanup.uploadDataToBqTable;
 
 public final class EventsCreateBigQueryTable {
 

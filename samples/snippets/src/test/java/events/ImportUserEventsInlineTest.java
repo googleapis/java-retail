@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,15 +49,17 @@ public class ImportUserEventsInlineTest {
   public void testImportUserEventsInline() {
     Assert.assertTrue(output.matches(
         "(?s)^(.*Import user events from inline source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
+
     Assert.assertTrue(output.matches(
         "(?s)^(.*Import user events from inline source request.*?input_config.*?user_event_inline_source.*)$"));
+
     Assert.assertTrue(output.matches(
-        "(?s)^(.*The operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
-    Assert.assertTrue(
-        output.matches("(?s)^(.*Import user events operation is done.*)$"));
+        "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
+
     Assert.assertTrue(
         output.matches("(?s)^(.*Number of successfully imported events.*)$"));
+
     Assert.assertTrue(
-        output.matches("(?s)^(.*Number of failures during the importing.*)$"));
+        output.matches("(?s)^(.*Number of successfully imported events.*)$"));
   }
 }

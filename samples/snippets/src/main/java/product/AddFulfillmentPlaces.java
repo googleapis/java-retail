@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 package product;
 
 import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
+import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
 import com.google.cloud.retail.v2.AddFulfillmentPlacesRequest;
 import com.google.cloud.retail.v2.ProductServiceClient;
@@ -102,7 +102,9 @@ public final class AddFulfillmentPlaces {
    * @throws IOException from the called method.
    */
   public static void addFulfillmentPlaces(final String productName)
-      throws IOException {
+      throws IOException, InterruptedException {
+    final int awaitDuration = 30;
+
     AddFulfillmentPlacesRequest addFulfillmentRequest =
         getAddFulfillmentRequest(productName);
 
@@ -114,7 +116,7 @@ public final class AddFulfillmentPlaces {
     This is a long-running operation and its result is not immediately
     present with get operations,thus we simulate wait with sleep method.
     */
-//    getProductServiceClient().awaitTermination(30, TimeUnit.SECONDS);
+    getProductServiceClient().awaitTermination(awaitDuration, TimeUnit.SECONDS);
   }
 
   /**
@@ -127,6 +129,8 @@ public final class AddFulfillmentPlaces {
 
     final int awaitDuration = 30;
 
+    tryToDeleteProductIfExists(PRODUCT_NAME);
+
     createProduct(PRODUCT_ID);
 
     getProductServiceClient().awaitTermination(awaitDuration, TimeUnit.SECONDS);
@@ -134,8 +138,6 @@ public final class AddFulfillmentPlaces {
     addFulfillmentPlaces(PRODUCT_NAME);
 
     getProduct(PRODUCT_NAME);
-
-    deleteProduct(PRODUCT_NAME);
   }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 
 package product;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportProductsRequest;
@@ -30,6 +29,8 @@ import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -124,51 +125,58 @@ public final class ImportProductsBigQueryTable {
    * Call the Retail API to import products.
    *
    * @throws IOException          from the called method.
-   * @throws ExecutionException   when attempting to retrieve the result of a
-   *                              task that aborted by throwing an exception.
    * @throws InterruptedException when a thread is waiting, sleeping, or
    *                              otherwise occupied, and the thread is
    *                              interrupted, either before or during the
    *                              activity.
    */
   public static void importProductsFromBigQuery()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, InterruptedException {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
 
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode);
 
-    OperationFuture<ImportProductsResponse, ImportMetadata> bigQueryOperation =
-        getProductServiceClient().importProductsAsync(importBigQueryRequest);
+    ProductServiceClient serviceClient = getProductServiceClient();
 
-    System.out.printf("The operation was started: %s%n",
-        bigQueryOperation.getName());
+    String operationName = serviceClient
+        .importProductsCallable()
+        .call(importBigQueryRequest)
+        .getName();
 
-    while (!bigQueryOperation.isDone()) {
-      System.out.println("Please wait till operation is done.");
+    System.out.printf("OperationName = %s\n", operationName);
 
-      final int awaitDuration = 5;
+    OperationsClient operationsClient = serviceClient.getOperationsClient();
 
-      getProductServiceClient().awaitTermination(
-          awaitDuration, TimeUnit.SECONDS);
+    Operation operation = operationsClient.getOperation(operationName);
 
-      System.out.println("Import products operation is done.");
+    while (!operation.getDone()) {
+      // Polling operation delay until the import task is done.
+      final int awaitDuration = 30;
 
-      if (bigQueryOperation.getMetadata().get() != null) {
-        System.out.printf("Number of successfully imported products: %s%n",
-            bigQueryOperation.getMetadata().get().getSuccessCount());
+      getProductServiceClient().awaitTermination(awaitDuration,
+          TimeUnit.SECONDS);
 
-        System.out.printf("Number of failures during the importing: %s%n",
-            bigQueryOperation.getMetadata().get().getFailureCount());
-      } else {
-        System.out.println("Metadata in bigQuery operation is empty.");
-      }
-      if (bigQueryOperation.get() != null) {
-        System.out.printf("Operation result: %s%n", bigQueryOperation.get());
-      } else {
-        System.out.println("Operation result is empty.");
-      }
+      operation = operationsClient.getOperation(operationName);
+    }
+
+    if (operation.hasMetadata()) {
+      ImportMetadata metadata = operation.getMetadata()
+          .unpack(ImportMetadata.class);
+
+      System.out.printf("Number of successfully imported products: %s\n",
+          metadata.getSuccessCount());
+
+      System.out.printf("Number of failures during the importing: %s\n",
+          metadata.getFailureCount());
+    }
+
+    if (operation.hasResponse()) {
+      ImportProductsResponse response = operation.getResponse()
+          .unpack(ImportProductsResponse.class);
+
+      System.out.printf("Operation result: %s%n", response);
     }
   }
 
