@@ -12,10 +12,23 @@
     Removing or replacing it should not affect the execution of the samples in anyway.
   -->
   <parent>
-    <groupId>com.google.cloud.samples</groupId>
-    <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-retail-samples</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -24,13 +37,11 @@
   </properties>
 
   <dependencies>
-    <!-- TODO: switch to libraries-bom after this artifact is included -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-retail</artifactId>
       <version>2.0.6</version>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -38,10 +49,25 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.truth</groupId>
-      <artifactId>truth</artifactId>
-      <version>1.1.3</version>
-      <scope>test</scope>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-bigquery</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>2.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.20</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.9</version>
     </dependency>
   </dependencies>
 </project>
