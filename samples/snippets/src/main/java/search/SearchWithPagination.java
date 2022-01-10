@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc. All Rights Reserved.
+ * Copyright 2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ */
+
+/*
  * [START retail_search_for_products_with_page_size]
  * Call Retail API to search for a products in a catalog,
  * limit the number of the products per page and go to the next page
@@ -24,25 +26,17 @@ package search;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class SearchWithPagination {
+public final class SearchWithPagination {
 
   /**
    * This variable describes project number getting from environment variable.
    */
   private static final String YOUR_PROJECT_NUMBER = System.getenv(
       "PROJECT_NUMBER");
-
-  /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
 
   /**
    * This variable describes default catalog name.
@@ -63,6 +57,9 @@ public class SearchWithPagination {
    */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
+  private SearchWithPagination() {
+  }
+
   /**
    * Get search service client.
    *
@@ -71,10 +68,7 @@ public class SearchWithPagination {
    */
   private static SearchServiceClient getSearchServiceClient()
       throws IOException {
-    SearchServiceSettings settings = SearchServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return SearchServiceClient.create(settings);
+    return SearchServiceClient.create();
   }
 
   /**
@@ -107,11 +101,11 @@ public class SearchWithPagination {
    * Call the retail search.
    *
    * @return SearchResponse.
-   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   * @throws IOException if endpoint is not provided.
    */
   public static SearchResponse search() throws IOException {
     // TRY DIFFERENT PAGINATION PARAMETERS HERE:
-    int pageSize = 6;
+    final int pageSize = 6;
     int offset = 0;
     String pageToken = "";
 
@@ -133,6 +127,7 @@ public class SearchWithPagination {
   /**
    * Executable tutorial class.
    *
+   * @param args command line arguments.
    * @throws IOException from the called method.
    */
   public static void main(final String[] args) throws IOException {

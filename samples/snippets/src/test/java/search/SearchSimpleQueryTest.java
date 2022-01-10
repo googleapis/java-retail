@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc. All Rights Reserved.
+ * Copyright 2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,14 +31,17 @@ public class SearchSimpleQueryTest {
   private String output;
 
   @Before
-  public void setUp() throws IOException, InterruptedException, ExecutionException {
+  public void setUp()
+      throws IOException, InterruptedException, ExecutionException {
 
     Process exec = Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=search.SearchSimpleQuery");
+        .exec(
+            "mvn compile exec:java -Dexec.mainClass=search.SearchSimpleQuery");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor()
+        .submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -54,7 +57,7 @@ public class SearchSimpleQueryTest {
   }
 
   @Test
-  public void testSearchSimpleQuery() throws IOException, InterruptedException {
+  public void testSearchSimpleQuery() throws IOException {
 
     SearchResponse response = SearchSimpleQuery.search();
 
@@ -64,5 +67,4 @@ public class SearchSimpleQueryTest {
 
     Assert.assertTrue(productTitle.contains("Hoodie"));
   }
-
 }

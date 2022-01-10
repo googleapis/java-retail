@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google Inc. All Rights Reserved.
+ * Copyright 2022 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
+ */
+
+/*
  * [START retail_search_for_products_with_query_expansion_specification]
  * Call Retail API to search for a products in a catalog,
  * enabling the query expansion feature to let the Google Retail Search
@@ -26,25 +28,17 @@ import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec;
 import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec.Condition;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class SearchWithQueryExpansionSpec {
+public final class SearchWithQueryExpansionSpec {
 
   /**
    * This variable describes project number getting from environment variable.
    */
   private static final String YOUR_PROJECT_NUMBER = System.getenv(
       "PROJECT_NUMBER");
-
-  /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
 
   /**
    * This variable describes default catalog name.
@@ -65,6 +59,9 @@ public class SearchWithQueryExpansionSpec {
    */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
+  private SearchWithQueryExpansionSpec() {
+  }
+
   /**
    * Get search service client.
    *
@@ -73,10 +70,7 @@ public class SearchWithQueryExpansionSpec {
    */
   private static SearchServiceClient getSearchServiceClient()
       throws IOException {
-    SearchServiceSettings settings = SearchServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return SearchServiceClient.create(settings);
+    return SearchServiceClient.create();
   }
 
   /**
@@ -89,7 +83,7 @@ public class SearchWithQueryExpansionSpec {
   public static SearchRequest getSearchRequest(final String query,
       final Condition condition) {
 
-    int pageSize = 10;
+    final int pageSize = 10;
 
     QueryExpansionSpec queryExpansionSpec = QueryExpansionSpec.newBuilder()
         .setCondition(condition)
@@ -112,7 +106,7 @@ public class SearchWithQueryExpansionSpec {
    * Call the retail search.
    *
    * @return SearchResponse.
-   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   * @throws IOException if endpoint is not provided.
    */
   public static SearchResponse search() throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
@@ -132,6 +126,7 @@ public class SearchWithQueryExpansionSpec {
   /**
    * Executable tutorial class.
    *
+   * @param args command line arguments.
    * @throws IOException from the called method.
    */
   public static void main(final String[] args) throws IOException {
