@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package search;
+package product;
 
-import com.google.cloud.retail.v2.SearchResponse;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -26,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class SearchWithFacetSpecTest {
+public class ImportProductsGcsTest {
 
   private String output;
 
@@ -36,7 +35,7 @@ public class SearchWithFacetSpecTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
+            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsGcs");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -47,28 +46,20 @@ public class SearchWithFacetSpecTest {
   }
 
   @Test
-  public void testOutput() {
+  public void testImportProductsGcs() {
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Import products from google cloud source request.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*Search request.*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*input_uris: \"gs://.*/products.json\".*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*Search response.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*results.*id.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*facets.*?colorFamilies.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Number of successfully imported products:.*316.*)$"));
   }
 
-  @Test
-  public void testSearchWithFacetSpec() throws IOException {
-
-    SearchResponse response = SearchWithFacetSpec.search();
-
-    Assert.assertEquals(10, response.getResultsCount());
-
-    String productTitle = response.getResults(0).getProduct().getTitle();
-
-    Assert.assertTrue(productTitle.contains("Tee"));
-
-    Assert.assertEquals("colorFamilies", response.getFacets(0).getKey());
-  }
 }
