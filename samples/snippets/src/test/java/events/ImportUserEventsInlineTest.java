@@ -1,11 +1,11 @@
 /*
- * Copyright 2022 Google Inc.
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package search;
+package events;
 
-import com.google.cloud.retail.v2.SearchResponse;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -26,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class SearchWithFacetSpecTest {
+public class ImportUserEventsInlineTest {
 
   private String output;
 
@@ -36,7 +35,7 @@ public class SearchWithFacetSpecTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
+            "mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsInline");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -47,28 +46,18 @@ public class SearchWithFacetSpecTest {
   }
 
   @Test
-  public void testOutput() {
-
-    Assert.assertTrue(output.matches("(?s)^(.*Search request.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*Search response.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*results.*id.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*facets.*?colorFamilies.*)$"));
-  }
-
-  @Test
-  public void testSearchWithFacetSpec() throws IOException {
-
-    SearchResponse response = SearchWithFacetSpec.search();
-
-    Assert.assertEquals(10, response.getResultsCount());
-
-    String productTitle = response.getResults(0).getProduct().getTitle();
-
-    Assert.assertTrue(productTitle.contains("Tee"));
-
-    Assert.assertEquals("colorFamilies", response.getFacets(0).getKey());
+  public void testImportUserEventsInline() {
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Import user events from inline source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Import user events from inline source request.*?input_config.*?user_event_inline_source.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*The operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Import user events operation is done.*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Number of successfully imported events.*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Number of failures during the importing.*)$"));
   }
 }
