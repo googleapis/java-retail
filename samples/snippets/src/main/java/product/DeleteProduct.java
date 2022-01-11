@@ -27,19 +27,35 @@ import com.google.cloud.retail.v2.ProductServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
 import static product.setup.SetupCleanup.createProduct;
 
+@UtilityClass
 public class DeleteProduct {
 
-  public static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  public static final String ENDPOINT = "retail.googleapis.com:443";
+  /**
+   * This variable describes endpoint for send requests.
+   */
+  private static final String ENDPOINT = "retail.googleapis.com:443";
 
+  /**
+   * This variable describes generated product id for field setting.
+   */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
 
-  // Get product service client
+  /**
+   * Get product service client.
+   *
+   * @return ProductServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
     ProductServiceSettings productServiceSettings =
@@ -49,9 +65,14 @@ public class DeleteProduct {
     return ProductServiceClient.create(productServiceSettings);
   }
 
-  // Get delete product request
+  /**
+   * Get delete product request.
+   *
+   * @param productName refers to product name.
+   * @return DeleteProductRequest.
+   */
   public static DeleteProductRequest getDeleteProductRequest(
-      String productName) {
+      final String productName) {
     DeleteProductRequest deleteProductRequest = DeleteProductRequest.newBuilder()
         .setName(productName)
         .build();
@@ -61,8 +82,14 @@ public class DeleteProduct {
     return deleteProductRequest;
   }
 
-  // Call the Retail API to delete product
-  public static void deleteProduct(String productName) throws IOException {
+  /**
+   * Call the Retail API to delete product.
+   *
+   * @param productName refers to product name.
+   * @throws IOException from the called method.
+   */
+  public static void deleteProduct(final String productName)
+      throws IOException {
     DeleteProductRequest deleteProductRequest = getDeleteProductRequest(
         productName);
 
@@ -73,10 +100,12 @@ public class DeleteProduct {
     System.out.println("Product was deleted.");
   }
 
-  // [END retail_delete_product]
-
-  // Delete created product
-  public static void main(String[] args) throws IOException {
+  /**
+   * Executable tutorial class.
+   */
+  public static void main(final String[] args) throws IOException {
     deleteProduct(createProduct(GENERATED_PRODUCT_ID).getName());
   }
 }
+
+// [END retail_delete_product]

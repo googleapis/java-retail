@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class ImportProductsInlineSourceTest {
+public class GetProductTest {
 
   private String output;
 
@@ -35,7 +35,7 @@ public class ImportProductsInlineSourceTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsInlineSource");
+            "mvn compile exec:java -Dexec.mainClass=product.GetProduct");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -46,13 +46,17 @@ public class ImportProductsInlineSourceTest {
   }
 
   @Test
-  public void testImportProductsInlineSource() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from inline source request.*)$"));
+  public void testGetProduct() {
+    Assert.assertTrue(output.matches("(?s)^(.*Get product request.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Get product response.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+        "(?s)^(.*Get product response.*?name.*?projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Get product response.*?title.*?Nest Mini.*)$"));
+
+    Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
 }

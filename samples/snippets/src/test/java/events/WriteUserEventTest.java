@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package product;
+package events;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class ImportProductsInlineSourceTest {
+public class WriteUserEventTest {
 
   private String output;
 
@@ -35,7 +35,7 @@ public class ImportProductsInlineSourceTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsInlineSource");
+            "mvn compile exec:java -Dexec.mainClass=events.WriteUserEvent");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -46,13 +46,14 @@ public class ImportProductsInlineSourceTest {
   }
 
   @Test
-  public void testImportProductsInlineSource() {
+  public void testWriteUserEvent() {
     Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from inline source request.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
+        "(?s)^(.*Write user event request.*?user_event.*?event_type: \"home-page-view\".*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+        "(?s)^(.*Written user event.*?event_type: \"home-page-view\".*)$"));
+
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Written user event.*?visitor_id: \"test_visitor_id\".*)$"));
   }
 }

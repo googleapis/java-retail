@@ -34,30 +34,58 @@ import com.google.cloud.retail.v2.ProductServiceSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ImportProductsBigQueryTable {
 
-  public static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
+  /**
+   * This variable describes project id getting from environment variable.
+   */
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
 
-  public static final String ENDPOINT = "retail.googleapis.com:443";
+  /**
+   * This variable describes endpoint for send requests.
+   */
+  private static final String ENDPOINT = "retail.googleapis.com:443";
 
-  public static final String DEFAULT_CATALOG = String.format(
+  /**
+   * This variable describes default catalog name.
+   */
+  private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
       PROJECT_NUMBER);
 
-  public static final String DATASET_ID = "products";
+  /**
+   * This variable describes dataset id.
+   */
+  private static final String DATASET_ID = "products";
 
-  public static final String TABLE_ID = "products";
+  /**
+   * This variable describes table id.
+   */
+  private static final String TABLE_ID = "products";
 
+  /**
+   * This variable describes data schema.
+   */
   private static final String DATA_SCHEMA = "product";
 
   /* TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS:
      TABLE_ID = "products_some_invalid"
   */
 
-  // Get product service client
+  /**
+   * Get product service client.
+   *
+   * @return ProductServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
     ProductServiceSettings productServiceSettings =
@@ -67,9 +95,14 @@ public class ImportProductsBigQueryTable {
     return ProductServiceClient.create(productServiceSettings);
   }
 
-  // Get import products from big query request
+  /**
+   * Get import products from big query request.
+   *
+   * @param reconciliationMode enum variable describes reconciliation.
+   * @return ImportProductsRequest.
+   */
   public static ImportProductsRequest getImportProductsBigQueryRequest(
-      ReconciliationMode reconciliationMode) {
+      final ReconciliationMode reconciliationMode) {
       /* TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
          DEFAULT_CATALOG = "invalid_catalog_name"
       */
@@ -96,7 +129,17 @@ public class ImportProductsBigQueryTable {
     return importRequest;
   }
 
-  // Call the Retail API to import products
+  /**
+   * Call the Retail API to import products.
+   *
+   * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
+   * @throws InterruptedException when a thread is waiting, sleeping, or
+   *                              otherwise occupied, and the thread is
+   *                              interrupted, either before or during the
+   *                              activity.
+   */
   public static void importProductsFromBigQuery()
       throws IOException, ExecutionException, InterruptedException {
     // TRY THE FULL RECONCILIATION MODE HERE:
@@ -128,10 +171,13 @@ public class ImportProductsBigQueryTable {
     }
   }
 
-  // [END retail_import_products_from_big_query]
-
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   */
+  public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
     importProductsFromBigQuery();
   }
 }
+
+// [END retail_import_products_from_big_query]

@@ -34,24 +34,42 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import lombok.experimental.UtilityClass;
 
 import static product.setup.SetupCleanup.createProduct;
 import static product.setup.SetupCleanup.deleteProduct;
 import static product.setup.SetupCleanup.getProduct;
-
+@UtilityClass
 public class SetInventory {
 
-  public static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  public static final String ENDPOINT = "retail.googleapis.com:443";
+  /**
+   * This variable describes endpoint for send requests.
+   */
+  private static final String ENDPOINT = "retail.googleapis.com:443";
 
+  /**
+   * This variable describes defined product id for field setting.
+   */
   private static final String PRODUCT_ID = "inventory_test_product_id";
 
-  public static final String PRODUCT_NAME = String.format(
+  /**
+   * This variable describes product name.
+   */
+  private static final String PRODUCT_NAME = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch/products/%s",
       PROJECT_NUMBER, PRODUCT_ID);
 
-  // get product service client
+  /**
+   * Get product service client.
+   *
+   * @return ProductServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
     ProductServiceSettings productServiceSettings =
@@ -61,8 +79,13 @@ public class SetInventory {
     return ProductServiceClient.create(productServiceSettings);
   }
 
-  // product inventory info
-  public static Product getProductWithInventoryInfo(String productName) {
+  /**
+   * Product inventory info.
+   *
+   * @param productName refers to product name.
+   * @return Product.
+   */
+  public static Product getProductWithInventoryInfo(final String productName) {
     PriceInfo priceInfo = PriceInfo.newBuilder()
         .setPrice(15.0f)
         .setOriginalPrice(20.0f)
@@ -76,15 +99,20 @@ public class SetInventory {
         .build();
 
     return Product.newBuilder()
-        .setName(PRODUCT_NAME)
+        .setName(productName)
         .setPriceInfo(priceInfo)
         .addFulfillmentInfo(fulfillmentInfo)
         .setAvailability(Availability.IN_STOCK)
         .build();
   }
 
-  // set inventory request
-  public static SetInventoryRequest getSetInventoryRequest(String productName) {
+  /**
+   * Set inventory request.
+   *
+   * @param productName refers to product name.
+   * @return SetInventoryRequest.
+   */
+  public static SetInventoryRequest getSetInventoryRequest(final String productName) {
     // The request timestamp
     Timestamp requestTime = Timestamp.newBuilder()
         .setSeconds(Instant.now().getEpochSecond())
@@ -96,7 +124,7 @@ public class SetInventory {
         .build();
 
     SetInventoryRequest setInventoryRequest = SetInventoryRequest.newBuilder()
-        .setInventory(getProductWithInventoryInfo(PRODUCT_NAME))
+        .setInventory(getProductWithInventoryInfo(productName))
         .setSetTime(requestTime)
         .setAllowMissing(true)
         .setSetMask(setMask)
@@ -107,8 +135,14 @@ public class SetInventory {
     return setInventoryRequest;
   }
 
-  // set inventory to product
-  public static void setInventory(String productName)
+  /**
+   * Set inventory to product.
+   *
+   * @param productName refers to product name.
+   * @throws IOException          from the called method.
+   * @throws InterruptedException if interrupted while waiting.
+   */
+  public static void setInventory(final String productName)
       throws IOException, InterruptedException {
     SetInventoryRequest setInventoryRequest = getSetInventoryRequest(
         productName);
@@ -124,9 +158,10 @@ public class SetInventory {
     getProductServiceClient().awaitTermination(30, TimeUnit.SECONDS);
   }
 
-  // [END add_fulfillment_places]
-
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   */
+  public static void main(final String[] args)
       throws IOException, InterruptedException {
     createProduct(PRODUCT_ID);
 
@@ -137,3 +172,5 @@ public class SetInventory {
     deleteProduct(PRODUCT_NAME);
   }
 }
+
+// [END add_fulfillment_places]

@@ -29,10 +29,8 @@ import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class SearchWithFiltering {
+public final class SearchWithFiltering {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -70,6 +68,9 @@ public class SearchWithFiltering {
   private static final String DEFAULT_BRANCH_NAME =
       DEFAULT_CATALOG_NAME + "/branches/default_branch";
 
+  private SearchWithFiltering() {
+  }
+
   /**
    * Get search service client.
    *
@@ -94,7 +95,7 @@ public class SearchWithFiltering {
   public static SearchRequest getSearchRequest(final String query,
       final String filter) {
 
-    int pageSize = 10;
+    final int pageSize = 10;
 
     SearchRequest searchRequest = SearchRequest.newBuilder()
         .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
@@ -114,7 +115,7 @@ public class SearchWithFiltering {
    * Call the retail search.
    *
    * @return SearchResponse.
-   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   * @throws IOException if endpoint is not provided.
    */
   public static SearchResponse search() throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
@@ -134,6 +135,7 @@ public class SearchWithFiltering {
   /**
    * Executable tutorial class.
    *
+   * @param args command line arguments.
    * @throws IOException from the called method.
    */
   public static void main(final String[] args) throws IOException {

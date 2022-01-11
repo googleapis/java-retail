@@ -34,23 +34,45 @@ import com.google.cloud.retail.v2.UpdateProductRequest;
 
 import java.io.IOException;
 import java.util.Collections;
+import lombok.experimental.UtilityClass;
 
-public class CrudProduct {
+@UtilityClass
+class CrudProduct {
 
-  public static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  public static final String ENDPOINT = "retail.googleapis.com:443";
+  /**
+   * This variable describes endpoint for send requests.
+   */
+  private static final String ENDPOINT = "retail.googleapis.com:443";
 
-  public static final String PRODUCT_ID = "crud_product_id";
+  /**
+   * This variable describes defined product id for field setting.
+   */
+  private static final String PRODUCT_ID = "crud_product_id";
 
-  public static final String DEFAULT_BRANCH_NAME = String.format(
+  /**
+   * This variable describes default branch name.
+   */
+  private static final String DEFAULT_BRANCH_NAME = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
       PROJECT_NUMBER);
 
-  public static final String PRODUCT_NAME = String.format("%s/products/%s",
+  /**
+   * This variable describes product name.
+   */
+  private static final String PRODUCT_NAME = String.format("%s/products/%s",
       DEFAULT_BRANCH_NAME, PRODUCT_ID);
 
-  // Get product service client
+  /**
+   * Get product service client.
+   *
+   * @return ProductServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
     ProductServiceSettings productServiceSettings =
@@ -60,7 +82,11 @@ public class CrudProduct {
     return ProductServiceClient.create(productServiceSettings);
   }
 
-  // Generate product for create
+  /**
+   * Generate product for create.
+   *
+   * @return Product.
+   */
   public static Product generateProduct() {
     PriceInfo priceInfo = PriceInfo.newBuilder()
         .setPrice(30.0f)
@@ -78,7 +104,11 @@ public class CrudProduct {
         .build();
   }
 
-  // Generate product for update
+  /**
+   * Generate product for update.
+   *
+   * @return Product.
+   */
   public static Product generateProductForUpdate() {
     PriceInfo priceInfo = PriceInfo.newBuilder()
         .setPrice(20.0f)
@@ -99,7 +129,12 @@ public class CrudProduct {
         .build();
   }
 
-  // Create product
+  /**
+   * Create product.
+   *
+   * @return Product.
+   * @throws IOException from the called method.
+   */
   public static Product createProduct() throws IOException {
     CreateProductRequest createProductRequest = CreateProductRequest.newBuilder()
         .setProduct(generateProduct())
@@ -117,7 +152,12 @@ public class CrudProduct {
     return productCreated;
   }
 
-  // Get product
+  /**
+   * Get product.
+   *
+   * @return Product.
+   * @throws IOException from the called method.
+   */
   public static Product getProduct() throws IOException {
     GetProductRequest getProductRequest = GetProductRequest.newBuilder()
         .setName(PRODUCT_NAME)
@@ -133,7 +173,12 @@ public class CrudProduct {
     return getProductResponse;
   }
 
-  // Update product
+  /**
+   * Update product.
+   *
+   * @return Product.
+   * @throws IOException from the called method.
+   */
   public static Product updateProduct() throws IOException {
     UpdateProductRequest updateProductRequest = UpdateProductRequest.newBuilder()
         .setProduct(generateProductForUpdate())
@@ -150,7 +195,11 @@ public class CrudProduct {
     return updatedProduct;
   }
 
-  // Delete product
+  /**
+   * Delete product.
+   *
+   * @throws IOException from the called method.
+   */
   public static void deleteProduct() throws IOException {
     DeleteProductRequest deleteProductRequest = DeleteProductRequest.newBuilder()
         .setName(PRODUCT_NAME)
@@ -165,9 +214,10 @@ public class CrudProduct {
     System.out.println("Product was deleted.");
   }
 
-// [END retail_crud_product]
-
-  public static void main(String[] args) throws IOException {
+  /**
+   * Executable tutorial class.
+   */
+  public static void main(final String[] args) throws IOException {
     createProduct();
 
     getProduct();
@@ -177,3 +227,5 @@ public class CrudProduct {
     deleteProduct();
   }
 }
+
+// [END retail_crud_product]

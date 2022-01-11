@@ -30,10 +30,8 @@ import com.google.cloud.retail.v2.SearchServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class SearchWithPagination {
+public final class SearchWithPagination {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -64,6 +62,9 @@ public class SearchWithPagination {
    * This variable describes a unique identifier to track visitors.
    */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
+
+  private SearchWithPagination() {
+  }
 
   /**
    * Get search service client.
@@ -109,11 +110,11 @@ public class SearchWithPagination {
    * Call the retail search.
    *
    * @return SearchResponse.
-   * @throws IOException if endpoint is not provided in getSearchServiceClient().
+   * @throws IOException if endpoint is not provided.
    */
   public static SearchResponse search() throws IOException {
     // TRY DIFFERENT PAGINATION PARAMETERS HERE:
-    int pageSize = 6;
+    final int pageSize = 6;
     int offset = 0;
     String pageToken = "";
 
@@ -135,6 +136,7 @@ public class SearchWithPagination {
   /**
    * Executable tutorial class.
    *
+   * @param args command line arguments.
    * @throws IOException from the called method.
    */
   public static void main(final String[] args) throws IOException {

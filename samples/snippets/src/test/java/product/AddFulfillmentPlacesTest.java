@@ -16,16 +16,25 @@
 
 package product;
 
+import static product.setup.SetupCleanup.deleteProduct;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class ImportProductsInlineSourceTest {
+public class AddFulfillmentPlacesTest {
+
+  private final String projectNumber = System.getenv("PROJECT_NUMBER");
+
+  private final String productName = String.format(
+      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch/products/add_fulfillment_test_product_id",
+      projectNumber);
 
   private String output;
 
@@ -35,7 +44,7 @@ public class ImportProductsInlineSourceTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsInlineSource");
+            "mvn compile exec:java -Dexec.mainClass=product.AddFulfillmentPlaces");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -46,13 +55,22 @@ public class ImportProductsInlineSourceTest {
   }
 
   @Test
-  public void testImportProductsInlineSource() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from inline source request.*)$"));
+  public void testAddFulfillment() {
+    Assert.assertTrue(output.matches("(?s)^(.*Product is created.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Add fulfillment request.*)$"));
+
+    Assert.assertTrue(output.matches("(?s)^(.*Add fulfillment places.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+        "(?s)^(.*Get product response.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store0\".*)$"));
+
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Get product response.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
+  }
+
+  @After
+  public void after() throws IOException {
+    deleteProduct(productName);
   }
 }

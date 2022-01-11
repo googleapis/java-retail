@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package product;
+package events;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class ImportProductsInlineSourceTest {
+public class RejoinUserEventTest {
 
   private String output;
 
@@ -35,7 +35,7 @@ public class ImportProductsInlineSourceTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsInlineSource");
+            "mvn compile exec:java -Dexec.mainClass=events.RejoinUserEvent");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -46,13 +46,19 @@ public class ImportProductsInlineSourceTest {
   }
 
   @Test
-  public void testImportProductsInlineSource() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from inline source request.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
+  public void testRejoinUserEvent() {
+    Assert.assertTrue(output.matches("(?s)^(.*The user event is written.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+        "(?s)^(.*Rejoin user events request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
+
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Rejoin user events request.*?user_event_rejoin_scope: UNJOINED_EVENTS.*)$"));
+
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*The rejoin operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/rejoin-user-events.*)$"));
+
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*The purge operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/purge-user-events.*)$"));
   }
 }

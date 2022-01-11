@@ -25,7 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import util.StreamGobbler;
 
-public class ImportProductsInlineSourceTest {
+public class RemoveFulfillmentPlacesTest {
+
+  private final String projectNumber = System.getenv("PROJECT_NUMBER");
+
+  private final String productName = String.format(
+      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch/products/remove_fulfillment_test_product_id",
+      projectNumber);
 
   private String output;
 
@@ -35,7 +41,7 @@ public class ImportProductsInlineSourceTest {
 
     Process exec = Runtime.getRuntime()
         .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsInlineSource");
+            "mvn compile exec:java -Dexec.mainClass=product.RemoveFulfillmentPlaces");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -46,13 +52,14 @@ public class ImportProductsInlineSourceTest {
   }
 
   @Test
-  public void testImportProductsInlineSource() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from inline source request.*)$"));
+  public void testRemoveFulfillmentPlaces() {
+    Assert.assertTrue(output.matches("(?s)^(.*Product is created.*)$"));
 
-    Assert.assertTrue(output.matches("(?s)^(.*The operation was started.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Remove fulfillment request.*)$"));
+
+    Assert.assertTrue(output.matches("(?s)^(.*Remove fulfillment places.*)$"));
 
     Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+        "(?s)^(.*Get product response:.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
   }
 }

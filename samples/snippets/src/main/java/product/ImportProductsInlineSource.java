@@ -43,21 +43,54 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ImportProductsInlineSource {
 
-  public static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  /**
+   * This variable describes project number getting from environment variable.
+   */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  public static final String ENDPOINT = "retail.googleapis.com:443";
+  /**
+   * This variable describes endpoint for send requests.
+   */
+  private static final String ENDPOINT = "retail.googleapis.com:443";
 
-  public static final String DEFAULT_CATALOG = String.format(
+  /**
+   * This variable describes default catalog name.
+   */
+  private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
       PROJECT_NUMBER);
 
+  /**
+   * This variable describes generated product id for field setting.
+   */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
 
-  // prepare product to import as inline source
+  /**
+   * Get product service client.
+   *
+   * @return ProductServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static ProductServiceClient getProductServiceClient()
+      throws IOException {
+    ProductServiceSettings productServiceSettings =
+        ProductServiceSettings.newBuilder()
+            .setEndpoint(ENDPOINT)
+            .build();
+    return ProductServiceClient.create(productServiceSettings);
+  }
+
+  /**
+   * Prepare product to import as inline source.
+   *
+   * @return List of products.
+   */
   public static List<Product> getProducts() {
     List<Product> products = new ArrayList<>();
 
@@ -141,19 +174,14 @@ public class ImportProductsInlineSource {
     return products;
   }
 
-  // get product service client
-  private static ProductServiceClient getProductServiceClient()
-      throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
-  }
-
-  // get import products from inline source request
+  /**
+   * Get import products from inline source request.
+   *
+   * @param productsToImport List of products to import.
+   * @return ImportProductsRequest.
+   */
   public static ImportProductsRequest getImportProductsInlineRequest(
-      List<Product> productsToImport) {
+      final List<Product> productsToImport) {
     // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
     // default_catalog = "invalid_catalog_name"
 
@@ -176,7 +204,17 @@ public class ImportProductsInlineSource {
     return importRequest;
   }
 
-  // call the Retail API to import products
+  /**
+   * Call the Retail API to import products.
+   *
+   * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
+   * @throws InterruptedException when a thread is waiting, sleeping, or
+   *                              otherwise occupied, and the thread is
+   *                              interrupted, either before or during the
+   *                              activity.
+   */
   public static void importProductsFromInlineSource()
       throws IOException, ExecutionException, InterruptedException {
     ImportProductsRequest importRequest = getImportProductsInlineRequest(
@@ -205,10 +243,13 @@ public class ImportProductsInlineSource {
     }
   }
 
-  // [END retail_import_products_from_inline_source]
-
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   */
+  public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
     importProductsFromInlineSource();
   }
 }
+
+// [END retail_import_products_from_inline_source]
