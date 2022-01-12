@@ -26,26 +26,48 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-public class UpdateUserEventsJson {
+public final class UpdateUserEventsJson {
 
-  private static final String filePath = "src/main/resources/user_events.json";
+  /**
+   * This variable describes file path.
+   */
+  private static final String FILE_PATH = "src/main/resources/user_events.json";
 
-  private static final String invalidFilePath = "src/main/resources/user_events_some_invalid.json";
+  /**
+   * This variable describes invalid file path.
+   */
+  private static final String INVALID_FILE_PATH = "src/main/resources/"
+      + "user_events_some_invalid.json";
 
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+  /**
+   * This variable describes date format.
+   */
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
       "yyyy-MM-dd");
 
-  private static final Timestamp yesterdayDate = Timestamp.from(
+  /**
+   * This variable describes yesterday date.
+   */
+  private static final Timestamp YESTERDAY_DATE = Timestamp.from(
       Instant.now().minus(1, ChronoUnit.DAYS));
 
-  // Update events timestamp
-  public static void updateEventsTimestamp(String jsonFile) throws IOException {
+  private UpdateUserEventsJson() {
+  }
+
+  /**
+   * Update events timestamp.
+   *
+   * @param jsonFile path to the json file.
+   * @throws IOException while runs readAllBytes() method.
+   */
+  public static void updateEventsTimestamp(final String jsonFile)
+      throws IOException {
 
     String json = new String(Files.readAllBytes(Paths.get(jsonFile)));
 
     json = json.replaceAll(
         "(\"eventTime\"\\s*:\\s*\"(\\d{4}-\\d{2}-\\d{2}(T.*Z)?))",
-        "\"eventTime\":\"" + dateFormat.format(yesterdayDate) + "");
+        "\"eventTime\":\"" + DATE_FORMAT.format(YESTERDAY_DATE) + "");
 
     BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFile));
 
@@ -54,10 +76,14 @@ public class UpdateUserEventsJson {
     writer.close();
   }
 
-  // Execute update events timestamp
-  public static void main(String[] args) throws IOException {
-    updateEventsTimestamp(filePath);
+  /**
+   * Executable class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args) throws IOException {
+    updateEventsTimestamp(FILE_PATH);
 
-    updateEventsTimestamp(invalidFilePath);
+    updateEventsTimestamp(INVALID_FILE_PATH);
   }
 }

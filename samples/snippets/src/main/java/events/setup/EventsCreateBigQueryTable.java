@@ -30,13 +30,45 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJsonFiles;
-import static events.setup.SetupCleanup.createBqDataset;
-import static events.setup.SetupCleanup.createBqTable;
-import static events.setup.SetupCleanup.uploadDataToBqTable;
+import static setup.SetupCleanup.createBqDataset;
+import static setup.SetupCleanup.createBqTable;
+import static setup.SetupCleanup.uploadDataToBqTable;
 
-public class EventsCreateBigQueryTable {
+public final class EventsCreateBigQueryTable {
 
-  public static void main(String[] args) throws IOException {
+  private EventsCreateBigQueryTable() {
+  }
+
+  /**
+   * Deserializer method to get Gson object.
+   *
+   * @return Gson object.
+   */
+  public static Gson getGson() {
+    JsonDeserializer<LegacySQLTypeName> typeDeserializer =
+        (jsonElement, type, deserializationContext) -> {
+          return LegacySQLTypeName.valueOf(jsonElement.getAsString());
+        };
+
+    JsonDeserializer<FieldList> subFieldsDeserializer =
+        (jsonElement, type, deserializationContext) -> {
+          Field[] fields = deserializationContext.deserialize(
+              jsonElement.getAsJsonArray(), Field[].class);
+          return FieldList.of(fields);
+        };
+
+    return new GsonBuilder()
+        .registerTypeAdapter(LegacySQLTypeName.class, typeDeserializer)
+        .registerTypeAdapter(FieldList.class, subFieldsDeserializer)
+        .create();
+  }
+
+  /**
+   * Executable class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args) throws IOException {
 
     eventsCreateGcsBucketAndUploadJsonFiles();
 
@@ -50,11 +82,11 @@ public class EventsCreateBigQueryTable {
 
     String validEventsSourceFile = String.format(
         "gs://%s/user_events.json",
-        EventsCreateGcsBucket.getBucketName());
+        EventsCreateGcsBucket.getBUCKET_NAME());
 
     String invalidEventsSourceFile = String.format(
         "gs://%s/user_events_some_invalid.json",
-        EventsCreateGcsBucket.getBucketName());
+        EventsCreateGcsBucket.getBUCKET_NAME());
 
     BufferedReader bufferedReader = new BufferedReader(
         new FileReader(eventsSchemaFilePath));
@@ -78,22 +110,5 @@ public class EventsCreateBigQueryTable {
 
     uploadDataToBqTable(dataset, invalidEventsTable, invalidEventsSourceFile,
         eventsSchema);
-  }
-
-  public static Gson getGson() {
-    JsonDeserializer<LegacySQLTypeName> typeDeserializer = (jsonElement, type, deserializationContext) -> {
-      return LegacySQLTypeName.valueOf(jsonElement.getAsString());
-    };
-
-    JsonDeserializer<FieldList> subFieldsDeserializer = (jsonElement, type, deserializationContext) -> {
-      Field[] fields = deserializationContext.deserialize(
-          jsonElement.getAsJsonArray(), Field[].class);
-      return FieldList.of(fields);
-    };
-
-    return new GsonBuilder()
-        .registerTypeAdapter(LegacySQLTypeName.class, typeDeserializer)
-        .registerTypeAdapter(FieldList.class, subFieldsDeserializer)
-        .create();
   }
 }

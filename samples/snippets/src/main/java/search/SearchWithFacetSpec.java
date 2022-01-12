@@ -25,7 +25,6 @@ import com.google.cloud.retail.v2.SearchRequest.FacetSpec;
 import com.google.cloud.retail.v2.SearchRequest.FacetSpec.FacetKey;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-import com.google.cloud.retail.v2.SearchServiceSettings;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -36,11 +35,6 @@ public final class SearchWithFacetSpec {
    */
   private static final String PROJECT_NUMBER = System.getenv(
       "PROJECT_NUMBER");
-
-  /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
 
   /**
    * This variable describes default catalog name.
@@ -72,10 +66,7 @@ public final class SearchWithFacetSpec {
    */
   private static SearchServiceClient getSearchServiceClient()
       throws IOException {
-    SearchServiceSettings settings = SearchServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return SearchServiceClient.create(settings);
+    return SearchServiceClient.create();
   }
 
   /**

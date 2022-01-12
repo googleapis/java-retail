@@ -32,7 +32,6 @@ import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.ProductInlineSource;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -43,10 +42,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class ImportProductsInlineSource {
+public final class ImportProductsInlineSource {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -54,22 +51,20 @@ public class ImportProductsInlineSource {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes default catalog name.
    */
   private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
-      PROJECT_NUMBER);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch", PROJECT_NUMBER);
 
   /**
    * This variable describes generated product id for field setting.
    */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
+
+  private ImportProductsInlineSource() {
+  }
 
   /**
    * Get product service client.
@@ -79,11 +74,7 @@ public class ImportProductsInlineSource {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -97,10 +88,14 @@ public class ImportProductsInlineSource {
     Product product1;
     Product product2;
 
+    final float price1 = 16f;
+    final float originalPrice1 = 45.0f;
+    final float cost1 = 12.0f;
+
     PriceInfo priceInfo1 = PriceInfo.newBuilder()
-        .setPrice(16f)
-        .setOriginalPrice(45.0f)
-        .setCost(12.0f)
+        .setPrice(price1)
+        .setOriginalPrice(originalPrice1)
+        .setCost(cost1)
         .setCurrencyCode("USD")
         .build();
 
@@ -125,7 +120,8 @@ public class ImportProductsInlineSource {
         .setId(GENERATED_PRODUCT_ID)
         .addAllCategories(Collections.singletonList("Office"))
         .setUri(
-            "https://shop.googlemerchandisestore.com/Google+Redesign/Office/IamRemarkable+Pen")
+            "https://shop.googlemerchandisestore.com/Google+Redesign/"
+                + "Office/IamRemarkable+Pen")
         .addBrands("#IamRemarkable")
         .setPriceInfo(priceInfo1)
         .setColorInfo(colorInfo1)
@@ -133,10 +129,14 @@ public class ImportProductsInlineSource {
         .setRetrievableFields(fieldMask1)
         .build();
 
+    final float price2 = 35f;
+    final float originalPrice2 = 45.0f;
+    final float cost2 = 12.0f;
+
     PriceInfo priceInfo2 = PriceInfo.newBuilder()
-        .setPrice(35f)
-        .setOriginalPrice(45.0f)
-        .setCost(12.0f)
+        .setPrice(price2)
+        .setOriginalPrice(originalPrice2)
+        .setCost(cost2)
         .setCurrencyCode("USD")
         .build();
 
@@ -160,7 +160,8 @@ public class ImportProductsInlineSource {
         .setId(GENERATED_PRODUCT_ID)
         .addCategories("Apparel")
         .setUri(
-            "https://shop.googlemerchandisestore.com/Google+Redesign/Apparel/Android+Embroidered+Crewneck+Sweater")
+            "https://shop.googlemerchandisestore.com/Google+Redesign/"
+                + "Apparel/Android+Embroidered+Crewneck+Sweater")
         .addBrands("Android")
         .setPriceInfo(priceInfo2)
         .setColorInfo(colorInfo2)
@@ -229,7 +230,10 @@ public class ImportProductsInlineSource {
     while (!importOperation.isDone()) {
       System.out.println("Please wait till operation is done.");
 
-      getProductServiceClient().awaitTermination(5, TimeUnit.SECONDS);
+      final int awaitDuration = 5;
+
+      getProductServiceClient().awaitTermination(
+          awaitDuration, TimeUnit.SECONDS);
 
       System.out.println("Import products operation is done.");
 
@@ -245,6 +249,8 @@ public class ImportProductsInlineSource {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {

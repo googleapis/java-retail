@@ -16,13 +16,10 @@
 
 package product;
 
-import static product.setup.SetupCleanup.deleteProduct;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,10 +64,5 @@ public class AddFulfillmentPlacesTest {
 
     Assert.assertTrue(output.matches(
         "(?s)^(.*Get product response.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
-  }
-
-  @After
-  public void after() throws IOException {
-    deleteProduct(productName);
   }
 }

@@ -27,43 +27,59 @@ import com.google.cloud.retail.v2.RejoinUserEventsRequest;
 import com.google.cloud.retail.v2.RejoinUserEventsRequest.UserEventRejoinScope;
 import com.google.cloud.retail.v2.RejoinUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-import com.google.cloud.retail.v2.UserEventServiceSettings;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import static events.setup.SetupCleanup.purgeUserEvent;
-import static events.setup.SetupCleanup.writeUserEvent;
+import static setup.SetupCleanup.purgeUserEvent;
+import static setup.SetupCleanup.writeUserEvent;
 
-public class RejoinUserEvent {
+public final class RejoinUserEvent {
 
+  /**
+   * This variable describes project number getting from environment variable.
+   */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
-  // 'invalid_catalog' INSTEAD OF 'default_catalog'
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog",
       PROJECT_NUMBER);
+  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
+  // 'invalid_catalog' INSTEAD OF 'default_catalog'
 
+  /**
+   * This variable describes visitor identifier.
+   */
   private static final String VISITOR_ID = "test_visitor_id";
 
-  // get user events service client
-  private static UserEventServiceClient getUserEventsServiceClient()
-      throws IOException {
-    UserEventServiceSettings userEventServiceSettings = UserEventServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return UserEventServiceClient.create(userEventServiceSettings);
+  private RejoinUserEvent() {
   }
 
-  // get rejoin user event request
+  /**
+   * Get user event service client.
+   *
+   * @return UserEventServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static UserEventServiceClient getUserEventsServiceClient()
+      throws IOException {
+    return UserEventServiceClient.create();
+  }
+
+  /**
+   * Get rejoin user event request.
+   *
+   * @return RejoinUserEventsRequest.
+   */
   public static RejoinUserEventsRequest getRejoinUserEventRequest() {
-    RejoinUserEventsRequest rejoinUserEventsRequest = RejoinUserEventsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setUserEventRejoinScope(UserEventRejoinScope.UNJOINED_EVENTS)
-        .build();
+    RejoinUserEventsRequest rejoinUserEventsRequest =
+        RejoinUserEventsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setUserEventRejoinScope(UserEventRejoinScope.UNJOINED_EVENTS)
+            .build();
 
     System.out.printf("Rejoin user events request: %s%n",
         rejoinUserEventsRequest);
@@ -71,7 +87,17 @@ public class RejoinUserEvent {
     return rejoinUserEventsRequest;
   }
 
-  // call the Retail API to rejoin user event
+  /**
+   * Call the Retail API to rejoin user event.
+   *
+   * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
+   * @throws InterruptedException when a thread is waiting, sleeping, or
+   *                              otherwise occupied, and the thread is
+   *                              interrupted, either before or during the
+   *                              activity.
+   */
   public static void callRejoinUserEvents()
       throws IOException, ExecutionException, InterruptedException {
     OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata>
@@ -82,7 +108,12 @@ public class RejoinUserEvent {
         rejoinOperation.getName());
   }
 
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
     writeUserEvent(VISITOR_ID);
 

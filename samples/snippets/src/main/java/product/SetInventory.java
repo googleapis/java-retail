@@ -25,7 +25,6 @@ import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 import com.google.cloud.retail.v2.SetInventoryRequest;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
@@ -34,23 +33,17 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 
-import static product.setup.SetupCleanup.createProduct;
-import static product.setup.SetupCleanup.deleteProduct;
-import static product.setup.SetupCleanup.getProduct;
-@UtilityClass
-public class SetInventory {
+import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
+import static setup.SetupCleanup.getProduct;
+
+public final class SetInventory {
 
   /**
    * This variable describes project number getting from environment variable.
    */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
-
-  /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
 
   /**
    * This variable describes defined product id for field setting.
@@ -61,8 +54,11 @@ public class SetInventory {
    * This variable describes product name.
    */
   private static final String PRODUCT_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch/products/%s",
-      PROJECT_NUMBER, PRODUCT_ID);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch/products/%s", PROJECT_NUMBER, PRODUCT_ID);
+
+  private SetInventory() {
+  }
 
   /**
    * Get product service client.
@@ -72,11 +68,7 @@ public class SetInventory {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -86,10 +78,15 @@ public class SetInventory {
    * @return Product.
    */
   public static Product getProductWithInventoryInfo(final String productName) {
+
+    final float price = 15.0f;
+    final float originalPrice = 20.0f;
+    final float cost = 8.0f;
+
     PriceInfo priceInfo = PriceInfo.newBuilder()
-        .setPrice(15.0f)
-        .setOriginalPrice(20.0f)
-        .setCost(8.0f)
+        .setPrice(price)
+        .setOriginalPrice(originalPrice)
+        .setCost(cost)
         .setCurrencyCode("USD")
         .build();
 
@@ -112,7 +109,8 @@ public class SetInventory {
    * @param productName refers to product name.
    * @return SetInventoryRequest.
    */
-  public static SetInventoryRequest getSetInventoryRequest(final String productName) {
+  public static SetInventoryRequest getSetInventoryRequest(
+      final String productName) {
     // The request timestamp
     Timestamp requestTime = Timestamp.newBuilder()
         .setSeconds(Instant.now().getEpochSecond())
@@ -155,11 +153,15 @@ public class SetInventory {
     */
     System.out.println("Set inventory, wait 30 seconds.");
 
-    getProductServiceClient().awaitTermination(30, TimeUnit.SECONDS);
+    final int awaitDuration = 30;
+
+    getProductServiceClient().awaitTermination(awaitDuration, TimeUnit.SECONDS);
   }
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args)
       throws IOException, InterruptedException {

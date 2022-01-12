@@ -29,7 +29,6 @@ import com.google.cloud.retail.v2.UserEvent;
 import com.google.cloud.retail.v2.UserEventInlineSource;
 import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-import com.google.cloud.retail.v2.UserEventServiceSettings;
 import com.google.protobuf.Timestamp;
 
 import java.io.IOException;
@@ -39,30 +38,45 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class ImportUserEventsInline {
+public final class ImportUserEventsInline {
 
+  /**
+   * This variable describes project number getting from environment variable.
+   */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog",
       PROJECT_NUMBER);
 
-  // get user events service client
-  private static UserEventServiceClient getUserEventsServiceClient()
-      throws IOException {
-    UserEventServiceSettings userEventServiceSettings = UserEventServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return UserEventServiceClient.create(userEventServiceSettings);
+  private ImportUserEventsInline() {
   }
 
-  // get user events for import
+  /**
+   * Get user event service client.
+   *
+   * @return UserEventServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static UserEventServiceClient getUserEventsServiceClient()
+      throws IOException {
+    return UserEventServiceClient.create();
+  }
+
+  /**
+   * Get user events for import.
+   *
+   * @return List<UserEvent>.
+   */
   public static List<UserEvent> getUserEvents() {
     List<UserEvent> userEvents = new ArrayList<>();
 
-    for (int i = 0; i < 3; i++) {
+    final int userEventsNumber = 3;
+
+    for (int i = 0; i < userEventsNumber; i++) {
       Instant time = Instant.now();
 
       Timestamp timestamp = Timestamp.newBuilder()
@@ -84,9 +98,14 @@ public class ImportUserEventsInline {
     return userEvents;
   }
 
-  // get import user events from inline source request
+  /**
+   * Get import user events from inline source request.
+   *
+   * @param userEventsToImport list of user events to import.
+   * @return ImportUserEventsRequest.
+   */
   public static ImportUserEventsRequest getImportEventsInlineSourceRequest(
-      List<UserEvent> userEventsToImport) {
+      final List<UserEvent> userEventsToImport) {
     UserEventInlineSource inlineSource = UserEventInlineSource.newBuilder()
         .addAllUserEvents(userEventsToImport)
         .build();
@@ -106,21 +125,37 @@ public class ImportUserEventsInline {
     return importRequest;
   }
 
-  // call the Retail API to import user events
+  /**
+   * Call the Retail API to import user events.
+   *
+   * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
+   * @throws InterruptedException when a thread is waiting, sleeping, or
+   *                              otherwise occupied, and the thread is
+   *                              interrupted, either before or during the
+   *                              activity.
+   */
   public static void importUserEventsFromInlineSource()
       throws IOException, ExecutionException, InterruptedException {
-    ImportUserEventsRequest importInlineRequest = getImportEventsInlineSourceRequest(
-        getUserEvents());
 
-    OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation = getUserEventsServiceClient().importUserEventsAsync(
-        importInlineRequest);
+    final int awaitDuration = 30;
+
+    ImportUserEventsRequest importInlineRequest =
+        getImportEventsInlineSourceRequest(
+            getUserEvents());
+
+    OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
+        getUserEventsServiceClient().importUserEventsAsync(
+            importInlineRequest);
 
     System.out.printf("The operation was started: %s%n",
         importOperation.getName());
 
     System.out.println("Please wait till operation is done.");
 
-    getUserEventsServiceClient().awaitTermination(30, TimeUnit.SECONDS);
+    getUserEventsServiceClient().awaitTermination(awaitDuration,
+        TimeUnit.SECONDS);
 
     System.out.println("Import user events operation is done.");
 
@@ -133,7 +168,12 @@ public class ImportUserEventsInline {
     System.out.printf("Operation result: %s%n", importOperation.get());
   }
 
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
     importUserEventsFromInlineSource();
   }

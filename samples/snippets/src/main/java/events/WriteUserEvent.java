@@ -23,7 +23,6 @@ package events;
 
 import com.google.cloud.retail.v2.UserEvent;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-import com.google.cloud.retail.v2.UserEventServiceSettings;
 import com.google.cloud.retail.v2.WriteUserEventRequest;
 import com.google.protobuf.Timestamp;
 
@@ -31,32 +30,48 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
-import static events.setup.SetupCleanup.purgeUserEvent;
+import static setup.SetupCleanup.purgeUserEvent;
 
-public class WriteUserEvent {
+public final class WriteUserEvent {
 
+  /**
+   * This variable describes project number getting from environment variable.
+   */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
-  // 'invalid_catalog' INSTEAD OF 'default_catalog'
+  /**
+   * This variable describes default catalog name.
+   */
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog",
       PROJECT_NUMBER);
+  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
+  // 'invalid_catalog' INSTEAD OF 'default_catalog'
 
+  /**
+   * This variable describes visitor identifier.
+   */
   private static final String VISITOR_ID = "test_visitor_id";
 
-  // get user events service client
-  private static UserEventServiceClient getUserEventsServiceClient()
-      throws IOException {
-    UserEventServiceSettings userEventServiceSettings = UserEventServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return UserEventServiceClient.create(userEventServiceSettings);
+  private WriteUserEvent() {
   }
 
-  // get user event
+  /**
+   * Get user event service client.
+   *
+   * @return UserEventServiceClient.
+   * @throws IOException if endpoint is incorrect.
+   */
+  private static UserEventServiceClient getUserEventsServiceClient()
+      throws IOException {
+    return UserEventServiceClient.create();
+  }
+
+  /**
+   * Get user event.
+   *
+   * @return UserEvent.
+   */
   public static UserEvent getUserEvent() {
     Instant time = Instant.now();
 
@@ -75,21 +90,31 @@ public class WriteUserEvent {
     return userEvent;
   }
 
-  // get write user event request
+  /**
+   * Get write user event request.
+   *
+   * @param userEvent user event.
+   * @return WriteUserEventRequest.
+   */
   public static WriteUserEventRequest getWriteEventRequest(
-      UserEvent userEvent) {
-    WriteUserEventRequest writeUserEventRequest = WriteUserEventRequest.newBuilder()
-        .setUserEvent(userEvent)
-        .setParent(DEFAULT_CATALOG)
-        .build();
+      final UserEvent userEvent) {
+    WriteUserEventRequest writeUserEventRequest =
+        WriteUserEventRequest.newBuilder()
+            .setUserEvent(userEvent)
+            .setParent(DEFAULT_CATALOG)
+            .build();
 
     System.out.printf("Write user event request: %s%n", writeUserEventRequest);
 
     return writeUserEventRequest;
   }
 
-  // call the Retail API to write user event
-  public static UserEvent writeUserEvent() throws IOException {
+  /**
+   * Call the Retail API to write user event.
+   *
+   * @throws IOException from the called method.
+   */
+  public static void writeUserEvent() throws IOException {
     WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(
         getUserEvent());
 
@@ -98,10 +123,14 @@ public class WriteUserEvent {
 
     System.out.printf("Written user event: %s%n", userEvent);
 
-    return userEvent;
   }
 
-  public static void main(String[] args)
+  /**
+   * Executable tutorial class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
     writeUserEvent();
 

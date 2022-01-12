@@ -17,9 +17,9 @@
 package product.setup;
 
 import static product.setup.ProductsCreateGcsBucket.productsCreateGcsBucketAndUploadJsonFiles;
-import static product.setup.SetupCleanup.createBqDataset;
-import static product.setup.SetupCleanup.createBqTable;
-import static product.setup.SetupCleanup.uploadDataToBqTable;
+import static setup.SetupCleanup.createBqDataset;
+import static setup.SetupCleanup.createBqTable;
+import static setup.SetupCleanup.uploadDataToBqTable;
 
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldList;
@@ -33,9 +33,41 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class ProductsCreateBigqueryTable {
+public final class ProductsCreateBigqueryTable {
 
-  public static void main(String[] args) throws IOException {
+  private ProductsCreateBigqueryTable() {
+  }
+
+  /**
+   * Deserializer method to get Gson object.
+   *
+   * @return Gson object.
+   */
+  public static Gson getGson() {
+    JsonDeserializer<LegacySQLTypeName> typeDeserializer = (jsonElement, type,
+        deserializationContext) -> {
+      return LegacySQLTypeName.valueOf(jsonElement.getAsString());
+    };
+
+    JsonDeserializer<FieldList> subFieldsDeserializer = (jsonElement, type,
+        deserializationContext) -> {
+      Field[] fields = deserializationContext.deserialize(
+          jsonElement.getAsJsonArray(), Field[].class);
+      return FieldList.of(fields);
+    };
+
+    return new GsonBuilder()
+        .registerTypeAdapter(LegacySQLTypeName.class, typeDeserializer)
+        .registerTypeAdapter(FieldList.class, subFieldsDeserializer)
+        .create();
+  }
+
+  /**
+   * Executable class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args) throws IOException {
 
     productsCreateGcsBucketAndUploadJsonFiles();
 
@@ -49,11 +81,11 @@ public class ProductsCreateBigqueryTable {
 
     String validProductsSourceFile = String.format(
         "gs://%s/products.json",
-        ProductsCreateGcsBucket.getBucketName());
+        ProductsCreateGcsBucket.getBUCKET_NAME());
 
     String invalidProductsSourceFile = String.format(
         "gs://%s/products_some_invalid.json",
-        ProductsCreateGcsBucket.getBucketName());
+        ProductsCreateGcsBucket.getBUCKET_NAME());
 
     BufferedReader bufferedReader = new BufferedReader(
         new FileReader(productSchemaFilePath));
@@ -77,24 +109,5 @@ public class ProductsCreateBigqueryTable {
 
     uploadDataToBqTable(dataset, invalidProductsTable,
         invalidProductsSourceFile, productSchema);
-  }
-
-  public static Gson getGson() {
-    JsonDeserializer<LegacySQLTypeName> typeDeserializer = (jsonElement, type,
-        deserializationContext) -> {
-      return LegacySQLTypeName.valueOf(jsonElement.getAsString());
-    };
-
-    JsonDeserializer<FieldList> subFieldsDeserializer = (jsonElement, type,
-        deserializationContext) -> {
-      Field[] fields = deserializationContext.deserialize(
-          jsonElement.getAsJsonArray(), Field[].class);
-      return FieldList.of(fields);
-    };
-
-    return new GsonBuilder()
-        .registerTypeAdapter(LegacySQLTypeName.class, typeDeserializer)
-        .registerTypeAdapter(FieldList.class, subFieldsDeserializer)
-        .create();
   }
 }

@@ -26,17 +26,14 @@ import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-import static product.setup.SetupCleanup.deleteProduct;
+import static setup.SetupCleanup.deleteProduct;
 
-@UtilityClass
-public class CreateProduct {
+public final class CreateProduct {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -44,22 +41,20 @@ public class CreateProduct {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes a default branch name.
    */
   private static final String DEFAULT_BRANCH_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
-      PROJECT_NUMBER);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch", PROJECT_NUMBER);
 
   /**
    * This variable describes generated product id for field setting.
    */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
+
+  private CreateProduct() {
+  }
 
   /**
    * Get product service client.
@@ -69,12 +64,7 @@ public class CreateProduct {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -83,9 +73,13 @@ public class CreateProduct {
    * @return generated Product.
    */
   public static Product generateProduct() {
+
+    final float originalPrice = 35.5f;
+    final float price = 30.0f;
+
     PriceInfo priceInfo = PriceInfo.newBuilder()
-        .setPrice(30.0f)
-        .setOriginalPrice(35.5f)
+        .setPrice(price)
+        .setOriginalPrice(originalPrice)
         .setCurrencyCode("USD")
         .build();
 
@@ -108,11 +102,12 @@ public class CreateProduct {
    */
   public static CreateProductRequest getCreateProductRequest(
       final Product productToCreate, final String productId) {
-    CreateProductRequest createProductRequest = CreateProductRequest.newBuilder()
-        .setProduct(productToCreate)
-        .setProductId(productId)
-        .setParent(DEFAULT_BRANCH_NAME)
-        .build();
+    CreateProductRequest createProductRequest =
+        CreateProductRequest.newBuilder()
+            .setProduct(productToCreate)
+            .setProductId(productId)
+            .setParent(DEFAULT_BRANCH_NAME)
+            .build();
 
     System.out.printf("Create product request: %s%n", createProductRequest);
 
@@ -141,6 +136,8 @@ public class CreateProduct {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args) throws IOException {
     Product createdProduct = createProduct(GENERATED_PRODUCT_ID);

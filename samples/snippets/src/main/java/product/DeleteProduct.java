@@ -23,16 +23,13 @@ package product;
 
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 
 import java.io.IOException;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-import static product.setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.createProduct;
 
-@UtilityClass
-public class DeleteProduct {
+public final class DeleteProduct {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -40,15 +37,13 @@ public class DeleteProduct {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes generated product id for field setting.
    */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
+
+  private DeleteProduct() {
+  }
 
   /**
    * Get product service client.
@@ -58,11 +53,7 @@ public class DeleteProduct {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -73,9 +64,10 @@ public class DeleteProduct {
    */
   public static DeleteProductRequest getDeleteProductRequest(
       final String productName) {
-    DeleteProductRequest deleteProductRequest = DeleteProductRequest.newBuilder()
-        .setName(productName)
-        .build();
+    DeleteProductRequest deleteProductRequest =
+        DeleteProductRequest.newBuilder()
+            .setName(productName)
+            .build();
 
     System.out.printf("Delete product request: %s%n", deleteProductRequest);
 
@@ -102,6 +94,8 @@ public class DeleteProduct {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args) throws IOException {
     deleteProduct(createProduct(GENERATED_PRODUCT_ID).getName());

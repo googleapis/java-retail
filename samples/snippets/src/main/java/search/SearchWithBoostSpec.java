@@ -27,7 +27,6 @@ import com.google.cloud.retail.v2.SearchRequest.BoostSpec;
 import com.google.cloud.retail.v2.SearchRequest.BoostSpec.ConditionBoostSpec;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-import com.google.cloud.retail.v2.SearchServiceSettings;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -38,11 +37,6 @@ public final class SearchWithBoostSpec {
    */
   private static final String YOUR_PROJECT_NUMBER = System.getenv(
       "PROJECT_NUMBER");
-
-  /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
 
   /**
    * This variable describes default catalog name.
@@ -74,10 +68,7 @@ public final class SearchWithBoostSpec {
    */
   private static SearchServiceClient getSearchServiceClient()
       throws IOException {
-    SearchServiceSettings settings = SearchServiceSettings.newBuilder()
-        .setEndpoint(ENDPOINT)
-        .build();
-    return SearchServiceClient.create(settings);
+    return SearchServiceClient.create();
   }
 
   /**
@@ -121,7 +112,7 @@ public final class SearchWithBoostSpec {
    */
   public static SearchResponse search() throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
-    String condition = "(colorFamily: ANY(\"Blue\"))";
+    String condition = "(colorFamilies: ANY(\"Blue\"))";
     float boost = 0.0f;
 
     SearchRequest searchRequest = getSearchRequest("Tee", condition, boost);

@@ -30,16 +30,13 @@ import com.google.cloud.retail.v2.ImportProductsRequest.ReconciliationMode;
 import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class ImportProductsGcs {
+public final class ImportProductsGcs {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -47,16 +44,11 @@ public class ImportProductsGcs {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes default catalog name.
    */
   private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
-      PROJECT_NUMBER);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch", PROJECT_NUMBER);
 
   /**
    * This variable describes bucket name from the environment variable.
@@ -78,6 +70,9 @@ public class ImportProductsGcs {
   // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
   // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
 
+  private ImportProductsGcs() {
+  }
+
   /**
    * Get product service client.
    *
@@ -86,11 +81,7 @@ public class ImportProductsGcs {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -155,7 +146,10 @@ public class ImportProductsGcs {
     while (!gcsOperation.isDone()) {
       System.out.println("Please wait till operation is done");
 
-      getProductServiceClient().awaitTermination(5, TimeUnit.SECONDS);
+      final int awaitDuration = 5;
+
+      getProductServiceClient().awaitTermination(awaitDuration,
+          TimeUnit.SECONDS);
 
       System.out.println("Import products operation is done.");
 
@@ -177,6 +171,8 @@ public class ImportProductsGcs {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {

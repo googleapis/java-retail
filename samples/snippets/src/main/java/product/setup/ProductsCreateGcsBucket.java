@@ -16,8 +16,8 @@
 
 package product.setup;
 
-import static product.setup.SetupCleanup.createBucket;
-import static product.setup.SetupCleanup.uploadObject;
+import static setup.SetupCleanup.createBucket;
+import static setup.SetupCleanup.uploadObject;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -25,32 +25,57 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import lombok.Getter;
 
-public class ProductsCreateGcsBucket {
+public final class ProductsCreateGcsBucket {
 
+  /**
+   * This variable describes project id getting from environment variable.
+   */
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
 
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+  /**
+   * This variable describes date format in a certain pattern.
+   */
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
       "yyyy-MM-dd_HH-mm-ss");
 
-  private static final Timestamp timestamp = Timestamp.from(Instant.now());
+  /**
+   * This variable describes a defined timestamp with current date.
+   */
+  private static final Timestamp TIMESTAMP = Timestamp.from(Instant.now());
 
+  /**
+   * This variable describes bucket name in a certain format.
+   */
   @Getter
-  private static final String bucketName = String.format("%s_products_%s",
-      PROJECT_ID, dateFormat.format(timestamp));
+  private static final String BUCKET_NAME = String.format("%s_products_%s",
+      PROJECT_ID, DATE_FORMAT.format(TIMESTAMP));
 
-  public static void main(String[] args) throws IOException {
-    productsCreateGcsBucketAndUploadJsonFiles();
+  private ProductsCreateGcsBucket() {
   }
 
+  /**
+   * Create GCS bucket and upload json files.
+   *
+   * @throws IOException from the called method.
+   */
   public static void productsCreateGcsBucketAndUploadJsonFiles()
       throws IOException {
 
-    createBucket(bucketName);
+    createBucket(BUCKET_NAME);
 
-    uploadObject(bucketName, "products.json",
+    uploadObject(BUCKET_NAME, "products.json",
         "src/main/resources/products.json");
 
-    uploadObject(bucketName, "products_some_invalid.json",
+    uploadObject(BUCKET_NAME, "products_some_invalid.json",
         "src/main/resources/products_some_invalid.json");
+  }
+
+  /**
+   * Executable class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args) throws IOException {
+    productsCreateGcsBucketAndUploadJsonFiles();
   }
 }

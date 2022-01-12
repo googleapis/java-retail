@@ -26,19 +26,16 @@ import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 import com.google.cloud.retail.v2.UpdateProductRequest;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
-import static product.setup.SetupCleanup.createProduct;
-import static product.setup.SetupCleanup.deleteProduct;
+import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
 
-@UtilityClass
-public class UpdateProduct {
+public final class UpdateProduct {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -46,22 +43,20 @@ public class UpdateProduct {
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes a default branch name.
    */
   private static final String DEFAULT_BRANCH_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
-      PROJECT_NUMBER);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch", PROJECT_NUMBER);
 
   /**
    * This variable describes generated product id for field setting.
    */
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
+
+  private UpdateProduct() {
+  }
 
   /**
    * Get product service client.
@@ -71,11 +66,7 @@ public class UpdateProduct {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -84,10 +75,14 @@ public class UpdateProduct {
    * @param productId id of product.
    * @return Product.
    */
-  public static Product generateProductForUpdate(String productId) {
+  public static Product generateProductForUpdate(final String productId) {
+
+    final float price = 12.0f;
+    final float originalPrice = 25.5f;
+
     PriceInfo priceInfo = PriceInfo.newBuilder()
-        .setPrice(12.0f)
-        .setOriginalPrice(25.5f)
+        .setPrice(price)
+        .setOriginalPrice(originalPrice)
         .setCurrencyCode("EUR")
         .build();
 
@@ -113,10 +108,11 @@ public class UpdateProduct {
    */
   public static UpdateProductRequest getUpdateProductRequest(
       final Product productToUpdate) {
-    UpdateProductRequest updateProductRequest = UpdateProductRequest.newBuilder()
-        .setProduct(productToUpdate)
-        .setAllowMissing(true)
-        .build();
+    UpdateProductRequest updateProductRequest =
+        UpdateProductRequest.newBuilder()
+            .setProduct(productToUpdate)
+            .setAllowMissing(true)
+            .build();
 
     System.out.printf("Update product request: %s%n", updateProductRequest);
 
@@ -140,6 +136,8 @@ public class UpdateProduct {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args) throws IOException {
     Product createdProduct = createProduct(GENERATED_PRODUCT_ID);

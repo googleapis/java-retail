@@ -29,15 +29,12 @@ import com.google.cloud.retail.v2.ImportProductsRequest.ReconciliationMode;
 import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.ProductServiceSettings;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class ImportProductsBigQueryTable {
+public final class ImportProductsBigQueryTable {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -50,16 +47,11 @@ public class ImportProductsBigQueryTable {
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
 
   /**
-   * This variable describes endpoint for send requests.
-   */
-  private static final String ENDPOINT = "retail.googleapis.com:443";
-
-  /**
    * This variable describes default catalog name.
    */
   private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/default_branch",
-      PROJECT_NUMBER);
+      "projects/%s/locations/global/catalogs/default_catalog/"
+          + "branches/default_branch", PROJECT_NUMBER);
 
   /**
    * This variable describes dataset id.
@@ -80,6 +72,9 @@ public class ImportProductsBigQueryTable {
      TABLE_ID = "products_some_invalid"
   */
 
+  private ImportProductsBigQueryTable() {
+  }
+
   /**
    * Get product service client.
    *
@@ -88,11 +83,7 @@ public class ImportProductsBigQueryTable {
    */
   private static ProductServiceClient getProductServiceClient()
       throws IOException {
-    ProductServiceSettings productServiceSettings =
-        ProductServiceSettings.newBuilder()
-            .setEndpoint(ENDPOINT)
-            .build();
-    return ProductServiceClient.create(productServiceSettings);
+    return ProductServiceClient.create();
   }
 
   /**
@@ -145,8 +136,8 @@ public class ImportProductsBigQueryTable {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
 
-    ImportProductsRequest importBigQueryRequest = getImportProductsBigQueryRequest(
-        reconciliationMode);
+    ImportProductsRequest importBigQueryRequest =
+        getImportProductsBigQueryRequest(reconciliationMode);
 
     OperationFuture<ImportProductsResponse, ImportMetadata> bigQueryOperation =
         getProductServiceClient().importProductsAsync(importBigQueryRequest);
@@ -157,7 +148,10 @@ public class ImportProductsBigQueryTable {
     while (!bigQueryOperation.isDone()) {
       System.out.println("Please wait till operation is done.");
 
-      getProductServiceClient().awaitTermination(5, TimeUnit.SECONDS);
+      final int awaitDuration = 5;
+
+      getProductServiceClient().awaitTermination(
+          awaitDuration, TimeUnit.SECONDS);
 
       System.out.println("Import products operation is done.");
 
@@ -173,6 +167,8 @@ public class ImportProductsBigQueryTable {
 
   /**
    * Executable tutorial class.
+   *
+   * @param args command line arguments.
    */
   public static void main(final String[] args)
       throws IOException, ExecutionException, InterruptedException {
