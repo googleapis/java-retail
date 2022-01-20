@@ -21,6 +21,7 @@
 
 package product;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.ColorInfo;
 import com.google.cloud.retail.v2.FulfillmentInfo;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -31,8 +32,6 @@ import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.ProductInlineSource;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.longrunning.Operation;
-import com.google.longrunning.OperationsClient;
 import com.google.protobuf.FieldMask;
 
 import java.io.IOException;
@@ -210,55 +209,48 @@ public final class ImportProductsInlineSource {
    * Call the Retail API to import products.
    *
    * @throws IOException          from the called method.
+   * @throws ExecutionException   when attempting to retrieve the result of a
+   *                              task that aborted by throwing an exception.
    * @throws InterruptedException when a thread is waiting, sleeping, or
    *                              otherwise occupied, and the thread is
    *                              interrupted, either before or during the
    *                              activity.
    */
   public static void importProductsFromInlineSource()
-      throws IOException, InterruptedException {
+      throws IOException, ExecutionException, InterruptedException {
     ImportProductsRequest importRequest = getImportProductsInlineRequest(
         getProducts());
 
-    ProductServiceClient serviceClient = getProductServiceClient();
+    OperationFuture<ImportProductsResponse, ImportMetadata> importOperation =
+        getProductServiceClient().importProductsAsync(importRequest);
 
-    String operationName = serviceClient
-        .importProductsCallable()
-        .call(importRequest)
-        .getName();
+    System.out.printf("The operation was started: %s%n",
+        importOperation.getName());
 
-    System.out.printf("OperationName = %s\n", operationName);
+    while (!importOperation.isDone()) {
+      System.out.println("Please wait till operation is done.");
 
-    OperationsClient operationsClient = serviceClient.getOperationsClient();
+      final int awaitDuration = 5;
 
-    Operation operation = operationsClient.getOperation(operationName);
+      getProductServiceClient().awaitTermination(
+          awaitDuration, TimeUnit.SECONDS);
 
-    while (!operation.getDone()) {
-      // Polling operation delay until the import task is done.
-      final int awaitDuration = 30;
+      System.out.println("Import products operation is done.");
 
-      getProductServiceClient().awaitTermination(awaitDuration,
-          TimeUnit.SECONDS);
+      if (importOperation.getMetadata().get() != null) {
+        System.out.printf("Number of successfully imported products: %s%n",
+            importOperation.getMetadata().get().getSuccessCount());
 
-      operation = operationsClient.getOperation(operationName);
-    }
-
-    if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata()
-          .unpack(ImportMetadata.class);
-
-      System.out.printf("Number of successfully imported products: %s\n",
-          metadata.getSuccessCount());
-
-      System.out.printf("Number of failures during the importing: %s\n",
-          metadata.getFailureCount());
-    }
-
-    if (operation.hasResponse()) {
-      ImportProductsResponse response = operation.getResponse()
-          .unpack(ImportProductsResponse.class);
-
-      System.out.printf("Operation result: %s%n", response);
+        System.out.printf("Number of failures during the importing: %s%n",
+            importOperation.getMetadata().get().getFailureCount());
+      } else {
+        System.out.println("Metadata in bigQuery operation is empty.");
+      }
+      if (importOperation.get() != null) {
+        System.out.printf("Operation result: %s%n", importOperation.get());
+      } else {
+        System.out.println("Operation result is empty.");
+      }
     }
   }
 

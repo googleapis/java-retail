@@ -181,7 +181,7 @@ public final class SetupCleanup {
     Product product = getProductServiceClient().createProduct(
         createProductRequest);
 
-    System.out.println("Product is created: " + product);
+    System.out.println("Product is created. \n" + product);
 
     return product;
   }

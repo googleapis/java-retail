@@ -33,7 +33,6 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public final class ImportUserEventsGcs {
 
@@ -149,11 +148,10 @@ public final class ImportUserEventsGcs {
     Operation operation = operationsClient.getOperation(operationName);
 
     while (!operation.getDone()) {
-      // Polling operation delay until the import task is done.
-      final int awaitDuration = 30;
+      // Keep polling the operation periodically until the import task is done.
+      final int awaitDuration = 30000;
 
-      getUserEventsServiceClient().awaitTermination(awaitDuration,
-          TimeUnit.SECONDS);
+      Thread.sleep(awaitDuration);
 
       operation = operationsClient.getOperation(operationName);
     }

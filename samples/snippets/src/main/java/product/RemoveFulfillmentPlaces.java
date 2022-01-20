@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
@@ -139,6 +140,8 @@ public final class RemoveFulfillmentPlaces {
     removeFulfillmentPlaces(PRODUCT_NAME);
 
     getProduct(PRODUCT_NAME);
+
+    deleteProduct(PRODUCT_NAME);
   }
 }
 

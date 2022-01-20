@@ -30,7 +30,6 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 public final class AddFulfillmentPlaces {
@@ -61,8 +60,9 @@ public final class AddFulfillmentPlaces {
       .setNanos(Instant.now().getNano()).build();
 
   /**
-   * The time when the fulfillment updates are issued, If set with outdated time (yesterday),
-   * the fulfillment information will not updated.
+   * The time when the fulfillment updates are issued.
+   * If set with outdated time (yesterday), the fulfillment information
+   * will not updated.
    */
 //  private static final Timestamp REQUEST_TIME = Timestamp.newBuilder()
 //      .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
@@ -150,7 +150,7 @@ public final class AddFulfillmentPlaces {
 
     getProduct(PRODUCT_NAME);
 
-    // deleteProduct(PRODUCT_NAME);
+    deleteProduct(PRODUCT_NAME);
   }
 }
 
