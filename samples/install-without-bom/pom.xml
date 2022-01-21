@@ -59,7 +59,7 @@
     </dependency>
   </dependencies>
 
-  <!-- compile and run all snippet tests -->
+  <!-- compile and run all install-without-bom tests -->
   <build>
     <plugins>
       <plugin>
@@ -68,24 +68,24 @@
         <version>3.3.0</version>
         <executions>
           <execution>
-            <id>add-snippets-source</id>
+            <id>add-install-without-bom-source</id>
             <goals>
               <goal>add-source</goal>
             </goals>
             <configuration>
               <sources>
-                <source>../snippets/src/main/java</source>
+                <source>../install-without-bom/src/main/java</source>
               </sources>
             </configuration>
           </execution>
           <execution>
-            <id>add-snippets-tests</id>
+            <id>add-install-without-bom-tests</id>
             <goals>
               <goal>add-test-source</goal>
             </goals>
             <configuration>
               <sources>
-                <source>../snippets/src/test/java</source>
+                <source>../install-without-bom/src/test/java</source>
               </sources>
             </configuration>
           </execution>
