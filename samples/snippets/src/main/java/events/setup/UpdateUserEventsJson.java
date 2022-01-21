@@ -73,6 +73,8 @@ public final class UpdateUserEventsJson {
 
     writer.write(json);
 
+    System.out.printf("User events file '%s' updated.%n", jsonFile);
+
     writer.close();
   }
 
