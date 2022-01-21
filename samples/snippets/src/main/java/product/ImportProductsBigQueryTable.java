@@ -32,6 +32,7 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+//import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
 
 public final class ImportProductsBigQueryTable {
