@@ -357,7 +357,7 @@ public final class SetupCleanup {
             .build());
 
     System.out.println(
-        "Created bucket "
+        "Bucket was created "
             + bucket.getName()
             + " in "
             + bucket.getLocation()
