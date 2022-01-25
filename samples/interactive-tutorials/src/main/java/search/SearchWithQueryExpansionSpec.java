@@ -33,33 +33,24 @@ import java.util.UUID;
 
 public final class SearchWithQueryExpansionSpec {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv(
-      "PROJECT_NUMBER");
+  /** This variable describes project number getting from environment variable. */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default catalog name.
-   */
+  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog",
-          YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
 
   /**
-   * This variable describes default search placement name. Using for identify
-   * the Serving Config name.
+   * This variable describes default search placement name. Using for identify the Serving Config
+   * name.
    */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
 
-  /**
-   * This variable describes a unique identifier to track visitors.
-   */
+  /** This variable describes a unique identifier to track visitors. */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  private SearchWithQueryExpansionSpec() {
-  }
+  private SearchWithQueryExpansionSpec() {}
 
   /**
    * Get search service client.
@@ -67,34 +58,32 @@ public final class SearchWithQueryExpansionSpec {
    * @return SearchServiceClient.
    * @throws IOException if endpoint is incorrect.
    */
-  private static SearchServiceClient getSearchServiceClient()
-      throws IOException {
+  private static SearchServiceClient getSearchServiceClient() throws IOException {
     return SearchServiceClient.create();
   }
 
   /**
    * Get search service request.
    *
-   * @param query     search keyword.
+   * @param query search keyword.
    * @param condition provides search clarification.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(final String query,
-      final Condition condition) {
+  public static SearchRequest getSearchRequest(final String query, final Condition condition) {
 
     final int pageSize = 10;
 
-    QueryExpansionSpec queryExpansionSpec = QueryExpansionSpec.newBuilder()
-        .setCondition(condition)
-        .build();
+    QueryExpansionSpec queryExpansionSpec =
+        QueryExpansionSpec.newBuilder().setCondition(condition).build();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-        .setQuery(query)
-        .setVisitorId(VISITOR_ID)
-        .setQueryExpansionSpec(queryExpansionSpec)
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setQuery(query)
+            .setVisitorId(VISITOR_ID)
+            .setQueryExpansionSpec(queryExpansionSpec)
+            .setPageSize(pageSize)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
@@ -111,11 +100,10 @@ public final class SearchWithQueryExpansionSpec {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
 
-    SearchRequest searchRequest = getSearchRequest("Google Youth Hero Tee Grey",
-        condition);
+    SearchRequest searchRequest = getSearchRequest("Google Youth Hero Tee Grey", condition);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(
-        searchRequest).getPage().getResponse();
+    SearchResponse searchResponse =
+        getSearchServiceClient().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 

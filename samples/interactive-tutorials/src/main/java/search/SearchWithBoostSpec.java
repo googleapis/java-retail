@@ -32,33 +32,24 @@ import java.util.UUID;
 
 public final class SearchWithBoostSpec {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv(
-      "PROJECT_NUMBER");
+  /** This variable describes project number getting from environment variable. */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default catalog name.
-   */
+  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog",
-          YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
 
   /**
-   * This variable describes default search placement name. Using for identify
-   * the Serving Config name.
+   * This variable describes default search placement name. Using for identify the Serving Config
+   * name.
    */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
 
-  /**
-   * This variable describes a unique identifier to track visitors.
-   */
+  /** This variable describes a unique identifier to track visitors. */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  private SearchWithBoostSpec() {
-  }
+  private SearchWithBoostSpec() {}
 
   /**
    * Get search service client.
@@ -66,38 +57,40 @@ public final class SearchWithBoostSpec {
    * @return SearchServiceClient.
    * @throws IOException if endpoint is incorrect.
    */
-  private static SearchServiceClient getSearchServiceClient()
-      throws IOException {
+  private static SearchServiceClient getSearchServiceClient() throws IOException {
     return SearchServiceClient.create();
   }
 
   /**
    * Get search service request.
    *
-   * @param query         search keyword.
-   * @param condition     provides search clarification.
+   * @param query search keyword.
+   * @param condition provides search clarification.
    * @param boostStrength is a rate of boost strength.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(final String query,
-      final String condition, final float boostStrength) {
+  public static SearchRequest getSearchRequest(
+      final String query, final String condition, final float boostStrength) {
 
     final int pageSize = 10;
 
-    BoostSpec boostSpec = BoostSpec.newBuilder()
-        .addConditionBoostSpecs(ConditionBoostSpec.newBuilder()
-            .setCondition(condition)
-            .setBoost(boostStrength)
-            .build())
-        .build();
+    BoostSpec boostSpec =
+        BoostSpec.newBuilder()
+            .addConditionBoostSpecs(
+                ConditionBoostSpec.newBuilder()
+                    .setCondition(condition)
+                    .setBoost(boostStrength)
+                    .build())
+            .build();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-        .setQuery(query)
-        .setVisitorId(VISITOR_ID)
-        .setBoostSpec(boostSpec)
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setQuery(query)
+            .setVisitorId(VISITOR_ID)
+            .setBoostSpec(boostSpec)
+            .setPageSize(pageSize)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
@@ -117,8 +110,8 @@ public final class SearchWithBoostSpec {
 
     SearchRequest searchRequest = getSearchRequest("Tee", condition, boost);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(
-        searchRequest).getPage().getResponse();
+    SearchResponse searchResponse =
+        getSearchServiceClient().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 

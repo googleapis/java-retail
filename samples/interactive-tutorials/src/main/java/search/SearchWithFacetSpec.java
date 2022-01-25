@@ -30,33 +30,24 @@ import java.util.UUID;
 
 public final class SearchWithFacetSpec {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
-  private static final String PROJECT_NUMBER = System.getenv(
-      "PROJECT_NUMBER");
+  /** This variable describes project number getting from environment variable. */
+  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default catalog name.
-   */
+  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog",
-          PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_NUMBER);
 
   /**
-   * This variable describes default search placement name. Using for identify
-   * the Serving Config name.
+   * This variable describes default search placement name. Using for identify the Serving Config
+   * name.
    */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
 
-  /**
-   * This variable describes a unique identifier to track visitors.
-   */
+  /** This variable describes a unique identifier to track visitors. */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  private SearchWithFacetSpec() {
-  }
+  private SearchWithFacetSpec() {}
 
   /**
    * Get search service client.
@@ -64,38 +55,33 @@ public final class SearchWithFacetSpec {
    * @return SearchServiceClient.
    * @throws IOException if endpoint is incorrect.
    */
-  private static SearchServiceClient getSearchServiceClient()
-      throws IOException {
+  private static SearchServiceClient getSearchServiceClient() throws IOException {
     return SearchServiceClient.create();
   }
 
   /**
    * Get search service request.
    *
-   * @param query         search keyword.
+   * @param query search keyword.
    * @param facetKeyParam Supported textual and numerical facet keys.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(final String query,
-      final String facetKeyParam) {
+  public static SearchRequest getSearchRequest(final String query, final String facetKeyParam) {
 
     final int pageSize = 10;
 
-    FacetKey facetKey = FacetKey.newBuilder()
-        .setKey(facetKeyParam)
-        .build();
+    FacetKey facetKey = FacetKey.newBuilder().setKey(facetKeyParam).build();
 
-    FacetSpec facetSpec = FacetSpec.newBuilder()
-        .setFacetKey(facetKey)
-        .build();
+    FacetSpec facetSpec = FacetSpec.newBuilder().setFacetKey(facetKey).build();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-        .setQuery(query)
-        .setVisitorId(VISITOR_ID)
-        .addFacetSpecs(facetSpec)
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setQuery(query)
+            .setVisitorId(VISITOR_ID)
+            .addFacetSpecs(facetSpec)
+            .setPageSize(pageSize)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
@@ -114,8 +100,8 @@ public final class SearchWithFacetSpec {
 
     SearchRequest searchRequest = getSearchRequest("Tee", facetKey);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(
-        searchRequest).getPage().getResponse();
+    SearchResponse searchResponse =
+        getSearchServiceClient().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 

@@ -30,33 +30,24 @@ import java.util.UUID;
 
 public final class SearchWithOrdering {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv(
-      "PROJECT_NUMBER");
+  /** This variable describes project number getting from environment variable. */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default catalog name.
-   */
+  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog",
-          YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
 
   /**
-   * This variable describes default search placement name. Using for identify
-   * the Serving Config name.
+   * This variable describes default search placement name. Using for identify the Serving Config
+   * name.
    */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
 
-  /**
-   * This variable describes a unique identifier to track visitors.
-   */
+  /** This variable describes a unique identifier to track visitors. */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  private SearchWithOrdering() {
-  }
+  private SearchWithOrdering() {}
 
   /**
    * Get search service client.
@@ -64,30 +55,29 @@ public final class SearchWithOrdering {
    * @return SearchServiceClient.
    * @throws IOException if endpoint is incorrect.
    */
-  private static SearchServiceClient getSearchServiceClient()
-      throws IOException {
+  private static SearchServiceClient getSearchServiceClient() throws IOException {
     return SearchServiceClient.create();
   }
 
   /**
    * Get search service request.
    *
-   * @param query   search keyword.
+   * @param query search keyword.
    * @param orderBy option on what order by.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(final String query,
-      final String orderBy) {
+  public static SearchRequest getSearchRequest(final String query, final String orderBy) {
 
     final int pageSize = 10;
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-        .setQuery(query)
-        .setOrderBy(orderBy)
-        .setVisitorId(VISITOR_ID) // A unique identifier to track visitors
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setQuery(query)
+            .setOrderBy(orderBy)
+            .setVisitorId(VISITOR_ID) // A unique identifier to track visitors
+            .setPageSize(pageSize)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
@@ -106,9 +96,8 @@ public final class SearchWithOrdering {
 
     SearchRequest searchRequest = getSearchRequest("Hoodie", order);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(
-            searchRequest).getPage()
-        .getResponse();
+    SearchResponse searchResponse =
+        getSearchServiceClient().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 

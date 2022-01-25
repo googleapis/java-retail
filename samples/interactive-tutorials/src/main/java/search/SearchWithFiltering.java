@@ -30,39 +30,28 @@ import java.util.UUID;
 
 public final class SearchWithFiltering {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv(
-      "PROJECT_NUMBER");
+  /** This variable describes project number getting from environment variable. */
+  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default catalog name.
-   */
+  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog",
-          YOUR_PROJECT_NUMBER);
+      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
 
   /**
-   * This variable describes default search placement name. Using for identify
-   * the Serving Config name.
+   * This variable describes default search placement name. Using for identify the Serving Config
+   * name.
    */
   private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
       DEFAULT_CATALOG_NAME + "/placements/default_search";
 
-  /**
-   * This variable describes a unique identifier to track visitors.
-   */
+  /** This variable describes a unique identifier to track visitors. */
   private static final String VISITOR_ID = UUID.randomUUID().toString();
 
-  /**
-   * This variable describes a default branch name.
-   */
+  /** This variable describes a default branch name. */
   private static final String DEFAULT_BRANCH_NAME =
       DEFAULT_CATALOG_NAME + "/branches/default_branch";
 
-  private SearchWithFiltering() {
-  }
+  private SearchWithFiltering() {}
 
   /**
    * Get search service client.
@@ -70,31 +59,30 @@ public final class SearchWithFiltering {
    * @return SearchServiceClient.
    * @throws IOException if endpoint is incorrect.
    */
-  private static SearchServiceClient getSearchServiceClient()
-      throws IOException {
+  private static SearchServiceClient getSearchServiceClient() throws IOException {
     return SearchServiceClient.create();
   }
 
   /**
    * Get search service request.
    *
-   * @param query  search keyword.
+   * @param query search keyword.
    * @param filter provides filtration scope.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(final String query,
-      final String filter) {
+  public static SearchRequest getSearchRequest(final String query, final String filter) {
 
     final int pageSize = 10;
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-        .setBranch(DEFAULT_BRANCH_NAME)
-        .setVisitorId(VISITOR_ID)
-        .setQuery(query)
-        .setPageSize(pageSize)
-        .setFilter(filter)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setBranch(DEFAULT_BRANCH_NAME)
+            .setVisitorId(VISITOR_ID)
+            .setQuery(query)
+            .setPageSize(pageSize)
+            .setFilter(filter)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
@@ -113,9 +101,8 @@ public final class SearchWithFiltering {
 
     SearchRequest searchRequest = getSearchRequest("Tee", filter);
 
-    SearchResponse searchResponse = getSearchServiceClient().search(
-            searchRequest).getPage()
-        .getResponse();
+    SearchResponse searchResponse =
+        getSearchServiceClient().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
