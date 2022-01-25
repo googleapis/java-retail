@@ -33,8 +33,9 @@ public class SearchWithBoostSpecTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
 
-    Process exec = Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithBoostSpec");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithBoostSpec");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 

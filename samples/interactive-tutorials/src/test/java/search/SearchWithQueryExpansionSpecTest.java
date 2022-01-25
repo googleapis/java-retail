@@ -33,8 +33,9 @@ public class SearchWithQueryExpansionSpecTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
 
-    Process exec = Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithQueryExpansionSpec");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithQueryExpansionSpec");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -60,11 +61,11 @@ public class SearchWithQueryExpansionSpecTest {
 
     Assert.assertEquals(10, response.getResultsCount());
 
-    Assert.assertTrue(response.getResults(0)
-        .getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
+    Assert.assertTrue(
+        response.getResults(0).getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
 
-    Assert.assertFalse(response.getResults(2)
-        .getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
+    Assert.assertFalse(
+        response.getResults(2).getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
 
     Assert.assertTrue(response.getQueryExpansionInfo().getExpandedQuery());
   }
