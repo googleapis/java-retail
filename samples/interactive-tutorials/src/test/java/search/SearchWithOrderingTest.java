@@ -54,7 +54,7 @@ public class SearchWithOrderingTest {
   }
 
   @Test
-  public void TestSearchWithOrdering() throws IOException {
+  public void testSearchWithOrdering() throws IOException {
 
     SearchResponse response = SearchWithOrdering.search();
 

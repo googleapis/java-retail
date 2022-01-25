@@ -54,7 +54,7 @@ public class SearchWithPaginationTest {
   }
 
   @Test
-  public void TestSearchWithOrdering() throws IOException {
+  public void testSearchWithOrdering() throws IOException {
 
     SearchResponse response = SearchWithPagination.search();
 

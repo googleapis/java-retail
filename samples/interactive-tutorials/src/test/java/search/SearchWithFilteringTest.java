@@ -54,7 +54,7 @@ public class SearchWithFilteringTest {
   }
 
   @Test
-  public void TestSearchWithFiltering() throws IOException {
+  public void testSearchWithFiltering() throws IOException {
 
     SearchResponse response = SearchWithFiltering.search();
 
