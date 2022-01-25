@@ -64,6 +64,6 @@ public class SearchWithBoostSpecTest {
 
     Assert.assertTrue(productTitle.contains("Tee"));
 
-    Assert.assertEquals(129, response.getTotalSize());
+    Assert.assertEquals(128, response.getTotalSize());
   }
 }
