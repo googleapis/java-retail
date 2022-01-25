@@ -33,8 +33,9 @@ public class SearchWithFilteringTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
 
-    Process exec = Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithFiltering");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithFiltering");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
@@ -64,8 +65,8 @@ public class SearchWithFilteringTest {
 
     Assert.assertTrue(productTitle.contains("Tee Black"));
 
-    Assert.assertTrue(response.getResults(0).getProduct()
-        .getColorInfo().getColorFamilies(0).contains("Black"));
+    Assert.assertTrue(
+        response.getResults(0).getProduct().getColorInfo().getColorFamilies(0).contains("Black"));
 
     Assert.assertEquals(16, response.getTotalSize());
   }

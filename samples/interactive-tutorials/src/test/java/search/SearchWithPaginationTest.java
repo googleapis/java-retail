@@ -33,8 +33,9 @@ public class SearchWithPaginationTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
 
-    Process exec = Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithPagination");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithPagination");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 

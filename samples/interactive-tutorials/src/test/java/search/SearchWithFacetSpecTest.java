@@ -31,17 +31,15 @@ public class SearchWithFacetSpecTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
 
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
