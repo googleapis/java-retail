@@ -28,7 +28,6 @@ import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec;
 import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec.Condition;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-
 import java.io.IOException;
 import java.util.UUID;
 
