@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_search_for_products_with_query_parameter]
+
 /*
- * [START retail_search_for_products_with_query_parameter]
  * Call Retail API to search for a products in a catalog
  * using only search query.
  */
@@ -28,57 +29,20 @@ import com.google.cloud.retail.v2.SearchServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
-public final class SearchSimpleQuery {
+public class SearchSimpleQuery {
 
-  /** This variable describes project number getting from environment variable. */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  public static void main(String[] args) throws IOException {
 
-  /** This variable describes default catalog name. */
-  private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
+    String projectNumber = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default search placement name. Using for identify the Serving Config
-   * name.
-   */
-  private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
-      DEFAULT_CATALOG_NAME + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
 
-  /** This variable describes a unique identifier to track visitors. */
-  private static final String VISITOR_ID = UUID.randomUUID().toString();
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
-  private SearchSimpleQuery() {}
-
-  /**
-   * Get search service client.
-   *
-   * @return SearchServiceClient.
-   * @throws IOException if endpoint is incorrect.
-   */
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
-    return SearchServiceClient.create();
-  }
-
-  /**
-   * Get search service request.
-   *
-   * @param query search keyword.
-   * @return SearchRequest.
-   */
-  public static SearchRequest getSearchRequest(final String query) {
-    final int pageSize = 10;
-
-    SearchRequest searchRequest =
-        SearchRequest.newBuilder()
-            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-            .setQuery(query)
-            .setVisitorId(VISITOR_ID)
-            .setPageSize(pageSize)
-            .build();
-
-    System.out.println("Search request: " + searchRequest);
-
-    return searchRequest;
+    search(defaultSearchPlacementName);
   }
 
   /**
@@ -87,14 +51,19 @@ public final class SearchSimpleQuery {
    * @return SearchResponse.
    * @throws IOException if endpoint is not provided.
    */
-  public static SearchResponse search() throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
 
-    SearchRequest searchRequest = getSearchRequest(queryPhrase);
+    SearchRequest searchRequest =
+        getSearchRequest(queryPhrase, defaultSearchPlacementName);
 
     SearchResponse searchResponse =
-        getSearchServiceClient().search(searchRequest).getPage().getResponse();
+        SearchServiceClient.create()
+            .search(searchRequest)
+            .getPage()
+            .getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
@@ -102,13 +71,28 @@ public final class SearchSimpleQuery {
   }
 
   /**
-   * Executable tutorial class.
+   * Get search service request.
    *
-   * @param args command line arguments.
-   * @throws IOException from the called method.
+   * @param query search keyword.
+   * @return SearchRequest.
    */
-  public static void main(final String[] args) throws IOException {
-    search();
+  public static SearchRequest getSearchRequest(String query,
+      String defaultSearchPlacementName) {
+    int pageSize = 10;
+
+    String visitorId = UUID.randomUUID().toString();
+
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(defaultSearchPlacementName)
+            .setQuery(query)
+            .setVisitorId(visitorId)
+            .setPageSize(pageSize)
+            .build();
+
+    System.out.println("Search request: " + searchRequest);
+
+    return searchRequest;
   }
 }
 

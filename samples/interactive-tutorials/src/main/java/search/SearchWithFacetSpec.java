@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-/*
- * [START retail_search_product_with_facet_spec]
- */
+// [START retail_search_product_with_facet_spec]
 
 package search;
 
@@ -28,64 +26,20 @@ import com.google.cloud.retail.v2.SearchServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
-public final class SearchWithFacetSpec {
+public class SearchWithFacetSpec {
 
-  /** This variable describes project number getting from environment variable. */
-  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  public static void main(String[] args) throws IOException {
 
-  /** This variable describes default catalog name. */
-  private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_NUMBER);
+    String projectNumber = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default search placement name. Using for identify the Serving Config
-   * name.
-   */
-  private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
-      DEFAULT_CATALOG_NAME + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
 
-  /** This variable describes a unique identifier to track visitors. */
-  private static final String VISITOR_ID = UUID.randomUUID().toString();
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
-  private SearchWithFacetSpec() {}
-
-  /**
-   * Get search service client.
-   *
-   * @return SearchServiceClient.
-   * @throws IOException if endpoint is incorrect.
-   */
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
-    return SearchServiceClient.create();
-  }
-
-  /**
-   * Get search service request.
-   *
-   * @param query search keyword.
-   * @param facetKeyParam Supported textual and numerical facet keys.
-   * @return SearchRequest.
-   */
-  public static SearchRequest getSearchRequest(final String query, final String facetKeyParam) {
-
-    final int pageSize = 10;
-
-    FacetKey facetKey = FacetKey.newBuilder().setKey(facetKeyParam).build();
-
-    FacetSpec facetSpec = FacetSpec.newBuilder().setFacetKey(facetKey).build();
-
-    SearchRequest searchRequest =
-        SearchRequest.newBuilder()
-            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
-            .setQuery(query)
-            .setVisitorId(VISITOR_ID)
-            .addFacetSpecs(facetSpec)
-            .setPageSize(pageSize)
-            .build();
-
-    System.out.println("Search request: " + searchRequest);
-
-    return searchRequest;
+    search(defaultSearchPlacementName);
   }
 
   /**
@@ -94,14 +48,19 @@ public final class SearchWithFacetSpec {
    * @return SearchResponse.
    * @throws IOException if endpoint is not provided.
    */
-  public static SearchResponse search() throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String facetKey = "colorFamilies";
 
-    SearchRequest searchRequest = getSearchRequest("Tee", facetKey);
+    SearchRequest searchRequest =
+        getSearchRequest("Tee", facetKey, defaultSearchPlacementName);
 
     SearchResponse searchResponse =
-        getSearchServiceClient().search(searchRequest).getPage().getResponse();
+        SearchServiceClient.create()
+            .search(searchRequest)
+            .getPage()
+            .getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
@@ -109,13 +68,35 @@ public final class SearchWithFacetSpec {
   }
 
   /**
-   * Executable tutorial class.
+   * Get search service request.
    *
-   * @param args command line arguments.
-   * @throws IOException from the called method.
+   * @param query         search keyword.
+   * @param facetKeyParam Supported textual and numerical facet keys.
+   * @return SearchRequest.
    */
-  public static void main(final String[] args) throws IOException {
-    search();
+  public static SearchRequest getSearchRequest(String query,
+      String facetKeyParam, String defaultSearchPlacementName) {
+
+    int pageSize = 10;
+
+    String visitorId = UUID.randomUUID().toString();
+
+    FacetKey facetKey = FacetKey.newBuilder().setKey(facetKeyParam).build();
+
+    FacetSpec facetSpec = FacetSpec.newBuilder().setFacetKey(facetKey).build();
+
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(defaultSearchPlacementName)
+            .setQuery(query)
+            .setVisitorId(visitorId)
+            .addFacetSpecs(facetSpec)
+            .setPageSize(pageSize)
+            .build();
+
+    System.out.println("Search request: " + searchRequest);
+
+    return searchRequest;
   }
 }
 

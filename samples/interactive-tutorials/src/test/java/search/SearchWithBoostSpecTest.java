@@ -30,16 +30,30 @@ public class SearchWithBoostSpecTest {
 
   private String output;
 
+  private String defaultSearchPlacementName;
+
   @Before
-  public void setUp() throws IOException, InterruptedException, ExecutionException {
+  public void setUp()
+      throws IOException, InterruptedException, ExecutionException {
+
+    String projectNumber = System.getenv("PROJECT_NUMBER");
+
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
+
+    defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
     Process exec =
         Runtime.getRuntime()
-            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithBoostSpec");
+            .exec(
+                "mvn compile exec:java -Dexec.mainClass=search.SearchWithBoostSpec");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor()
+        .submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -57,7 +71,8 @@ public class SearchWithBoostSpecTest {
   @Test
   public void testSearchWithBoostSpec() throws IOException {
 
-    SearchResponse response = SearchWithBoostSpec.search();
+    SearchResponse response =
+        SearchWithBoostSpec.search(defaultSearchPlacementName);
 
     Assert.assertEquals(10, response.getResultsCount());
 
@@ -65,6 +80,6 @@ public class SearchWithBoostSpecTest {
 
     Assert.assertTrue(productTitle.contains("Tee"));
 
-    Assert.assertEquals(128, response.getTotalSize());
+    Assert.assertEquals(129, response.getTotalSize());
   }
 }
