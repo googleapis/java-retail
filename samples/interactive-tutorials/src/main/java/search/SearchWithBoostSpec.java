@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_search_product_with_boost_spec]
+
 /*
- * [START retail_search_product_with_boost_spec]
  * Call Retail API to search for a products in a catalog, rerank the
  * results boosting or burying the products that match defined condition.
  */
@@ -30,49 +31,63 @@ import com.google.cloud.retail.v2.SearchServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
-public final class SearchWithBoostSpec {
+public class SearchWithBoostSpec {
 
-  /** This variable describes project number getting from environment variable. */
-  private static final String YOUR_PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  public static void main(String[] args) throws IOException {
 
-  /** This variable describes default catalog name. */
-  private static final String DEFAULT_CATALOG_NAME =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", YOUR_PROJECT_NUMBER);
+    String projectNumber = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes default search placement name. Using for identify the Serving Config
-   * name.
-   */
-  private static final String DEFAULT_SEARCH_PLACEMENT_NAME =
-      DEFAULT_CATALOG_NAME + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
 
-  /** This variable describes a unique identifier to track visitors. */
-  private static final String VISITOR_ID = UUID.randomUUID().toString();
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
-  private SearchWithBoostSpec() {}
+    search(defaultSearchPlacementName);
+  }
 
   /**
-   * Get search service client.
+   * Call the retail search.
    *
-   * @return SearchServiceClient.
-   * @throws IOException if endpoint is incorrect.
+   * @return SearchResponse.
+   * @throws IOException if endpoint is not provided.
    */
-  private static SearchServiceClient getSearchServiceClient() throws IOException {
-    return SearchServiceClient.create();
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
+    // TRY DIFFERENT CONDITIONS HERE:
+    String condition = "(colorFamilies: ANY(\"Blue\"))";
+
+    float boost = 0.0f;
+
+    SearchRequest searchRequest =
+        getSearchRequest("Tee", condition, boost, defaultSearchPlacementName);
+
+    SearchResponse searchResponse =
+        SearchServiceClient.create()
+            .search(searchRequest)
+            .getPage()
+            .getResponse();
+
+    System.out.println("Search response: " + searchResponse);
+
+    return searchResponse;
   }
 
   /**
    * Get search service request.
    *
-   * @param query search keyword.
-   * @param condition provides search clarification.
+   * @param query         search keyword.
+   * @param condition     provides search clarification.
    * @param boostStrength is a rate of boost strength.
    * @return SearchRequest.
    */
   public static SearchRequest getSearchRequest(
-      final String query, final String condition, final float boostStrength) {
+      String query, String condition, float boostStrength,
+      String defaultSearchPlacementName) {
+    int pageSize = 10;
 
-    final int pageSize = 10;
+    String visitorId = UUID.randomUUID().toString();
 
     BoostSpec boostSpec =
         BoostSpec.newBuilder()
@@ -85,9 +100,9 @@ public final class SearchWithBoostSpec {
 
     SearchRequest searchRequest =
         SearchRequest.newBuilder()
-            .setPlacement(DEFAULT_SEARCH_PLACEMENT_NAME)
+            .setPlacement(defaultSearchPlacementName)
             .setQuery(query)
-            .setVisitorId(VISITOR_ID)
+            .setVisitorId(visitorId)
             .setBoostSpec(boostSpec)
             .setPageSize(pageSize)
             .build();
@@ -95,37 +110,6 @@ public final class SearchWithBoostSpec {
     System.out.println("Search request: " + searchRequest);
 
     return searchRequest;
-  }
-
-  /**
-   * Call the retail search.
-   *
-   * @return SearchResponse.
-   * @throws IOException if endpoint is not provided.
-   */
-  public static SearchResponse search() throws IOException {
-    // TRY DIFFERENT CONDITIONS HERE:
-    String condition = "(colorFamilies: ANY(\"Blue\"))";
-    float boost = 0.0f;
-
-    SearchRequest searchRequest = getSearchRequest("Tee", condition, boost);
-
-    SearchResponse searchResponse =
-        getSearchServiceClient().search(searchRequest).getPage().getResponse();
-
-    System.out.println("Search response: " + searchResponse);
-
-    return searchResponse;
-  }
-
-  /**
-   * Executable tutorial class.
-   *
-   * @param args command line arguments.
-   * @throws IOException from the called method.
-   */
-  public static void main(final String[] args) throws IOException {
-    search();
   }
 }
 
