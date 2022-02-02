@@ -91,7 +91,7 @@ public final class SearchWithOrdering {
    * @throws IOException if endpoint is not provided.
    */
   public static SearchResponse search() throws IOException {
-    // TRY DIFFERENT FILTER EXPRESSIONS HERE:
+    // TRY DIFFERENT ORDERING:
     String order = "price desc";
 
     SearchRequest searchRequest = getSearchRequest("Hoodie", order);
