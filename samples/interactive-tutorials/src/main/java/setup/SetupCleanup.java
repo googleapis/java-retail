@@ -20,6 +20,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQuery.DatasetListOption;
 import com.google.cloud.bigquery.BigQuery.TableListOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -53,11 +54,13 @@ import com.google.cloud.retail.v2.PurgeUserEventsResponse;
 import com.google.cloud.retail.v2.UserEvent;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.cloud.retail.v2.WriteUserEventRequest;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
@@ -72,7 +75,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.google.cloud.storage.StorageClass.STANDARD;
 
-public final class SetupCleanup {
+public class SetupCleanup {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -104,9 +107,6 @@ public final class SetupCleanup {
   private static final Storage STORAGE = StorageOptions.newBuilder()
       .setProjectId(PROJECT_NUMBER)
       .build().getService();
-
-  private SetupCleanup() {
-  }
 
   /**
    * Get product service client.
@@ -341,28 +341,105 @@ public final class SetupCleanup {
   }
 
   /**
-   * Create bucket.
+   * Create a new bucket in Cloud Storage.
    *
    * @param bucketName name of bucket.
+   * @return created bucket.
    */
-  public static void createBucket(final String bucketName) {
-    Storage storage = StorageOptions.newBuilder()
-        .setProjectId(PROJECT_ID)
-        .build().getService();
+  public static Bucket createBucket(final String bucketName) {
 
-    Bucket bucket = storage.create(
-        BucketInfo.newBuilder(bucketName)
-            .setStorageClass(STANDARD)
-            .setLocation("US")
-            .build());
+    Bucket bucket = null;
 
-    System.out.println(
-        "Bucket was created "
-            + bucket.getName()
-            + " in "
-            + bucket.getLocation()
-            + " with storage class "
-            + bucket.getStorageClass());
+    System.out.printf("Creating new bucket: %s %n", bucketName);
+
+    if (checkIfBucketExists(bucketName)) {
+      System.out.printf("Bucket %s already exists. %n", bucketName);
+
+      Page<Bucket> bucketList = STORAGE.list();
+
+      for (Bucket itrBucket : bucketList.iterateAll()) {
+        if (itrBucket.getName().equals(bucketName)) {
+          bucket = itrBucket;
+        }
+      }
+    } else {
+      bucket = STORAGE.create(
+          BucketInfo.newBuilder(bucketName)
+              .setStorageClass(STANDARD)
+              .setLocation("US")
+              .build());
+
+      System.out.println(
+          "Bucket was created "
+              + bucket.getName()
+              + " in "
+              + bucket.getLocation()
+              + " with storage class "
+              + bucket.getStorageClass());
+    }
+
+    return bucket;
+  }
+
+  /**
+   * Check if bucket is already exists.
+   *
+   * @param bucketToCheck bucket name for check.
+   * @return result of checking.
+   */
+  public static boolean checkIfBucketExists(final String bucketToCheck) {
+    boolean bucketExists = false;
+
+    Page<Bucket> bucketList = STORAGE.list();
+
+    for (Bucket bucket : bucketList.iterateAll()) {
+      if (bucket.getName().equals(bucketToCheck)) {
+        bucketExists = true;
+        break;
+      }
+    }
+
+    return bucketExists;
+  }
+
+  /**
+   * Delete bucket from GCS.
+   */
+  public static void deleteBucket(String bucketName) {
+    try {
+      Bucket bucket = STORAGE.get(bucketName);
+
+      if (bucket != null) {
+        bucket.delete();
+      }
+    } catch (StorageException e) {
+      System.out.printf("Bucket is not empty. Deleting objects from bucket.%n");
+
+      deleteObjectsFromBucket(STORAGE.get(bucketName));
+
+      System.out.printf("Bucket %s was deleted.%n",
+          STORAGE.get(bucketName).getName());
+    }
+
+    if (STORAGE.get(bucketName) == null) {
+      System.out.printf("Bucket '%s' already deleted.%n", bucketName);
+    }
+  }
+
+  /**
+   * Delete objects from GCS bucket.
+   *
+   * @param bucket target bucket.
+   */
+  public static void deleteObjectsFromBucket(final Bucket bucket) {
+    Page<Blob> blobs = bucket.list();
+
+    for (Blob blob : blobs.iterateAll()) {
+      blob.delete();
+    }
+
+    System.out.printf("All objects are deleted from GCS bucket %s%n",
+        bucket.getName());
   }
 
   /**
@@ -381,7 +458,7 @@ public final class SetupCleanup {
   }
 
   /**
-   * Upload object.
+   * Upload data to a GCS bucket.
    *
    * @param bucketName name of bucket.
    * @param objectName name of object to upload.
@@ -390,14 +467,12 @@ public final class SetupCleanup {
    */
   public static void uploadObject(final String bucketName,
       final String objectName, final String filePath) throws IOException {
-    Storage storage = StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER)
-        .build().getService();
 
     BlobId blobId = BlobId.of(bucketName, objectName);
 
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-    storage.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
+    STORAGE.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
     System.out.println(
         "File " + filePath + " uploaded to bucket " + bucketName + " as "
@@ -448,6 +523,29 @@ public final class SetupCleanup {
     } catch (BigQueryException e) {
       System.out.println(
           "Project does not contain any datasets. " + e);
+    }
+  }
+
+  /**
+   * Delete dataset
+   *
+   * @param projectId   id of project.
+   * @param datasetName name of dataset.
+   */
+  public static void deleteDataset(String projectId, String datasetName) {
+    try {
+      BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
+
+      DatasetId datasetId = DatasetId.of(projectId, datasetName);
+      boolean success = bigquery.delete(datasetId,
+          DatasetDeleteOption.deleteContents());
+      if (success) {
+        System.out.println("Dataset deleted successfully");
+      } else {
+        System.out.println("Dataset was not found");
+      }
+    } catch (BigQueryException e) {
+      System.out.println("Dataset was not deleted. \n" + e);
     }
   }
 

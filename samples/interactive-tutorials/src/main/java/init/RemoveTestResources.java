@@ -16,26 +16,28 @@
 
 package init;
 
-import com.google.api.gax.paging.Page;
+import static setup.SetupCleanup.deleteBucket;
+import static setup.SetupCleanup.deleteDataset;
+
 import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.ListProductsRequest;
 import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.ProductServiceClient.ListProductsPagedResponse;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageException;
-import com.google.cloud.storage.StorageOptions;
 import java.io.IOException;
 
-public final class RemoveTestResources {
+public class RemoveTestResources {
 
   /**
    * This variable describes project number getting from environment variable.
    */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+
+  /**
+   * This variable describes project id getting from environment variable.
+   */
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
 
   /**
    * This variable describes bucket name from the environment variable.
@@ -48,56 +50,6 @@ public final class RemoveTestResources {
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/"
           + "branches/default_branch", PROJECT_NUMBER);
-
-  /**
-   * This variable describes Storage.
-   */
-  private static final Storage STORAGE = StorageOptions.newBuilder()
-      .setProjectId(PROJECT_NUMBER)
-      .build().getService();
-
-  private RemoveTestResources() {
-  }
-
-  /**
-   * Delete bucket from GCS.
-   */
-  public static void deleteBucket() {
-    try {
-      Bucket bucket = STORAGE.get(BUCKET_NAME);
-
-      if (bucket != null) {
-        bucket.delete();
-      }
-    } catch (StorageException e) {
-      System.out.printf("Bucket is not empty. Deleting objects from bucket.%n");
-
-      deleteObjectsFromBucket(STORAGE.get(BUCKET_NAME));
-
-      System.out.printf("Bucket %s was deleted.",
-          STORAGE.get(BUCKET_NAME).getName());
-    }
-
-    if (STORAGE.get(BUCKET_NAME) == null) {
-      System.out.printf("Bucket '%s' already deleted.%n", BUCKET_NAME);
-    }
-  }
-
-  /**
-   * Delete objects from GCS bucket.
-   *
-   * @param bucket target bucket.
-   */
-  public static void deleteObjectsFromBucket(final Bucket bucket) {
-    Page<Blob> blobs = bucket.list();
-
-    for (Blob blob : blobs.iterateAll()) {
-      blob.delete();
-    }
-
-    System.out.printf("All objects are deleted from GCS bucket %s%n",
-        bucket.getName());
-  }
 
   /**
    * Delete all products from catalog.
@@ -143,8 +95,10 @@ public final class RemoveTestResources {
    * @param args command line arguments.
    */
   public static void main(final String[] args) throws IOException {
+    deleteBucket(BUCKET_NAME);
+
     deleteAllProducts();
 
-    deleteBucket();
+    deleteDataset(PROJECT_ID, "products");
   }
 }

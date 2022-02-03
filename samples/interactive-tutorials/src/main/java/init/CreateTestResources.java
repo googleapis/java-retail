@@ -16,9 +16,10 @@
 
 package init;
 
-import static com.google.cloud.storage.StorageClass.STANDARD;
+import static product.setup.ProductsCreateBigqueryTable.createBqTableWithProducts;
+import static setup.SetupCleanup.createBucket;
+import static setup.SetupCleanup.uploadObject;
 
-import com.google.api.gax.paging.Page;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -27,20 +28,13 @@ import com.google.cloud.retail.v2.ImportProductsRequest.ReconciliationMode;
 import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 
-public final class CreateTestResources {
+public class CreateTestResources {
 
   /**
    * This variable describes project number getting from environment variable.
@@ -51,13 +45,6 @@ public final class CreateTestResources {
    * This variable describes bucket name from the environment variable.
    */
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
-
-  /**
-   * This variable describes Storage.
-   */
-  private static final Storage STORAGE = StorageOptions.newBuilder()
-      .setProjectId(PROJECT_NUMBER)
-      .build().getService();
 
   /**
    * This variable describes bucket name from the environment variable.
@@ -77,104 +64,6 @@ public final class CreateTestResources {
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/"
           + "branches/default_branch", PROJECT_NUMBER);
-
-  private CreateTestResources() {
-  }
-
-  /**
-   * Get product service client.
-   *
-   * @return ProductServiceClient.
-   * @throws IOException if endpoint is incorrect.
-   */
-  private static ProductServiceClient getProductServiceClient()
-      throws IOException {
-    return ProductServiceClient.create();
-  }
-
-  /**
-   * Create a new bucket in Cloud Storage.
-   *
-   * @param bucketName name of bucket.
-   * @return created bucket.
-   */
-  public static Bucket createBucket(final String bucketName) {
-
-    Bucket bucket = null;
-
-    System.out.printf("Creating new bucket: %s %n", bucketName);
-
-    if (checkIfBucketExists(bucketName)) {
-      System.out.printf("Bucket %s already exists. %n", bucketName);
-
-      Page<Bucket> bucketList = STORAGE.list();
-
-      for (Bucket itrBucket : bucketList.iterateAll()) {
-        if (itrBucket.getName().equals(bucketName)) {
-          bucket = itrBucket;
-        }
-      }
-    } else {
-      bucket = STORAGE.create(
-          BucketInfo.newBuilder(bucketName)
-              .setStorageClass(STANDARD)
-              .setLocation("US")
-              .build());
-
-      System.out.println(
-          "Bucket was created "
-              + bucket.getName()
-              + " in "
-              + bucket.getLocation()
-              + " with storage class "
-              + bucket.getStorageClass());
-    }
-
-    return bucket;
-  }
-
-  /**
-   * Check if bucket is already exists.
-   *
-   * @param bucketToCheck bucket name for check.
-   * @return result of checking.
-   */
-  public static boolean checkIfBucketExists(final String bucketToCheck) {
-    boolean bucketExists = false;
-
-    Page<Bucket> bucketList = STORAGE.list();
-
-    for (Bucket bucket : bucketList.iterateAll()) {
-      if (bucket.getName().equals(bucketToCheck)) {
-        bucketExists = true;
-        break;
-      }
-    }
-
-    return bucketExists;
-  }
-
-  /**
-   * Upload data to a GCS bucket.
-   *
-   * @param bucketName name of bucket.
-   * @param objectName name of object to upload.
-   * @param filePath   path to the file.
-   * @throws IOException while runs readAllBytes() method.
-   */
-  public static void uploadObject(final String bucketName,
-      final String objectName, final String filePath) throws IOException {
-
-    BlobId blobId = BlobId.of(bucketName, objectName);
-
-    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-
-    STORAGE.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
-
-    System.out.println(
-        "File " + filePath + " uploaded to bucket " + bucketName + " as "
-            + objectName);
-  }
 
   /**
    * Get import products from gcs request.
@@ -226,7 +115,7 @@ public final class CreateTestResources {
     ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(
         "products.json");
 
-    ProductServiceClient serviceClient = getProductServiceClient();
+    ProductServiceClient serviceClient = ProductServiceClient.create();
 
     String operationName = serviceClient
         .importProductsCallable()
@@ -278,11 +167,17 @@ public final class CreateTestResources {
    */
   public static void main(final String[] args)
       throws IOException, InterruptedException {
-    Bucket bucket = createBucket(BUCKET_NAME);
+    // Create a GCS bucket.
+    Bucket productBucket = createBucket(BUCKET_NAME);
 
-    uploadObject(bucket.getName(), "products.json",
+    // Upload products.json file into created bucket.
+    uploadObject(productBucket.getName(), "products.json",
         "src/main/resources/products.json");
 
+    // Import products from the GCS bucket to the Retail catalog
     importProductsFromGcs();
+
+    // Create a BigQuery table with products.
+    createBqTableWithProducts();
   }
 }

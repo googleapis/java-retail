@@ -62,13 +62,7 @@ public final class ProductsCreateBigqueryTable {
         .create();
   }
 
-  /**
-   * Executable class.
-   *
-   * @param args command line arguments.
-   */
-  public static void main(final String[] args) throws IOException {
-
+  public static void createBqTableWithProducts() throws IOException {
     productsCreateGcsBucketAndUploadJsonFiles();
 
     String dataset = "products";
@@ -109,5 +103,14 @@ public final class ProductsCreateBigqueryTable {
 
     uploadDataToBqTable(dataset, invalidProductsTable,
         invalidProductsSourceFile, productSchema);
+  }
+
+  /**
+   * Executable class.
+   *
+   * @param args command line arguments.
+   */
+  public static void main(final String[] args) throws IOException {
+    createBqTableWithProducts();
   }
 }
