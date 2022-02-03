@@ -33,11 +33,9 @@ public class SearchWithFacetSpec {
     String projectNumber = System.getenv("PROJECT_NUMBER");
 
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
 
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
@@ -48,19 +46,14 @@ public class SearchWithFacetSpec {
    * @return SearchResponse.
    * @throws IOException if endpoint is not provided.
    */
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String facetKey = "colorFamilies";
 
-    SearchRequest searchRequest =
-        getSearchRequest("Tee", facetKey, defaultSearchPlacementName);
+    SearchRequest searchRequest = getSearchRequest("Tee", facetKey, defaultSearchPlacementName);
 
     SearchResponse searchResponse =
-        SearchServiceClient.create()
-            .search(searchRequest)
-            .getPage()
-            .getResponse();
+        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
@@ -70,12 +63,12 @@ public class SearchWithFacetSpec {
   /**
    * Get search service request.
    *
-   * @param query         search keyword.
+   * @param query search keyword.
    * @param facetKeyParam Supported textual and numerical facet keys.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(String query,
-      String facetKeyParam, String defaultSearchPlacementName) {
+  public static SearchRequest getSearchRequest(
+      String query, String facetKeyParam, String defaultSearchPlacementName) {
 
     int pageSize = 10;
 
