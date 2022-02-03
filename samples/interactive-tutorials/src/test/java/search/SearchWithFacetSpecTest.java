@@ -33,27 +33,22 @@ public class SearchWithFacetSpecTest {
   private String defaultSearchPlacementName;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
 
     String projectNumber = System.getenv("PROJECT_NUMBER");
 
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
 
-    defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     Process exec =
         Runtime.getRuntime()
-            .exec(
-                "mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
 
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
 
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -73,8 +68,7 @@ public class SearchWithFacetSpecTest {
   @Test
   public void testSearchWithFacetSpec() throws IOException {
 
-    SearchResponse response =
-        SearchWithFacetSpec.search(defaultSearchPlacementName);
+    SearchResponse response = SearchWithFacetSpec.search(defaultSearchPlacementName);
 
     Assert.assertEquals(10, response.getResultsCount());
 

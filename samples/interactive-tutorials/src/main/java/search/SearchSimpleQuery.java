@@ -36,11 +36,9 @@ public class SearchSimpleQuery {
     String projectNumber = System.getenv("PROJECT_NUMBER");
 
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
 
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
@@ -51,19 +49,14 @@ public class SearchSimpleQuery {
    * @return SearchResponse.
    * @throws IOException if endpoint is not provided.
    */
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
 
-    SearchRequest searchRequest =
-        getSearchRequest(queryPhrase, defaultSearchPlacementName);
+    SearchRequest searchRequest = getSearchRequest(queryPhrase, defaultSearchPlacementName);
 
     SearchResponse searchResponse =
-        SearchServiceClient.create()
-            .search(searchRequest)
-            .getPage()
-            .getResponse();
+        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
@@ -76,8 +69,7 @@ public class SearchSimpleQuery {
    * @param query search keyword.
    * @return SearchRequest.
    */
-  public static SearchRequest getSearchRequest(String query,
-      String defaultSearchPlacementName) {
+  public static SearchRequest getSearchRequest(String query, String defaultSearchPlacementName) {
     int pageSize = 10;
 
     String visitorId = UUID.randomUUID().toString();
