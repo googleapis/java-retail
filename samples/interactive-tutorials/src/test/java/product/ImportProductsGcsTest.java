@@ -33,6 +33,15 @@ public class ImportProductsGcsTest {
   public void setUp()
       throws IOException, InterruptedException, ExecutionException {
 
+    Runtime.getRuntime()
+        .exec(
+            "mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
+
+    // Keep polling the operation periodically until the import task is done.
+    final int awaitDuration = 30000;
+
+    Thread.sleep(awaitDuration);
+
     Process exec = Runtime.getRuntime()
         .exec(
             "mvn compile exec:java -Dexec.mainClass=product.ImportProductsGcs");
