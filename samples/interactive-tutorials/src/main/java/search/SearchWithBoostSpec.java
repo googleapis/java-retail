@@ -38,11 +38,9 @@ public class SearchWithBoostSpec {
     String projectNumber = System.getenv("PROJECT_NUMBER");
 
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
 
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
@@ -53,8 +51,7 @@ public class SearchWithBoostSpec {
    * @return SearchResponse.
    * @throws IOException if endpoint is not provided.
    */
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String condition = "(colorFamilies: ANY(\"Blue\"))";
 
@@ -64,10 +61,7 @@ public class SearchWithBoostSpec {
         getSearchRequest("Tee", condition, boost, defaultSearchPlacementName);
 
     SearchResponse searchResponse =
-        SearchServiceClient.create()
-            .search(searchRequest)
-            .getPage()
-            .getResponse();
+        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
 
     System.out.println("Search response: " + searchResponse);
 
@@ -77,14 +71,13 @@ public class SearchWithBoostSpec {
   /**
    * Get search service request.
    *
-   * @param query         search keyword.
-   * @param condition     provides search clarification.
+   * @param query search keyword.
+   * @param condition provides search clarification.
    * @param boostStrength is a rate of boost strength.
    * @return SearchRequest.
    */
   public static SearchRequest getSearchRequest(
-      String query, String condition, float boostStrength,
-      String defaultSearchPlacementName) {
+      String query, String condition, float boostStrength, String defaultSearchPlacementName) {
     int pageSize = 10;
 
     String visitorId = UUID.randomUUID().toString();
