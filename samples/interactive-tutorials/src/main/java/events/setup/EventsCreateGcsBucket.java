@@ -25,8 +25,7 @@ public final class EventsCreateGcsBucket {
 
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
 
-  private EventsCreateGcsBucket() {
-  }
+  private EventsCreateGcsBucket() {}
 
   /**
    * Getter for bucket name constant variable.
@@ -42,15 +41,15 @@ public final class EventsCreateGcsBucket {
    *
    * @throws IOException from the called method.
    */
-  public static void eventsCreateGcsBucketAndUploadJsonFiles()
-      throws IOException {
+  public static void eventsCreateGcsBucketAndUploadJsonFiles() throws IOException {
 
     createBucket(BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME, "user_events.json",
-        "src/main/resources/user_events.json");
+    uploadObject(BUCKET_NAME, "user_events.json", "src/main/resources/user_events.json");
 
-    uploadObject(BUCKET_NAME, "user_events_some_invalid.json",
+    uploadObject(
+        BUCKET_NAME,
+        "user_events_some_invalid.json",
         "src/main/resources/user_events_some_invalid.json");
   }
 }

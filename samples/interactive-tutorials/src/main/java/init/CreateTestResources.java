@@ -36,34 +36,23 @@ import java.util.Collections;
 
 public class CreateTestResources {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
+  /** This variable describes project number getting from environment variable. */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes bucket name from the environment variable.
-   */
+  /** This variable describes bucket name from the environment variable. */
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
 
-  /**
-   * This variable describes bucket name from the environment variable.
-   */
-  private static final String GCS_BUCKET = String.format("gs://%s",
-      System.getenv("BUCKET_NAME"));
+  /** This variable describes bucket name from the environment variable. */
+  private static final String GCS_BUCKET = String.format("gs://%s", System.getenv("BUCKET_NAME"));
 
-  /**
-   * This variable describes error bucket name from the environment variable.
-   */
-  private static final String GCS_ERROR_BUCKET = String.format("%s/errors",
-      GCS_BUCKET);
+  /** This variable describes error bucket name from the environment variable. */
+  private static final String GCS_ERROR_BUCKET = String.format("%s/errors", GCS_BUCKET);
 
-  /**
-   * This variable describes default catalog name.
-   */
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch", PROJECT_NUMBER);
+  /** This variable describes default catalog name. */
+  private static final String DEFAULT_CATALOG =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+          PROJECT_NUMBER);
 
   /**
    * Get import products from gcs request.
@@ -71,32 +60,30 @@ public class CreateTestResources {
    * @param gcsObjectName file name for import.
    * @return ImportProductsRequest.
    */
-  public static ImportProductsRequest getImportProductsGcsRequest(
-      final String gcsObjectName) {
-    GcsSource gcsSource = GcsSource.newBuilder()
-        .addAllInputUris(Collections.singleton(
-            String.format("gs://%s/%s", BUCKET_NAME, gcsObjectName)))
-        .build();
+  public static ImportProductsRequest getImportProductsGcsRequest(final String gcsObjectName) {
+    GcsSource gcsSource =
+        GcsSource.newBuilder()
+            .addAllInputUris(
+                Collections.singleton(String.format("gs://%s/%s", BUCKET_NAME, gcsObjectName)))
+            .build();
 
-    ProductInputConfig inputConfig = ProductInputConfig.newBuilder()
-        .setGcsSource(gcsSource)
-        .build();
+    ProductInputConfig inputConfig =
+        ProductInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
-    ImportErrorsConfig errorsConfig = ImportErrorsConfig.newBuilder()
-        .setGcsPrefix(GCS_ERROR_BUCKET)
-        .build();
+    ImportErrorsConfig errorsConfig =
+        ImportErrorsConfig.newBuilder().setGcsPrefix(GCS_ERROR_BUCKET).build();
 
-    ImportProductsRequest importRequest = ImportProductsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setReconciliationMode(ReconciliationMode.INCREMENTAL)
-        .setInputConfig(inputConfig)
-        .setErrorsConfig(errorsConfig)
-        .build();
+    ImportProductsRequest importRequest =
+        ImportProductsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setReconciliationMode(ReconciliationMode.INCREMENTAL)
+            .setInputConfig(inputConfig)
+            .setErrorsConfig(errorsConfig)
+            .build();
 
-    System.out.println(
-        "Import products from google cloud source request: " + importRequest);
+    System.out.println("Import products from google cloud source request: " + importRequest);
 
     return importRequest;
   }
@@ -104,23 +91,16 @@ public class CreateTestResources {
   /**
    * Call the Retail API to import products.
    *
-   * @throws IOException          from the called method.
-   * @throws InterruptedException when a thread is waiting, sleeping, or
-   *                              otherwise occupied, and the thread is
-   *                              interrupted, either before or during the
-   *                              activity.
+   * @throws IOException from the called method.
+   * @throws InterruptedException when a thread is waiting, sleeping, or otherwise occupied, and the
+   *     thread is interrupted, either before or during the activity.
    */
-  public static void importProductsFromGcs()
-      throws IOException, InterruptedException {
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(
-        "products.json");
+  public static void importProductsFromGcs() throws IOException, InterruptedException {
+    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest("products.json");
 
     ProductServiceClient serviceClient = ProductServiceClient.create();
 
-    String operationName = serviceClient
-        .importProductsCallable()
-        .call(importGcsRequest)
-        .getName();
+    String operationName = serviceClient.importProductsCallable().call(importGcsRequest).getName();
 
     System.out.printf("OperationName = %s\n", operationName);
 
@@ -142,19 +122,18 @@ public class CreateTestResources {
     System.out.println("Import products operation is completed.");
 
     if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata()
-          .unpack(ImportMetadata.class);
+      ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
 
-      System.out.printf("Number of successfully imported products: %s\n",
-          metadata.getSuccessCount());
+      System.out.printf(
+          "Number of successfully imported products: %s\n", metadata.getSuccessCount());
 
-      System.out.printf("Number of failures during the importing: %s\n",
-          metadata.getFailureCount());
+      System.out.printf(
+          "Number of failures during the importing: %s\n", metadata.getFailureCount());
     }
 
     if (operation.hasResponse()) {
-      ImportProductsResponse response = operation.getResponse()
-          .unpack(ImportProductsResponse.class);
+      ImportProductsResponse response =
+          operation.getResponse().unpack(ImportProductsResponse.class);
 
       System.out.printf("Operation result: %s", response);
     }
@@ -165,8 +144,7 @@ public class CreateTestResources {
    *
    * @param args command line arguments.
    */
-  public static void main(final String[] args)
-      throws IOException, InterruptedException {
+  public static void main(final String[] args) throws IOException, InterruptedException {
 
     productsCreateGcsBucketAndUploadJsonFiles();
 

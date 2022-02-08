@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
 
 public final class EventsCreateBigQueryTable {
 
-  private EventsCreateBigQueryTable() {
-  }
+  private EventsCreateBigQueryTable() {}
 
   public static void createBqTableWithEvents() throws IOException {
     eventsCreateGcsBucketAndUploadJsonFiles();
@@ -45,16 +44,14 @@ public final class EventsCreateBigQueryTable {
 
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
 
-    String validEventsSourceFile = String.format(
-        "gs://%s/user_events.json",
-        EventsCreateGcsBucket.getBucketName());
+    String validEventsSourceFile =
+        String.format("gs://%s/user_events.json", EventsCreateGcsBucket.getBucketName());
 
-    String invalidEventsSourceFile = String.format(
-        "gs://%s/user_events_some_invalid.json",
-        EventsCreateGcsBucket.getBucketName());
+    String invalidEventsSourceFile =
+        String.format(
+            "gs://%s/user_events_some_invalid.json", EventsCreateGcsBucket.getBucketName());
 
-    BufferedReader bufferedReader = new BufferedReader(
-        new FileReader(eventsSchemaFilePath));
+    BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
 
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
 
@@ -68,12 +65,10 @@ public final class EventsCreateBigQueryTable {
 
     createBqTable(dataset, validEventsTable, eventsSchema);
 
-    uploadDataToBqTable(dataset, validEventsTable, validEventsSourceFile,
-        eventsSchema);
+    uploadDataToBqTable(dataset, validEventsTable, validEventsSourceFile, eventsSchema);
 
     createBqTable(dataset, invalidEventsTable, eventsSchema);
 
-    uploadDataToBqTable(dataset, invalidEventsTable, invalidEventsSourceFile,
-        eventsSchema);
+    uploadDataToBqTable(dataset, invalidEventsTable, invalidEventsSourceFile, eventsSchema);
   }
 }

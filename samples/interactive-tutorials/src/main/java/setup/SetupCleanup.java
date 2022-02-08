@@ -16,6 +16,8 @@
 
 package setup;
 
+import static com.google.cloud.storage.StorageClass.STANDARD;
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.NotFoundException;
@@ -70,7 +72,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -79,40 +80,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
-import static com.google.cloud.storage.StorageClass.STANDARD;
-
 public class SetupCleanup {
 
-  /**
-   * This variable describes project number getting from environment variable.
-   */
+  /** This variable describes project number getting from environment variable. */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
 
-  /**
-   * This variable describes project id getting from environment variable.
-   */
+  /** This variable describes project id getting from environment variable. */
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
 
-  /**
-   * This variable describes default catalog name.
-   */
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_NUMBER);
+  /** This variable describes default catalog name. */
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_NUMBER);
 
-  /**
-   * This variable describes default branch name.
-   */
-  public static final String DEFAULT_BRANCH_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch", PROJECT_NUMBER);
+  /** This variable describes default branch name. */
+  public static final String DEFAULT_BRANCH_NAME =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+          PROJECT_NUMBER);
 
-  /**
-   * This variable describes Storage.
-   */
-  private static final Storage STORAGE = StorageOptions.newBuilder()
-      .setProjectId(PROJECT_NUMBER)
-      .build().getService();
+  /** This variable describes Storage. */
+  private static final Storage STORAGE =
+      StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER).build().getService();
 
   /**
    * Get product service client.
@@ -120,8 +108,7 @@ public class SetupCleanup {
    * @return UserEventServiceClient
    * @throws IOException if endpoint is incorrect.
    */
-  private static ProductServiceClient getProductServiceClient()
-      throws IOException {
+  private static ProductServiceClient getProductServiceClient() throws IOException {
     return ProductServiceClient.create();
   }
 
@@ -131,8 +118,7 @@ public class SetupCleanup {
    * @return UserEventServiceClient
    * @throws IOException if endpoint is incorrect.
    */
-  private static UserEventServiceClient getUserEventsServiceClient()
-      throws IOException {
+  private static UserEventServiceClient getUserEventsServiceClient() throws IOException {
     return UserEventServiceClient.create();
   }
 
@@ -146,16 +132,18 @@ public class SetupCleanup {
     final float price = 30.0f;
     final float originalPrice = 35.5f;
 
-    PriceInfo priceInfo = PriceInfo.newBuilder()
-        .setPrice(price)
-        .setOriginalPrice(originalPrice)
-        .setCurrencyCode("USD")
-        .build();
+    PriceInfo priceInfo =
+        PriceInfo.newBuilder()
+            .setPrice(price)
+            .setOriginalPrice(originalPrice)
+            .setCurrencyCode("USD")
+            .build();
 
-    FulfillmentInfo fulfillmentInfo = FulfillmentInfo.newBuilder()
-        .setType("pickup-in-store")
-        .addAllPlaceIds(Arrays.asList("store0", "store1"))
-        .build();
+    FulfillmentInfo fulfillmentInfo =
+        FulfillmentInfo.newBuilder()
+            .setType("pickup-in-store")
+            .addAllPlaceIds(Arrays.asList("store0", "store1"))
+            .build();
 
     return Product.newBuilder()
         .setTitle("Nest Mini")
@@ -175,8 +163,7 @@ public class SetupCleanup {
    * @return Product.
    * @throws IOException if endpoint is incorrect.
    */
-  public static Product createProduct(final String productId)
-      throws IOException {
+  public static Product createProduct(final String productId) throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
@@ -184,8 +171,7 @@ public class SetupCleanup {
             .setParent(DEFAULT_BRANCH_NAME)
             .build();
 
-    Product product = getProductServiceClient().createProduct(
-        createProductRequest);
+    Product product = getProductServiceClient().createProduct(createProductRequest);
 
     System.out.println("Product is created. \n" + product);
 
@@ -199,14 +185,11 @@ public class SetupCleanup {
    * @return Product.
    * @throws IOException if endpoint is incorrect.
    */
-  public static Product getProduct(final String productName)
-      throws IOException {
-    Product product = Product.newBuilder()
-        .build();
+  public static Product getProduct(final String productName) throws IOException {
+    Product product = Product.newBuilder().build();
 
-    GetProductRequest getProductRequest = GetProductRequest.newBuilder()
-        .setName(productName)
-        .build();
+    GetProductRequest getProductRequest =
+        GetProductRequest.newBuilder().setName(productName).build();
 
     try {
       product = getProductServiceClient().getProduct(getProductRequest);
@@ -226,12 +209,9 @@ public class SetupCleanup {
    * @param productName name of product to delete.
    * @throws IOException if endpoint is incorrect.
    */
-  public static void deleteProduct(final String productName)
-      throws IOException {
+  public static void deleteProduct(final String productName) throws IOException {
     DeleteProductRequest deleteProductRequest =
-        DeleteProductRequest.newBuilder()
-            .setName(productName)
-            .build();
+        DeleteProductRequest.newBuilder().setName(productName).build();
 
     getProductServiceClient().deleteProduct(deleteProductRequest);
 
@@ -245,9 +225,8 @@ public class SetupCleanup {
    */
   public static void tryToDeleteProductIfExists(final String productName) {
 
-    GetProductRequest getProductRequest = GetProductRequest.newBuilder()
-        .setName(productName)
-        .build();
+    GetProductRequest getProductRequest =
+        GetProductRequest.newBuilder().setName(productName).build();
 
     try {
       Product product = getProductServiceClient().getProduct(getProductRequest);
@@ -269,25 +248,23 @@ public class SetupCleanup {
 
     Instant time = Instant.now();
 
-    Timestamp timestamp = Timestamp.newBuilder()
-        .setSeconds(time.getEpochSecond())
-        .build();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
 
-    Product product = Product.newBuilder()
-        .setId("test_id")
-        .build();
+    Product product = Product.newBuilder().setId("test_id").build();
 
-    ProductDetail productDetail = ProductDetail.newBuilder()
-        .setProduct(product)
-        .setQuantity(Int32Value.newBuilder().setValue(value).build())
-        .build();
+    ProductDetail productDetail =
+        ProductDetail.newBuilder()
+            .setProduct(product)
+            .setQuantity(Int32Value.newBuilder().setValue(value).build())
+            .build();
 
-    UserEvent userEvent = UserEvent.newBuilder()
-        .setEventType("detail-page-view")
-        .setVisitorId(visitorId)
-        .setEventTime(timestamp)
-        .addAllProductDetails(Collections.singletonList(productDetail))
-        .build();
+    UserEvent userEvent =
+        UserEvent.newBuilder()
+            .setEventType("detail-page-view")
+            .setVisitorId(visitorId)
+            .setEventTime(timestamp)
+            .addAllProductDetails(Collections.singletonList(productDetail))
+            .build();
 
     System.out.println(userEvent);
 
@@ -301,16 +278,14 @@ public class SetupCleanup {
    * @return UserEvent.
    * @throws IOException if endpoint is incorrect.
    */
-  public static UserEvent writeUserEvent(final String visitorId)
-      throws IOException {
+  public static UserEvent writeUserEvent(final String visitorId) throws IOException {
     WriteUserEventRequest writeUserEventRequest =
         WriteUserEventRequest.newBuilder()
             .setUserEvent(getUserEvent(visitorId))
             .setParent(DEFAULT_CATALOG)
             .build();
 
-    UserEvent userEvent = getUserEventsServiceClient().writeUserEvent(
-        writeUserEventRequest);
+    UserEvent userEvent = getUserEventsServiceClient().writeUserEvent(writeUserEventRequest);
 
     System.out.printf("The user event is written. %n%s%n", userEvent);
 
@@ -321,13 +296,11 @@ public class SetupCleanup {
    * Purge user event.
    *
    * @param visitorId visitor id.
-   * @throws IOException          from the called method.
-   * @throws ExecutionException   when attempting to retrieve the result of a
-   *                              task that aborted by throwing an exception.
-   * @throws InterruptedException when a thread is waiting, sleeping, or
-   *                              otherwise occupied, and the thread is
-   *                              interrupted, either before or during the
-   *                              activity.
+   * @throws IOException from the called method.
+   * @throws ExecutionException when attempting to retrieve the result of a task that aborted by
+   *     throwing an exception.
+   * @throws InterruptedException when a thread is waiting, sleeping, or otherwise occupied, and the
+   *     thread is interrupted, either before or during the activity.
    */
   public static void purgeUserEvent(final String visitorId)
       throws IOException, ExecutionException, InterruptedException {
@@ -338,12 +311,10 @@ public class SetupCleanup {
             .setForce(true)
             .build();
 
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation
-        = getUserEventsServiceClient().purgeUserEventsAsync(
-        purgeUserEventsRequest);
+    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
+        getUserEventsServiceClient().purgeUserEventsAsync(purgeUserEventsRequest);
 
-    System.out.printf("The purge operation was started: %s%n",
-        purgeOperation.getName());
+    System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
   }
 
   /**
@@ -369,11 +340,12 @@ public class SetupCleanup {
         }
       }
     } else {
-      bucket = STORAGE.create(
-          BucketInfo.newBuilder(bucketName)
-              .setStorageClass(STANDARD)
-              .setLocation("US")
-              .build());
+      bucket =
+          STORAGE.create(
+              BucketInfo.newBuilder(bucketName)
+                  .setStorageClass(STANDARD)
+                  .setLocation("US")
+                  .build());
 
       System.out.println(
           "Bucket was created "
@@ -408,9 +380,7 @@ public class SetupCleanup {
     return bucketExists;
   }
 
-  /**
-   * Delete bucket from GCS.
-   */
+  /** Delete bucket from GCS. */
   public static void deleteBucket(String bucketName) {
     try {
       Bucket bucket = STORAGE.get(bucketName);
@@ -423,8 +393,7 @@ public class SetupCleanup {
 
       deleteObjectsFromBucket(STORAGE.get(bucketName));
 
-      System.out.printf("Bucket %s was deleted.%n",
-          STORAGE.get(bucketName).getName());
+      System.out.printf("Bucket %s was deleted.%n", STORAGE.get(bucketName).getName());
     }
 
     if (STORAGE.get(bucketName) == null) {
@@ -444,8 +413,7 @@ public class SetupCleanup {
       blob.delete();
     }
 
-    System.out.printf("All objects are deleted from GCS bucket %s%n",
-        bucket.getName());
+    System.out.printf("All objects are deleted from GCS bucket %s%n", bucket.getName());
   }
 
   /**
@@ -468,11 +436,11 @@ public class SetupCleanup {
    *
    * @param bucketName name of bucket.
    * @param objectName name of object to upload.
-   * @param filePath   path to the file.
+   * @param filePath path to the file.
    * @throws IOException while runs readAllBytes() method.
    */
-  public static void uploadObject(final String bucketName,
-      final String objectName, final String filePath) throws IOException {
+  public static void uploadObject(
+      final String bucketName, final String objectName, final String filePath) throws IOException {
 
     BlobId blobId = BlobId.of(bucketName, objectName);
 
@@ -481,8 +449,7 @@ public class SetupCleanup {
     STORAGE.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
     System.out.println(
-        "File " + filePath + " uploaded to bucket " + bucketName + " as "
-            + objectName);
+        "File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
   }
 
   /**
@@ -506,17 +473,15 @@ public class SetupCleanup {
     }
   }
 
-  /**
-   * List of BQ datasets.
-   */
+  /** List of BQ datasets. */
   public static void listBqDatasets() {
     try {
       final int pageSize = 100;
 
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-      Page<Dataset> datasets = bigquery.listDatasets(PROJECT_ID,
-          DatasetListOption.pageSize(pageSize));
+      Page<Dataset> datasets =
+          bigquery.listDatasets(PROJECT_ID, DatasetListOption.pageSize(pageSize));
       if (datasets == null) {
         System.out.println("Dataset does not contain any models");
         return;
@@ -524,18 +489,16 @@ public class SetupCleanup {
       datasets
           .iterateAll()
           .forEach(
-              dataset -> System.out.printf("Success! Dataset ID: %s ",
-                  dataset.getDatasetId()));
+              dataset -> System.out.printf("Success! Dataset ID: %s ", dataset.getDatasetId()));
     } catch (BigQueryException e) {
-      System.out.println(
-          "Project does not contain any datasets. " + e);
+      System.out.println("Project does not contain any datasets. " + e);
     }
   }
 
   /**
    * Delete dataset
    *
-   * @param projectId   id of project.
+   * @param projectId id of project.
    * @param datasetName name of dataset.
    */
   public static void deleteDataset(String projectId, String datasetName) {
@@ -543,8 +506,7 @@ public class SetupCleanup {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
-      boolean success = bigquery.delete(datasetId,
-          DatasetDeleteOption.deleteContents());
+      boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
       if (success) {
         System.out.printf("Dataset '%s' deleted successfully.%n", datasetName);
       } else {
@@ -559,18 +521,17 @@ public class SetupCleanup {
    * Create BQ table.
    *
    * @param datasetName name of dataset.
-   * @param tableName   name of table.
-   * @param schema      table schema.
+   * @param tableName name of table.
+   * @param schema table schema.
    */
-  public static void createBqTable(final String datasetName,
-      final String tableName, final Schema schema) {
+  public static void createBqTable(
+      final String datasetName, final String tableName, final Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       TableId tableId = TableId.of(datasetName, tableName);
       TableDefinition tableDefinition = StandardTableDefinition.of(schema);
-      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition)
-          .build();
+      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
 
       bigquery.create(tableInfo);
       System.out.printf("Table '%s' created successfully.%n", tableName);
@@ -594,10 +555,8 @@ public class SetupCleanup {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       DatasetId datasetId = DatasetId.of(PROJECT_ID, datasetName);
-      tables = bigquery.listTables(datasetId,
-          TableListOption.pageSize(pageSize));
-      tables.iterateAll().forEach(
-          table -> System.out.print(table.getTableId().getTable() + "\n"));
+      tables = bigquery.listTables(datasetId, TableListOption.pageSize(pageSize));
+      tables.iterateAll().forEach(table -> System.out.print(table.getTableId().getTable() + "\n"));
 
       System.out.println("Tables listed successfully.");
     } catch (BigQueryException e) {
@@ -611,12 +570,15 @@ public class SetupCleanup {
    * Upload data to BQ table.
    *
    * @param datasetName name of dataset.
-   * @param tableName   name of table.
-   * @param sourceUri   source URI.
-   * @param schema      table schema.
+   * @param tableName name of table.
+   * @param sourceUri source URI.
+   * @param schema table schema.
    */
-  public static void uploadDataToBqTable(final String datasetName,
-      final String tableName, final String sourceUri, final Schema schema) {
+  public static void uploadDataToBqTable(
+      final String datasetName,
+      final String tableName,
+      final String sourceUri,
+      final Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
@@ -630,9 +592,7 @@ public class SetupCleanup {
       Job job = bigquery.create(JobInfo.of(loadConfig));
       job = job.waitFor();
       if (job.isDone()) {
-        System.out.printf(
-            "Json from GCS successfully loaded in a table '%s'.%n",
-            tableName);
+        System.out.printf("Json from GCS successfully loaded in a table '%s'.%n", tableName);
       } else {
         System.out.println(
             "BigQuery was unable to load into the table due to an error:"
@@ -656,8 +616,8 @@ public class SetupCleanup {
 
     JsonDeserializer<FieldList> subFieldsDeserializer =
         (jsonElement, type, deserializationContext) -> {
-          Field[] fields = deserializationContext.deserialize(
-              jsonElement.getAsJsonArray(), Field[].class);
+          Field[] fields =
+              deserializationContext.deserialize(jsonElement.getAsJsonArray(), Field[].class);
           return FieldList.of(fields);
         };
 
