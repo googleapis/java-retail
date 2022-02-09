@@ -37,16 +37,13 @@ public class SearchWithBoostSpec {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String searchQuery = "Tee";
     String condition = "(colorFamilies: ANY(\"Blue\"))";
@@ -57,10 +54,7 @@ public class SearchWithBoostSpec {
     BoostSpec boostSpec =
         BoostSpec.newBuilder()
             .addConditionBoostSpecs(
-                ConditionBoostSpec.newBuilder()
-                    .setCondition(condition)
-                    .setBoost(boost)
-                    .build())
+                ConditionBoostSpec.newBuilder().setCondition(condition).setBoost(boost).build())
             .build();
 
     SearchRequest searchRequest =
@@ -74,8 +68,7 @@ public class SearchWithBoostSpec {
     System.out.println("Search request: " + searchRequest);
 
     SearchResponse searchResponse =
-        SearchServiceClient.create().search(searchRequest).getPage()
-            .getResponse();
+        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
     System.out.println("Search response: " + searchResponse);
 
     return searchResponse;
