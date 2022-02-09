@@ -73,6 +73,5 @@ public class SearchWithBoostSpecTest {
     String productTitle = response.getResults(0).getProduct().getTitle();
 
     Assert.assertTrue(productTitle.contains("Tee"));
-
   }
 }
