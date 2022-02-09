@@ -30,15 +30,15 @@ public class CreateTestResourcesTest {
   private String output;
 
   @Before
-  public void setUp() throws IOException, InterruptedException, ExecutionException {
-
+  public void setUp()
+      throws IOException, InterruptedException, ExecutionException {
     Process exec =
         Runtime.getRuntime()
-            .exec("mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
-
+            .exec(
+                "mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor()
+        .submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -46,15 +46,14 @@ public class CreateTestResourcesTest {
   @Test
   public void testCreateTestResources() {
     Assert.assertTrue(output.matches("(?s)^(.*Creating new bucket.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*Import products operation is completed.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported products:.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*Number of failures during the importing:.*)$"));
-
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Import products operation is completed.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Number of successfully imported products:.*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Number of failures during the importing:.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Creating new bucket:.*)$"));
-
-    Assert.assertTrue(output.matches("(?s)^(.*Json from GCS successfully loaded in a table.*)$"));
+    Assert.assertTrue(output.matches(
+        "(?s)^(.*Json from GCS successfully loaded in a table.*)$"));
   }
 }

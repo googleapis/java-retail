@@ -29,9 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public final class ProductsCreateBigqueryTable {
-
-  private ProductsCreateBigqueryTable() {}
+public class ProductsCreateBigqueryTable {
 
   public static void createBqTableWithProducts() throws IOException {
     productsCreateGcsBucketAndUploadJsonFiles();
@@ -45,13 +43,16 @@ public final class ProductsCreateBigqueryTable {
     String productSchemaFilePath = "src/main/resources/product_schema.json";
 
     String validProductsSourceFile =
-        String.format("gs://%s/products.json", ProductsCreateGcsBucket.getBucketName());
+        String.format("gs://%s/products.json",
+            ProductsCreateGcsBucket.getBucketName());
 
     String invalidProductsSourceFile =
         String.format(
-            "gs://%s/products_some_invalid.json", ProductsCreateGcsBucket.getBucketName());
+            "gs://%s/products_some_invalid.json",
+            ProductsCreateGcsBucket.getBucketName());
 
-    BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));
+    BufferedReader bufferedReader = new BufferedReader(
+        new FileReader(productSchemaFilePath));
 
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
 
@@ -65,10 +66,12 @@ public final class ProductsCreateBigqueryTable {
 
     createBqTable(dataset, validProductsTable, productSchema);
 
-    uploadDataToBqTable(dataset, validProductsTable, validProductsSourceFile, productSchema);
+    uploadDataToBqTable(dataset, validProductsTable, validProductsSourceFile,
+        productSchema);
 
     createBqTable(dataset, invalidProductsTable, productSchema);
 
-    uploadDataToBqTable(dataset, invalidProductsTable, invalidProductsSourceFile, productSchema);
+    uploadDataToBqTable(dataset, invalidProductsTable,
+        invalidProductsSourceFile, productSchema);
   }
 }

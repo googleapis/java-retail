@@ -21,34 +21,22 @@ import static setup.SetupCleanup.uploadObject;
 
 import java.io.IOException;
 
-public final class EventsCreateGcsBucket {
+public class EventsCreateGcsBucket {
 
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
 
-  private EventsCreateGcsBucket() {}
-
-  /**
-   * Getter for bucket name constant variable.
-   *
-   * @return String.
-   */
   public static String getBucketName() {
     return BUCKET_NAME;
   }
 
-  /**
-   * Create GCS bucket and upload json files.
-   *
-   * @throws IOException from the called method.
-   */
-  public static void eventsCreateGcsBucketAndUploadJsonFiles() throws IOException {
-
+  public static void eventsCreateGcsBucketAndUploadJsonFiles()
+      throws IOException {
     createBucket(BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME, "user_events.json", "src/main/resources/user_events.json");
+    uploadObject(BUCKET_NAME, "user_events.json",
+        "src/main/resources/user_events.json");
 
-    uploadObject(
-        BUCKET_NAME,
+    uploadObject(BUCKET_NAME,
         "user_events_some_invalid.json",
         "src/main/resources/user_events_some_invalid.json");
   }

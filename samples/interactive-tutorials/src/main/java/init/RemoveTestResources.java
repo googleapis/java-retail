@@ -29,26 +29,24 @@ import java.io.IOException;
 
 public class RemoveTestResources {
 
-  /** This variable describes project number getting from environment variable. */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
-
-  /** This variable describes project id getting from environment variable. */
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-
-  /** This variable describes bucket name from the environment variable. */
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
-
-  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG =
       String.format(
           "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
           PROJECT_NUMBER);
 
-  /**
-   * Delete all products from catalog.
-   *
-   * @throws IOException from the called method.
-   */
+  public static void main(String[] args) throws IOException {
+    deleteBucket(BUCKET_NAME);
+
+    deleteAllProducts();
+
+    deleteDataset(PROJECT_ID, "products");
+
+    deleteDataset(PROJECT_ID, "user_events");
+  }
+
   public static void deleteAllProducts() throws IOException {
     System.out.println("Deleting products in process, please wait...");
 
@@ -75,20 +73,5 @@ public class RemoveTestResources {
     }
 
     System.out.printf("%s products were deleted from %s%n", deleteCount, DEFAULT_CATALOG);
-  }
-
-  /**
-   * Executable class.
-   *
-   * @param args command line arguments.
-   */
-  public static void main(final String[] args) throws IOException {
-    deleteBucket(BUCKET_NAME);
-
-    deleteAllProducts();
-
-    deleteDataset(PROJECT_ID, "products");
-
-    deleteDataset(PROJECT_ID, "user_events");
   }
 }

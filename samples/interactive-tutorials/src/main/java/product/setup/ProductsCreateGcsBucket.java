@@ -21,34 +21,24 @@ import static setup.SetupCleanup.uploadObject;
 
 import java.io.IOException;
 
-public final class ProductsCreateGcsBucket {
+public class ProductsCreateGcsBucket {
 
-  /** This variable describes bucket name in a certain format. */
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
 
-  private ProductsCreateGcsBucket() {}
-
-  /**
-   * Getter for bucket name constant variable.
-   *
-   * @return String.
-   */
   public static String getBucketName() {
     return BUCKET_NAME;
   }
 
-  /**
-   * Create GCS bucket and upload json files.
-   *
-   * @throws IOException from the called method.
-   */
-  public static void productsCreateGcsBucketAndUploadJsonFiles() throws IOException {
+  public static void productsCreateGcsBucketAndUploadJsonFiles()
+      throws IOException {
 
     createBucket(BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME, "products.json", "src/main/resources/products.json");
+    uploadObject(BUCKET_NAME, "products.json",
+        "src/main/resources/products.json");
 
     uploadObject(
-        BUCKET_NAME, "products_some_invalid.json", "src/main/resources/products_some_invalid.json");
+        BUCKET_NAME, "products_some_invalid.json",
+        "src/main/resources/products_some_invalid.json");
   }
 }

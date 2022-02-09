@@ -29,9 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public final class EventsCreateBigQueryTable {
-
-  private EventsCreateBigQueryTable() {}
+public class EventsCreateBigQueryTable {
 
   public static void createBqTableWithEvents() throws IOException {
     eventsCreateGcsBucketAndUploadJsonFiles();

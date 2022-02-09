@@ -35,32 +35,28 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class CreateTestResources {
-
-  /** This variable describes project number getting from environment variable. */
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
-
-  /** This variable describes bucket name from the environment variable. */
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
-
-  /** This variable describes bucket name from the environment variable. */
   private static final String GCS_BUCKET = String.format("gs://%s", System.getenv("BUCKET_NAME"));
-
-  /** This variable describes error bucket name from the environment variable. */
   private static final String GCS_ERROR_BUCKET = String.format("%s/errors", GCS_BUCKET);
-
-  /** This variable describes default catalog name. */
   private static final String DEFAULT_CATALOG =
       String.format(
           "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
           PROJECT_NUMBER);
 
-  /**
-   * Get import products from gcs request.
-   *
-   * @param gcsObjectName file name for import.
-   * @return ImportProductsRequest.
-   */
-  public static ImportProductsRequest getImportProductsGcsRequest(final String gcsObjectName) {
+  public static void main(String[] args) throws IOException, InterruptedException {
+    productsCreateGcsBucketAndUploadJsonFiles();
+
+    eventsCreateGcsBucketAndUploadJsonFiles();
+
+    importProductsFromGcs();
+
+    createBqTableWithProducts();
+
+    createBqTableWithEvents();
+  }
+
+  public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
@@ -88,24 +84,14 @@ public class CreateTestResources {
     return importRequest;
   }
 
-  /**
-   * Call the Retail API to import products.
-   *
-   * @throws IOException from the called method.
-   * @throws InterruptedException when a thread is waiting, sleeping, or otherwise occupied, and the
-   *     thread is interrupted, either before or during the activity.
-   */
   public static void importProductsFromGcs() throws IOException, InterruptedException {
     ImportProductsRequest importGcsRequest = getImportProductsGcsRequest("products.json");
-
     ProductServiceClient serviceClient = ProductServiceClient.create();
-
     String operationName = serviceClient.importProductsCallable().call(importGcsRequest).getName();
 
     System.out.printf("OperationName = %s\n", operationName);
 
     OperationsClient operationsClient = serviceClient.getOperationsClient();
-
     Operation operation = operationsClient.getOperation(operationName);
 
     while (!operation.getDone()) {
@@ -123,10 +109,8 @@ public class CreateTestResources {
 
     if (operation.hasMetadata()) {
       ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-
       System.out.printf(
           "Number of successfully imported products: %s\n", metadata.getSuccessCount());
-
       System.out.printf(
           "Number of failures during the importing: %s\n", metadata.getFailureCount());
     }
@@ -137,23 +121,5 @@ public class CreateTestResources {
 
       System.out.printf("Operation result: %s", response);
     }
-  }
-
-  /**
-   * Executable class.
-   *
-   * @param args command line arguments.
-   */
-  public static void main(final String[] args) throws IOException, InterruptedException {
-
-    productsCreateGcsBucketAndUploadJsonFiles();
-
-    eventsCreateGcsBucketAndUploadJsonFiles();
-
-    importProductsFromGcs();
-
-    createBqTableWithProducts();
-
-    createBqTableWithEvents();
   }
 }
