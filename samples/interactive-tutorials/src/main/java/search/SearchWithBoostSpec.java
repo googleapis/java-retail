@@ -34,52 +34,24 @@ import java.util.UUID;
 public class SearchWithBoostSpec {
 
   public static void main(String[] args) throws IOException {
-
+    // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-
-    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  /**
-   * Call the retail search.
-   *
-   * @return SearchResponse.
-   * @throws IOException if endpoint is not provided.
-   */
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
+    String searchQuery = "Tee";
     String condition = "(colorFamilies: ANY(\"Blue\"))";
-
     float boost = 0.0f;
-
-    SearchRequest searchRequest =
-        getSearchRequest("Tee", condition, boost, defaultSearchPlacementName);
-
-    SearchResponse searchResponse =
-        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
-
-    System.out.println("Search response: " + searchResponse);
-
-    return searchResponse;
-  }
-
-  /**
-   * Get search service request.
-   *
-   * @param query search keyword.
-   * @param condition provides search clarification.
-   * @param boostStrength is a rate of boost strength.
-   * @return SearchRequest.
-   */
-  public static SearchRequest getSearchRequest(
-      String query, String condition, float boostStrength, String defaultSearchPlacementName) {
     int pageSize = 10;
-
     String visitorId = UUID.randomUUID().toString();
 
     BoostSpec boostSpec =
@@ -87,22 +59,26 @@ public class SearchWithBoostSpec {
             .addConditionBoostSpecs(
                 ConditionBoostSpec.newBuilder()
                     .setCondition(condition)
-                    .setBoost(boostStrength)
+                    .setBoost(boost)
                     .build())
             .build();
 
     SearchRequest searchRequest =
         SearchRequest.newBuilder()
             .setPlacement(defaultSearchPlacementName)
-            .setQuery(query)
+            .setQuery(searchQuery)
             .setVisitorId(visitorId)
             .setBoostSpec(boostSpec)
             .setPageSize(pageSize)
             .build();
-
     System.out.println("Search request: " + searchRequest);
 
-    return searchRequest;
+    SearchResponse searchResponse =
+        SearchServiceClient.create().search(searchRequest).getPage()
+            .getResponse();
+    System.out.println("Search response: " + searchResponse);
+
+    return searchResponse;
   }
 }
 
