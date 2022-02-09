@@ -35,16 +35,13 @@ public class SearchSimpleQuery {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectNumber);
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
     String visitorId = UUID.randomUUID().toString();
@@ -59,8 +56,8 @@ public class SearchSimpleQuery {
             .build();
     System.out.println("Search request: " + searchRequest);
 
-    SearchResponse searchResponse = SearchServiceClient.create()
-        .search(searchRequest).getPage().getResponse();
+    SearchResponse searchResponse =
+        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
     System.out.println("Search response: " + searchResponse);
 
     return searchResponse;
