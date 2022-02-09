@@ -32,59 +32,38 @@ import java.util.UUID;
 public class SearchSimpleQuery {
 
   public static void main(String[] args) throws IOException {
-
+    // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-
-    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  /**
-   * Call the retail search.
-   *
-   * @return SearchResponse.
-   * @throws IOException if endpoint is not provided.
-   */
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
-
-    SearchRequest searchRequest = getSearchRequest(queryPhrase, defaultSearchPlacementName);
-
-    SearchResponse searchResponse =
-        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
-
-    System.out.println("Search response: " + searchResponse);
-
-    return searchResponse;
-  }
-
-  /**
-   * Get search service request.
-   *
-   * @param query search keyword.
-   * @return SearchRequest.
-   */
-  public static SearchRequest getSearchRequest(String query, String defaultSearchPlacementName) {
-    int pageSize = 10;
-
     String visitorId = UUID.randomUUID().toString();
+    int pageSize = 10;
 
     SearchRequest searchRequest =
         SearchRequest.newBuilder()
             .setPlacement(defaultSearchPlacementName)
-            .setQuery(query)
+            .setQuery(queryPhrase)
             .setVisitorId(visitorId)
             .setPageSize(pageSize)
             .build();
-
     System.out.println("Search request: " + searchRequest);
 
-    return searchRequest;
+    SearchResponse searchResponse = SearchServiceClient.create()
+        .search(searchRequest).getPage().getResponse();
+    System.out.println("Search response: " + searchResponse);
+
+    return searchResponse;
   }
 }
 

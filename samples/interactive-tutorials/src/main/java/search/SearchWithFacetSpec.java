@@ -29,67 +29,44 @@ import java.util.UUID;
 public class SearchWithFacetSpec {
 
   public static void main(String[] args) throws IOException {
-
+    // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-
-    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectNumber);
+    String defaultSearchPlacementName =
+        defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  /**
-   * Call the retail search.
-   *
-   * @return SearchResponse.
-   * @throws IOException if endpoint is not provided.
-   */
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
-    String facetKey = "colorFamilies";
-
-    SearchRequest searchRequest = getSearchRequest("Tee", facetKey, defaultSearchPlacementName);
-
-    SearchResponse searchResponse =
-        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
-
-    System.out.println("Search response: " + searchResponse);
-
-    return searchResponse;
-  }
-
-  /**
-   * Get search service request.
-   *
-   * @param query search keyword.
-   * @param facetKeyParam Supported textual and numerical facet keys.
-   * @return SearchRequest.
-   */
-  public static SearchRequest getSearchRequest(
-      String query, String facetKeyParam, String defaultSearchPlacementName) {
-
+    String searchQuery = "Tee";
+    String facetKeyParam = "colorFamilies";
     int pageSize = 10;
-
     String visitorId = UUID.randomUUID().toString();
 
     FacetKey facetKey = FacetKey.newBuilder().setKey(facetKeyParam).build();
-
     FacetSpec facetSpec = FacetSpec.newBuilder().setFacetKey(facetKey).build();
 
     SearchRequest searchRequest =
         SearchRequest.newBuilder()
             .setPlacement(defaultSearchPlacementName)
-            .setQuery(query)
+            .setQuery(searchQuery)
             .setVisitorId(visitorId)
             .addFacetSpecs(facetSpec)
             .setPageSize(pageSize)
             .build();
-
     System.out.println("Search request: " + searchRequest);
 
-    return searchRequest;
+    SearchResponse searchResponse =
+        SearchServiceClient.create().search(searchRequest).getPage()
+            .getResponse();
+    System.out.println("Search response: " + searchResponse);
+
+    return searchResponse;
   }
 }
 
