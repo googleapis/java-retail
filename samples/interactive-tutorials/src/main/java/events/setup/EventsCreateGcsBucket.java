@@ -29,14 +29,13 @@ public class EventsCreateGcsBucket {
     return BUCKET_NAME;
   }
 
-  public static void eventsCreateGcsBucketAndUploadJsonFiles()
-      throws IOException {
+  public static void eventsCreateGcsBucketAndUploadJsonFiles() throws IOException {
     createBucket(BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME, "user_events.json",
-        "src/main/resources/user_events.json");
+    uploadObject(BUCKET_NAME, "user_events.json", "src/main/resources/user_events.json");
 
-    uploadObject(BUCKET_NAME,
+    uploadObject(
+        BUCKET_NAME,
         "user_events_some_invalid.json",
         "src/main/resources/user_events_some_invalid.json");
   }

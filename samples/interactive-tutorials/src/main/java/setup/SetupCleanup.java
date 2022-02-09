@@ -57,8 +57,7 @@ public class SetupCleanup {
 
   private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
   private static final Storage STORAGE =
-      StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER).build()
-          .getService();
+      StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER).build().getService();
 
   public static Bucket createBucket(String bucketName) {
 
@@ -123,8 +122,7 @@ public class SetupCleanup {
 
       deleteObjectsFromBucket(STORAGE.get(bucketName));
 
-      System.out.printf("Bucket %s was deleted.%n",
-          STORAGE.get(bucketName).getName());
+      System.out.printf("Bucket %s was deleted.%n", STORAGE.get(bucketName).getName());
     }
 
     if (STORAGE.get(bucketName) == null) {
@@ -139,12 +137,10 @@ public class SetupCleanup {
       blob.delete();
     }
 
-    System.out.printf("All objects are deleted from GCS bucket %s%n",
-        bucket.getName());
+    System.out.printf("All objects are deleted from GCS bucket %s%n", bucket.getName());
   }
 
-  public static void uploadObject(
-      String bucketName, String objectName, String filePath)
+  public static void uploadObject(String bucketName, String objectName, String filePath)
       throws IOException {
 
     BlobId blobId = BlobId.of(bucketName, objectName);
@@ -154,8 +150,7 @@ public class SetupCleanup {
     STORAGE.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
     System.out.println(
-        "File " + filePath + " uploaded to bucket " + bucketName + " as "
-            + objectName);
+        "File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
   }
 
   public static void createBqDataset(String datasetName) {
@@ -179,8 +174,7 @@ public class SetupCleanup {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
-      boolean success = bigquery.delete(datasetId,
-          DatasetDeleteOption.deleteContents());
+      boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
       if (success) {
         System.out.printf("Dataset '%s' deleted successfully.%n", datasetName);
       } else {
@@ -191,15 +185,13 @@ public class SetupCleanup {
     }
   }
 
-  public static void createBqTable(
-      String datasetName, String tableName, Schema schema) {
+  public static void createBqTable(String datasetName, String tableName, Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       TableId tableId = TableId.of(datasetName, tableName);
       TableDefinition tableDefinition = StandardTableDefinition.of(schema);
-      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition)
-          .build();
+      TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
 
       bigquery.create(tableInfo);
       System.out.printf("Table '%s' created successfully.%n", tableName);
@@ -209,10 +201,7 @@ public class SetupCleanup {
   }
 
   public static void uploadDataToBqTable(
-      String datasetName,
-      String tableName,
-      String sourceUri,
-      Schema schema) {
+      String datasetName, String tableName, String sourceUri, Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
@@ -226,8 +215,7 @@ public class SetupCleanup {
       Job job = bigquery.create(JobInfo.of(loadConfig));
       job = job.waitFor();
       if (job.isDone()) {
-        System.out.printf(
-            "Json from GCS successfully loaded in a table '%s'.%n", tableName);
+        System.out.printf("Json from GCS successfully loaded in a table '%s'.%n", tableName);
       } else {
         System.out.println(
             "BigQuery was unable to load into the table due to an error:"
@@ -247,8 +235,7 @@ public class SetupCleanup {
     JsonDeserializer<FieldList> subFieldsDeserializer =
         (jsonElement, type, deserializationContext) -> {
           Field[] fields =
-              deserializationContext.deserialize(jsonElement.getAsJsonArray(),
-                  Field[].class);
+              deserializationContext.deserialize(jsonElement.getAsJsonArray(), Field[].class);
           return FieldList.of(fields);
         };
 

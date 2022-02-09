@@ -29,16 +29,13 @@ public class ProductsCreateGcsBucket {
     return BUCKET_NAME;
   }
 
-  public static void productsCreateGcsBucketAndUploadJsonFiles()
-      throws IOException {
+  public static void productsCreateGcsBucketAndUploadJsonFiles() throws IOException {
 
     createBucket(BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME, "products.json",
-        "src/main/resources/products.json");
+    uploadObject(BUCKET_NAME, "products.json", "src/main/resources/products.json");
 
     uploadObject(
-        BUCKET_NAME, "products_some_invalid.json",
-        "src/main/resources/products_some_invalid.json");
+        BUCKET_NAME, "products_some_invalid.json", "src/main/resources/products_some_invalid.json");
   }
 }

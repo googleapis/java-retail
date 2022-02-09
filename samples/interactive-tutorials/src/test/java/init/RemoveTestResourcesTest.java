@@ -30,23 +30,19 @@ public class RemoveTestResourcesTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
     Process exec =
         Runtime.getRuntime()
-            .exec(
-                "mvn compile exec:java -Dexec.mainClass=init.RemoveTestResources");
+            .exec("mvn compile exec:java -Dexec.mainClass=init.RemoveTestResources");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testRemoveTestResources() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Deleting products in process, please wait.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Deleting products in process, please wait.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*products were deleted from.*)$"));
   }
 }
