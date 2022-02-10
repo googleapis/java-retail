@@ -31,7 +31,7 @@ import java.util.UUID;
 
 public class SearchWithOrdering {
 
-  public static void main(final String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
     String defaultCatalogName = String.format(
@@ -59,12 +59,13 @@ public class SearchWithOrdering {
         .build();
     System.out.println("Search request: " + searchRequest);
 
-    SearchResponse searchResponse = SearchServiceClient.create().search(
-            searchRequest).getPage()
-        .getResponse();
-    System.out.println("Search response: " + searchResponse);
+    try (SearchServiceClient client = SearchServiceClient.create()) {
+      SearchResponse searchResponse =
+          client.search(searchRequest).getPage().getResponse();
+      System.out.println("Search response: " + searchResponse);
 
-    return searchResponse;
+      return searchResponse;
+    }
   }
 }
 

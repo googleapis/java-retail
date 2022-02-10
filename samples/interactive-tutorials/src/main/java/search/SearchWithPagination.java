@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class SearchWithPagination {
 
-  public static void main(final String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
     String defaultCatalogName = String.format(
@@ -46,7 +46,7 @@ public class SearchWithPagination {
   public static SearchResponse search(String defaultSearchPlacementName)
       throws IOException {
     // TRY DIFFERENT PAGINATION PARAMETERS HERE:
-    final int pageSize = 6;
+    int pageSize = 6;
     String queryPhrase = "Hoodie";
     int offset = 0;
     String pageToken = "";
@@ -62,16 +62,17 @@ public class SearchWithPagination {
         .build();
     System.out.println("Search request: " + searchRequest);
 
-    SearchResponse searchResponseFirstPage = SearchServiceClient.create()
-        .search(
-            searchRequest).getPage().getResponse();
-    System.out.println("Search response: " + searchResponseFirstPage);
+    try (SearchServiceClient client = SearchServiceClient.create()) {
+      SearchResponse searchResponseFirstPage =
+          client.search(searchRequest).getPage().getResponse();
+      System.out.println("Search response: " + searchResponseFirstPage);
 
-    // PASTE CALL WITH NEXT PAGE TOKEN HERE:
+      // PASTE CALL WITH NEXT PAGE TOKEN HERE:
 
-    // PASTE CALL WITH OFFSET HERE:
+      // PASTE CALL WITH OFFSET HERE:
 
-    return searchResponseFirstPage;
+      return searchResponseFirstPage;
+    }
   }
 }
 
