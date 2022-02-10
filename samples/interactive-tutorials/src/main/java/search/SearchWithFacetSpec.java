@@ -58,11 +58,13 @@ public class SearchWithFacetSpec {
             .build();
     System.out.println("Search request: " + searchRequest);
 
-    SearchResponse searchResponse =
-        SearchServiceClient.create().search(searchRequest).getPage().getResponse();
-    System.out.println("Search response: " + searchResponse);
+    try (SearchServiceClient client = SearchServiceClient.create()) {
+      SearchResponse searchResponse =
+          client.search(searchRequest).getPage().getResponse();
+      System.out.println("Search response: " + searchResponse);
 
-    return searchResponse;
+      return searchResponse;
+    }
   }
 }
 

@@ -41,6 +41,7 @@ public class SearchWithBoostSpecTest {
             .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithBoostSpec");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
     Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+
     output = stringFuture.get();
   }
 

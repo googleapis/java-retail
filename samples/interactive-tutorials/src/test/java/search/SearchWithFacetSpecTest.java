@@ -43,6 +43,7 @@ public class SearchWithFacetSpecTest {
             .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithFacetSpec");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
     Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+
     output = stringFuture.get();
   }
 
