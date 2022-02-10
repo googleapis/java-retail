@@ -57,8 +57,7 @@ public class SearchSimpleQuery {
     System.out.println("Search request: " + searchRequest);
 
     try (SearchServiceClient client = SearchServiceClient.create()) {
-      SearchResponse searchResponse =
-          client.search(searchRequest).getPage().getResponse();
+      SearchResponse searchResponse = client.search(searchRequest).getPage().getResponse();
       System.out.println("Search response: " + searchResponse);
 
       return searchResponse;
