@@ -32,20 +32,17 @@ public class SearchWithPaginationTest {
   private String defaultSearchPlacementName;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectNumber = System.getenv("PROJECT_NUMBER");
-    String defaultCatalogName = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-    defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=search.SearchWithPagination");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithPagination");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -59,8 +56,7 @@ public class SearchWithPaginationTest {
 
   @Test
   public void TestSearchWithOrdering() throws IOException {
-    SearchResponse response = SearchWithPagination.search(
-        defaultSearchPlacementName);
+    SearchResponse response = SearchWithPagination.search(defaultSearchPlacementName);
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Hoodie"));
     Assert.assertEquals(6, response.getResultsCount());

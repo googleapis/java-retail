@@ -25,7 +25,6 @@ package search;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -34,34 +33,32 @@ public class SearchWithOrdering {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-    String defaultCatalogName = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT ORDER BY EXPRESSION HERE:
     String order = "price desc";
     String queryPhrase = "Hoodie";
     int pageSize = 10;
     String visitorId = UUID.randomUUID().toString();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(defaultSearchPlacementName)
-        .setQuery(queryPhrase)
-        .setOrderBy(order)
-        .setVisitorId(visitorId)
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(defaultSearchPlacementName)
+            .setQuery(queryPhrase)
+            .setOrderBy(order)
+            .setVisitorId(visitorId)
+            .setPageSize(pageSize)
+            .build();
     System.out.println("Search request: " + searchRequest);
 
     try (SearchServiceClient client = SearchServiceClient.create()) {
-      SearchResponse searchResponse =
-          client.search(searchRequest).getPage().getResponse();
+      SearchResponse searchResponse = client.search(searchRequest).getPage().getResponse();
       System.out.println("Search response: " + searchResponse);
 
       return searchResponse;

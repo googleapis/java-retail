@@ -28,7 +28,6 @@ import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec;
 import com.google.cloud.retail.v2.SearchRequest.QueryExpansionSpec.Condition;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -37,38 +36,35 @@ public class SearchWithQueryExpansionSpec {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-    String defaultCatalogName = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     search(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName)
-      throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
     int pageSize = 10;
     String queryPhrase = "Google Youth Hero Tee Grey";
     String visitorId = UUID.randomUUID().toString();
 
-    QueryExpansionSpec queryExpansionSpec = QueryExpansionSpec.newBuilder()
-        .setCondition(condition)
-        .build();
+    QueryExpansionSpec queryExpansionSpec =
+        QueryExpansionSpec.newBuilder().setCondition(condition).build();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(defaultSearchPlacementName)
-        .setQuery(queryPhrase)
-        .setVisitorId(visitorId)
-        .setQueryExpansionSpec(queryExpansionSpec)
-        .setPageSize(pageSize)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(defaultSearchPlacementName)
+            .setQuery(queryPhrase)
+            .setVisitorId(visitorId)
+            .setQueryExpansionSpec(queryExpansionSpec)
+            .setPageSize(pageSize)
+            .build();
     System.out.println("Search request: " + searchRequest);
 
     try (SearchServiceClient client = SearchServiceClient.create()) {
-      SearchResponse searchResponse =
-          client.search(searchRequest).getPage().getResponse();
+      SearchResponse searchResponse = client.search(searchRequest).getPage().getResponse();
       System.out.println("Search response: " + searchResponse);
 
       return searchResponse;

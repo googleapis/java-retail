@@ -32,20 +32,17 @@ public class SearchWithQueryExpansionSpecTest {
   private String defaultSearchPlacementName;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectNumber = System.getenv("PROJECT_NUMBER");
-    String defaultCatalogName = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-    defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=search.SearchWithQueryExpansionSpec");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=search.SearchWithQueryExpansionSpec");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -59,13 +56,12 @@ public class SearchWithQueryExpansionSpecTest {
 
   @Test
   public void testSearchWithQueryExpansionSpec() throws IOException {
-    SearchResponse response = SearchWithQueryExpansionSpec.search(
-        defaultSearchPlacementName);
+    SearchResponse response = SearchWithQueryExpansionSpec.search(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
-    Assert.assertTrue(response.getResults(0)
-        .getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
-    Assert.assertFalse(response.getResults(2)
-        .getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
+    Assert.assertTrue(
+        response.getResults(0).getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
+    Assert.assertFalse(
+        response.getResults(2).getProduct().getTitle().contains("Google Youth Hero Tee Grey"));
     Assert.assertTrue(response.getQueryExpansionInfo().getExpandedQuery());
   }
 }

@@ -25,7 +25,6 @@ package search;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchResponse;
 import com.google.cloud.retail.v2.SearchServiceClient;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -34,38 +33,36 @@ public class SearchWithFiltering {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectNumber = System.getenv("PROJECT_NUMBER");
-    String defaultCatalogName = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectNumber);
-    String defaultSearchPlacementName =
-        defaultCatalogName + "/placements/default_search";
-    String defaultBranchName =
-        defaultCatalogName + "/branches/default_branch";
+    String defaultCatalogName =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+    String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
+    String defaultBranchName = defaultCatalogName + "/branches/default_branch";
 
     search(defaultSearchPlacementName, defaultBranchName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName,
-      String defaultBranchName) throws IOException {
+  public static SearchResponse search(String defaultSearchPlacementName, String defaultBranchName)
+      throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
     String filter = "(colorFamilies: ANY(\"Black\"))";
     String queryPhrase = "Tee";
     int pageSize = 10;
     String visitorId = UUID.randomUUID().toString();
 
-    SearchRequest searchRequest = SearchRequest.newBuilder()
-        .setPlacement(defaultSearchPlacementName)
-        .setBranch(defaultBranchName)
-        .setVisitorId(visitorId)
-        .setQuery(queryPhrase)
-        .setPageSize(pageSize)
-        .setFilter(filter)
-        .build();
+    SearchRequest searchRequest =
+        SearchRequest.newBuilder()
+            .setPlacement(defaultSearchPlacementName)
+            .setBranch(defaultBranchName)
+            .setVisitorId(visitorId)
+            .setQuery(queryPhrase)
+            .setPageSize(pageSize)
+            .setFilter(filter)
+            .build();
 
     System.out.println("Search request: " + searchRequest);
 
     try (SearchServiceClient client = SearchServiceClient.create()) {
-      SearchResponse searchResponse =
-          client.search(searchRequest).getPage().getResponse();
+      SearchResponse searchResponse = client.search(searchRequest).getPage().getResponse();
       System.out.println("Search response: " + searchResponse);
 
       return searchResponse;
