@@ -85,41 +85,48 @@ public class CreateTestResources {
   }
 
   public static void importProductsFromGcs() throws IOException, InterruptedException {
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest("products.json");
-    ProductServiceClient serviceClient = ProductServiceClient.create();
-    String operationName = serviceClient.importProductsCallable().call(importGcsRequest).getName();
+    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(
+        "products.json");
 
-    System.out.printf("OperationName = %s\n", operationName);
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      String operationName = serviceClient.importProductsCallable()
+          .call(importGcsRequest).getName();
 
-    OperationsClient operationsClient = serviceClient.getOperationsClient();
-    Operation operation = operationsClient.getOperation(operationName);
+      System.out.printf("OperationName = %s\n", operationName);
 
-    while (!operation.getDone()) {
-      System.out.println("Please wait till operation is completed.");
+      OperationsClient operationsClient = serviceClient.getOperationsClient();
+      Operation operation = operationsClient.getOperation(operationName);
 
-      // Keep polling the operation periodically until the import task is done.
-      final int awaitDuration = 30000;
+      while (!operation.getDone()) {
+        System.out.println("Please wait till operation is completed.");
 
-      Thread.sleep(awaitDuration);
+        // Keep polling the operation periodically until the import task is done.
+        int awaitDuration = 30000;
 
-      operation = operationsClient.getOperation(operationName);
-    }
+        Thread.sleep(awaitDuration);
 
-    System.out.println("Import products operation is completed.");
+        operation = operationsClient.getOperation(operationName);
+      }
 
-    if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-      System.out.printf(
-          "Number of successfully imported products: %s\n", metadata.getSuccessCount());
-      System.out.printf(
-          "Number of failures during the importing: %s\n", metadata.getFailureCount());
-    }
+      System.out.println("Import products operation is completed.");
 
-    if (operation.hasResponse()) {
-      ImportProductsResponse response =
-          operation.getResponse().unpack(ImportProductsResponse.class);
+      if (operation.hasMetadata()) {
+        ImportMetadata metadata = operation.getMetadata()
+            .unpack(ImportMetadata.class);
+        System.out.printf(
+            "Number of successfully imported products: %s\n",
+            metadata.getSuccessCount());
+        System.out.printf(
+            "Number of failures during the importing: %s\n",
+            metadata.getFailureCount());
+      }
 
-      System.out.printf("Operation result: %s", response);
+      if (operation.hasResponse()) {
+        ImportProductsResponse response =
+            operation.getResponse().unpack(ImportProductsResponse.class);
+
+        System.out.printf("Operation result: %s", response);
+      }
     }
   }
 }

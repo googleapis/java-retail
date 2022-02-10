@@ -50,28 +50,32 @@ public class RemoveTestResources {
   public static void deleteAllProducts() throws IOException {
     System.out.println("Deleting products in process, please wait...");
 
-    ProductServiceClient productServiceClient = ProductServiceClient.create();
+    try (ProductServiceClient productServiceClient = ProductServiceClient.create()) {
+      ListProductsRequest listRequest =
+          ListProductsRequest.newBuilder().setParent(DEFAULT_CATALOG).build();
 
-    ListProductsRequest listRequest =
-        ListProductsRequest.newBuilder().setParent(DEFAULT_CATALOG).build();
+      ListProductsPagedResponse products = productServiceClient.listProducts(
+          listRequest);
 
-    ListProductsPagedResponse products = productServiceClient.listProducts(listRequest);
+      int deleteCount = 0;
 
-    int deleteCount = 0;
+      for (Product product : products.iterateAll()) {
+        DeleteProductRequest deleteRequest =
+            DeleteProductRequest.newBuilder().setName(product.getName())
+                .build();
 
-    for (Product product : products.iterateAll()) {
-      DeleteProductRequest deleteRequest =
-          DeleteProductRequest.newBuilder().setName(product.getName()).build();
-
-      try {
-        productServiceClient.deleteProduct(deleteRequest);
-        deleteCount++;
-      } catch (PermissionDeniedException e) {
-        System.out.println(
-            "Ignore PermissionDenied in case the product does not exist " + "at time of deletion.");
+        try {
+          productServiceClient.deleteProduct(deleteRequest);
+          deleteCount++;
+        } catch (PermissionDeniedException e) {
+          System.out.println(
+              "Ignore PermissionDenied in case the product does not exist "
+                  + "at time of deletion.");
+        }
       }
-    }
 
-    System.out.printf("%s products were deleted from %s%n", deleteCount, DEFAULT_CATALOG);
+      System.out.printf("%s products were deleted from %s%n", deleteCount,
+          DEFAULT_CATALOG);
+    }
   }
 }
