@@ -71,6 +71,17 @@ use this Cloud Retail Client Library.
 
 
 
+## Samples
+
+Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/main/samples) directory.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+| Search Simple Query | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchSimpleQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchSimpleQuery.java) |
+| Search With Boost Spec | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithBoostSpec.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithBoostSpec.java) |
+| Search With Facet Spec | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithFacetSpec.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithFacetSpec.java) |
+
+
 
 ## Troubleshooting
 
