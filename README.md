@@ -71,6 +71,21 @@ use this Cloud Retail Client Library.
 
 
 
+## Samples
+
+Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/main/samples) directory.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+| Events Create Big Query Table | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/events/setup/EventsCreateBigQueryTable.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/events/setup/EventsCreateBigQueryTable.java) |
+| Events Create Gcs Bucket | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/events/setup/EventsCreateGcsBucket.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/events/setup/EventsCreateGcsBucket.java) |
+| Create Test Resources | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/init/CreateTestResources.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/init/CreateTestResources.java) |
+| Remove Test Resources | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/init/RemoveTestResources.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/init/RemoveTestResources.java) |
+| Products Create Bigquery Table | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateBigqueryTable.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateBigqueryTable.java) |
+| Products Create Gcs Bucket | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java) |
+| Setup Cleanup | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/setup/SetupCleanup.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/setup/SetupCleanup.java) |
+
+
 
 ## Troubleshooting
 

@@ -54,15 +54,13 @@ public class RemoveTestResources {
       ListProductsRequest listRequest =
           ListProductsRequest.newBuilder().setParent(DEFAULT_CATALOG).build();
 
-      ListProductsPagedResponse products = productServiceClient.listProducts(
-          listRequest);
+      ListProductsPagedResponse products = productServiceClient.listProducts(listRequest);
 
       int deleteCount = 0;
 
       for (Product product : products.iterateAll()) {
         DeleteProductRequest deleteRequest =
-            DeleteProductRequest.newBuilder().setName(product.getName())
-                .build();
+            DeleteProductRequest.newBuilder().setName(product.getName()).build();
 
         try {
           productServiceClient.deleteProduct(deleteRequest);
@@ -74,8 +72,7 @@ public class RemoveTestResources {
         }
       }
 
-      System.out.printf("%s products were deleted from %s%n", deleteCount,
-          DEFAULT_CATALOG);
+      System.out.printf("%s products were deleted from %s%n", deleteCount, DEFAULT_CATALOG);
     }
   }
 }

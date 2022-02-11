@@ -85,12 +85,11 @@ public class CreateTestResources {
   }
 
   public static void importProductsFromGcs() throws IOException, InterruptedException {
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(
-        "products.json");
+    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest("products.json");
 
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      String operationName = serviceClient.importProductsCallable()
-          .call(importGcsRequest).getName();
+      String operationName =
+          serviceClient.importProductsCallable().call(importGcsRequest).getName();
 
       System.out.printf("OperationName = %s\n", operationName);
 
@@ -111,14 +110,11 @@ public class CreateTestResources {
       System.out.println("Import products operation is completed.");
 
       if (operation.hasMetadata()) {
-        ImportMetadata metadata = operation.getMetadata()
-            .unpack(ImportMetadata.class);
+        ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
         System.out.printf(
-            "Number of successfully imported products: %s\n",
-            metadata.getSuccessCount());
+            "Number of successfully imported products: %s\n", metadata.getSuccessCount());
         System.out.printf(
-            "Number of failures during the importing: %s\n",
-            metadata.getFailureCount());
+            "Number of failures during the importing: %s\n", metadata.getFailureCount());
       }
 
       if (operation.hasResponse()) {
