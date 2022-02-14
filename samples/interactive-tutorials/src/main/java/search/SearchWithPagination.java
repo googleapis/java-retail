@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_search_for_products_with_page_size]
+
 /*
- * [START retail_search_for_products_with_page_size]
  * Call Retail API to search for a products in a catalog,
  * limit the number of the products per page and go to the next page
  * using "next_page_token" or jump to chosen page using "offset".
@@ -38,10 +39,10 @@ public class SearchWithPagination {
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    search(defaultSearchPlacementName);
+    getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT PAGINATION PARAMETERS HERE:
     int pageSize = 6;
     String queryPhrase = "Hoodie";

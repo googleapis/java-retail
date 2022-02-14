@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_search_for_products_with_query_expansion_specification]
+
 /*
- * [START retail_search_for_products_with_query_expansion_specification]
  * Call Retail API to search for a products in a catalog,
  * enabling the query expansion feature to let the Google Retail Search
  * build an automatic query expansion.
@@ -40,10 +41,10 @@ public class SearchWithQueryExpansionSpec {
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    search(defaultSearchPlacementName);
+    getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
     int pageSize = 10;

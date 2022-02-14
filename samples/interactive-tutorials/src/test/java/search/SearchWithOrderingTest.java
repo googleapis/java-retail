@@ -56,7 +56,7 @@ public class SearchWithOrderingTest {
 
   @Test
   public void TestSearchWithOrdering() throws IOException {
-    SearchResponse response = SearchWithOrdering.search(defaultSearchPlacementName);
+    SearchResponse response = SearchWithOrdering.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(3).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Hoodie"));

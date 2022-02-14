@@ -59,10 +59,10 @@ public class SearchWithFilteringTest {
   @Test
   public void TestSearchWithFiltering() throws IOException {
     SearchResponse response =
-        SearchWithFiltering.search(defaultSearchPlacementName, defaultBranchName);
+        SearchWithFiltering.getSearchResponse(defaultSearchPlacementName, defaultBranchName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
-    Assert.assertTrue(productTitle.contains("Tee Black"));
+    Assert.assertTrue(productTitle.contains("Google Black Cloud Tee"));
     Assert.assertTrue(
         response.getResults(0).getProduct().getColorInfo().getColorFamilies(0).contains("Black"));
     Assert.assertEquals(16, response.getTotalSize());

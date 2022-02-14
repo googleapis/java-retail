@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_search_for_products_with_filter]
+
 /*
- * [START retail_search_for_products_with_filter]
  * Call Retail API to search for a products in a catalog,
  * filter the results by different product fields.
  */
@@ -38,10 +39,10 @@ public class SearchWithFiltering {
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
     String defaultBranchName = defaultCatalogName + "/branches/default_branch";
 
-    search(defaultSearchPlacementName, defaultBranchName);
+    getSearchResponse(defaultSearchPlacementName, defaultBranchName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName, String defaultBranchName)
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName, String defaultBranchName)
       throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
     String filter = "(colorFamilies: ANY(\"Black\"))";

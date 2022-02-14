@@ -27,7 +27,6 @@ import org.junit.Test;
 import util.StreamGobbler;
 
 public class SearchWithPaginationTest {
-
   private String output;
   private String defaultSearchPlacementName;
 
@@ -56,7 +55,7 @@ public class SearchWithPaginationTest {
 
   @Test
   public void TestSearchWithOrdering() throws IOException {
-    SearchResponse response = SearchWithPagination.search(defaultSearchPlacementName);
+    SearchResponse response = SearchWithPagination.getSearchResponse(defaultSearchPlacementName);
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Hoodie"));
     Assert.assertEquals(6, response.getResultsCount());
