@@ -35,38 +35,25 @@ public class ProductsCreateBigqueryTable {
     productsCreateGcsBucketAndUploadJsonFiles();
 
     String dataset = "products";
-
     String validProductsTable = "products";
-
     String invalidProductsTable = "products_some_invalid";
-
     String productSchemaFilePath = "src/main/resources/product_schema.json";
-
     String validProductsSourceFile =
         String.format("gs://%s/products.json", ProductsCreateGcsBucket.getBucketName());
-
     String invalidProductsSourceFile =
         String.format(
             "gs://%s/products_some_invalid.json", ProductsCreateGcsBucket.getBucketName());
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));
-
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
-
     jsonToString = jsonToString.replace("\"fields\"", "\"subFields\"");
-
     Field[] fields = getGson().fromJson(jsonToString, Field[].class);
-
     Schema productSchema = Schema.of(fields);
 
     createBqDataset(dataset);
-
     createBqTable(dataset, validProductsTable, productSchema);
-
     uploadDataToBqTable(dataset, validProductsTable, validProductsSourceFile, productSchema);
-
     createBqTable(dataset, invalidProductsTable, productSchema);
-
     uploadDataToBqTable(dataset, invalidProductsTable, invalidProductsSourceFile, productSchema);
   }
 }

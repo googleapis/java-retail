@@ -60,16 +60,12 @@ public class SetupCleanup {
       StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER).build().getService();
 
   public static Bucket createBucket(String bucketName) {
-
     Bucket bucket = null;
-
     System.out.printf("Creating new bucket: %s %n", bucketName);
 
     if (checkIfBucketExists(bucketName)) {
       System.out.printf("Bucket %s already exists. %n", bucketName);
-
       Page<Bucket> bucketList = STORAGE.list();
-
       for (Bucket itrBucket : bucketList.iterateAll()) {
         if (itrBucket.getName().equals(bucketName)) {
           bucket = itrBucket;
@@ -99,7 +95,6 @@ public class SetupCleanup {
     boolean bucketExists = false;
 
     Page<Bucket> bucketList = STORAGE.list();
-
     for (Bucket bucket : bucketList.iterateAll()) {
       if (bucket.getName().equals(bucketToCheck)) {
         bucketExists = true;
@@ -113,15 +108,12 @@ public class SetupCleanup {
   public static void deleteBucket(String bucketName) {
     try {
       Bucket bucket = STORAGE.get(bucketName);
-
       if (bucket != null) {
         bucket.delete();
       }
     } catch (StorageException e) {
       System.out.printf("Bucket is not empty. Deleting objects from bucket.%n");
-
       deleteObjectsFromBucket(STORAGE.get(bucketName));
-
       System.out.printf("Bucket %s was deleted.%n", STORAGE.get(bucketName).getName());
     }
 
@@ -132,23 +124,17 @@ public class SetupCleanup {
 
   public static void deleteObjectsFromBucket(Bucket bucket) {
     Page<Blob> blobs = bucket.list();
-
     for (Blob blob : blobs.iterateAll()) {
       blob.delete();
     }
-
     System.out.printf("All objects are deleted from GCS bucket %s%n", bucket.getName());
   }
 
   public static void uploadObject(String bucketName, String objectName, String filePath)
       throws IOException {
-
     BlobId blobId = BlobId.of(bucketName, objectName);
-
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-
     STORAGE.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
-
     System.out.println(
         "File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
   }
@@ -156,13 +142,9 @@ public class SetupCleanup {
   public static void createBqDataset(String datasetName) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-
       DatasetInfo datasetInfo = DatasetInfo.newBuilder(datasetName).build();
-
       Dataset newDataset = bigquery.create(datasetInfo);
-
       String newDatasetName = newDataset.getDatasetId().getDataset();
-
       System.out.printf("Dataset '%s' created successfully.%n", newDatasetName);
     } catch (BigQueryException e) {
       System.out.printf("Dataset '%s' already exists.%n", datasetName);
@@ -172,7 +154,6 @@ public class SetupCleanup {
   public static void deleteDataset(String projectId, String datasetName) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
       if (success) {
@@ -188,11 +169,9 @@ public class SetupCleanup {
   public static void createBqTable(String datasetName, String tableName, Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-
       TableId tableId = TableId.of(datasetName, tableName);
       TableDefinition tableDefinition = StandardTableDefinition.of(schema);
       TableInfo tableInfo = TableInfo.newBuilder(tableId, tableDefinition).build();
-
       bigquery.create(tableInfo);
       System.out.printf("Table '%s' created successfully.%n", tableName);
     } catch (BigQueryException e) {
@@ -204,14 +183,12 @@ public class SetupCleanup {
       String datasetName, String tableName, String sourceUri, Schema schema) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
-
       TableId tableId = TableId.of(datasetName, tableName);
       LoadJobConfiguration loadConfig =
           LoadJobConfiguration.newBuilder(tableId, sourceUri)
               .setFormatOptions(FormatOptions.json())
               .setSchema(schema)
               .build();
-
       Job job = bigquery.create(JobInfo.of(loadConfig));
       job = job.waitFor();
       if (job.isDone()) {

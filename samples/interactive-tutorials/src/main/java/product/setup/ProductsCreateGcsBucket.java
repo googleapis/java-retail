@@ -30,11 +30,8 @@ public class ProductsCreateGcsBucket {
   }
 
   public static void productsCreateGcsBucketAndUploadJsonFiles() throws IOException {
-
     createBucket(BUCKET_NAME);
-
     uploadObject(BUCKET_NAME, "products.json", "src/main/resources/products.json");
-
     uploadObject(
         BUCKET_NAME, "products_some_invalid.json", "src/main/resources/products_some_invalid.json");
   }

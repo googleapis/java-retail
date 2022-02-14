@@ -35,38 +35,25 @@ public class EventsCreateBigQueryTable {
     eventsCreateGcsBucketAndUploadJsonFiles();
 
     String dataset = "user_events";
-
     String validEventsTable = "events";
-
     String invalidEventsTable = "events_some_invalid";
-
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
-
     String validEventsSourceFile =
         String.format("gs://%s/user_events.json", EventsCreateGcsBucket.getBucketName());
-
     String invalidEventsSourceFile =
         String.format(
             "gs://%s/user_events_some_invalid.json", EventsCreateGcsBucket.getBucketName());
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
-
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
-
     jsonToString = jsonToString.replace("\"fields\"", "\"subFields\"");
-
     Field[] fields = getGson().fromJson(jsonToString, Field[].class);
-
     Schema eventsSchema = Schema.of(fields);
 
     createBqDataset(dataset);
-
     createBqTable(dataset, validEventsTable, eventsSchema);
-
     uploadDataToBqTable(dataset, validEventsTable, validEventsSourceFile, eventsSchema);
-
     createBqTable(dataset, invalidEventsTable, eventsSchema);
-
     uploadDataToBqTable(dataset, invalidEventsTable, invalidEventsSourceFile, eventsSchema);
   }
 }

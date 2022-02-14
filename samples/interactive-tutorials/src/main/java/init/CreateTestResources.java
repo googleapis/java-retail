@@ -46,13 +46,9 @@ public class CreateTestResources {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     productsCreateGcsBucketAndUploadJsonFiles();
-
     eventsCreateGcsBucketAndUploadJsonFiles();
-
     importProductsFromGcs();
-
     createBqTableWithProducts();
-
     createBqTableWithEvents();
   }
 
@@ -62,15 +58,12 @@ public class CreateTestResources {
             .addAllInputUris(
                 Collections.singleton(String.format("gs://%s/%s", BUCKET_NAME, gcsObjectName)))
             .build();
-
     ProductInputConfig inputConfig =
         ProductInputConfig.newBuilder().setGcsSource(gcsSource).build();
-
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
     ImportErrorsConfig errorsConfig =
         ImportErrorsConfig.newBuilder().setGcsPrefix(GCS_ERROR_BUCKET).build();
-
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
             .setParent(DEFAULT_CATALOG)
@@ -78,7 +71,6 @@ public class CreateTestResources {
             .setInputConfig(inputConfig)
             .setErrorsConfig(errorsConfig)
             .build();
-
     System.out.println("Import products from google cloud source request: " + importRequest);
 
     return importRequest;
@@ -90,7 +82,6 @@ public class CreateTestResources {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName =
           serviceClient.importProductsCallable().call(importGcsRequest).getName();
-
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
@@ -98,12 +89,9 @@ public class CreateTestResources {
 
       while (!operation.getDone()) {
         System.out.println("Please wait till operation is completed.");
-
         // Keep polling the operation periodically until the import task is done.
         int awaitDuration = 30000;
-
         Thread.sleep(awaitDuration);
-
         operation = operationsClient.getOperation(operationName);
       }
 
@@ -120,7 +108,6 @@ public class CreateTestResources {
       if (operation.hasResponse()) {
         ImportProductsResponse response =
             operation.getResponse().unpack(ImportProductsResponse.class);
-
         System.out.printf("Operation result: %s", response);
       }
     }
