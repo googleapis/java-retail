@@ -43,7 +43,8 @@ public class SearchWithBoostSpec {
     getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String searchQuery = "Tee";
     String condition = "(colorFamilies: ANY(\"Blue\"))";

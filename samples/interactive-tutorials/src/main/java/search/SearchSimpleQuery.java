@@ -41,7 +41,8 @@ public class SearchSimpleQuery {
     getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
     String visitorId = UUID.randomUUID().toString();
