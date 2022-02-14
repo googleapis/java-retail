@@ -56,7 +56,8 @@ public class SearchWithQueryExpansionSpecTest {
 
   @Test
   public void testSearchWithQueryExpansionSpec() throws IOException {
-    SearchResponse response = SearchWithQueryExpansionSpec.getSearchResponse(defaultSearchPlacementName);
+    SearchResponse response =
+        SearchWithQueryExpansionSpec.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     Assert.assertTrue(
         response.getResults(0).getProduct().getTitle().contains("Google Youth Hero Tee Grey"));

@@ -41,7 +41,8 @@ public class SearchWithOrdering {
     getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT ORDER BY EXPRESSION HERE:
     String order = "price desc";
     String queryPhrase = "Hoodie";

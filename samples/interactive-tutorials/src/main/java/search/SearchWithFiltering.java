@@ -42,8 +42,8 @@ public class SearchWithFiltering {
     getSearchResponse(defaultSearchPlacementName, defaultBranchName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName, String defaultBranchName)
-      throws IOException {
+  public static SearchResponse getSearchResponse(
+      String defaultSearchPlacementName, String defaultBranchName) throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
     String filter = "(colorFamilies: ANY(\"Black\"))";
     String queryPhrase = "Tee";

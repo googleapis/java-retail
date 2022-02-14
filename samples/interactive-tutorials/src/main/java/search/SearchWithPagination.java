@@ -42,7 +42,8 @@ public class SearchWithPagination {
     getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName)
+      throws IOException {
     // TRY DIFFERENT PAGINATION PARAMETERS HERE:
     int pageSize = 6;
     String queryPhrase = "Hoodie";
