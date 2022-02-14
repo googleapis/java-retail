@@ -54,7 +54,7 @@ public class SearchWithBoostSpecTest {
 
   @Test
   public void testSearchWithBoostSpec() throws IOException {
-    SearchResponse response = SearchWithBoostSpec.search(defaultSearchPlacementName);
+    SearchResponse response = SearchWithBoostSpec.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Tee"));

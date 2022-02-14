@@ -54,7 +54,7 @@ public class SearchSimpleQueryTest {
 
   @Test
   public void testSearchSimpleQuery() throws IOException {
-    SearchResponse response = SearchSimpleQuery.search(defaultSearchPlacementName);
+    SearchResponse response = SearchSimpleQuery.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Hoodie"));

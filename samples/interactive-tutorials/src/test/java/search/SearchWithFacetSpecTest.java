@@ -27,9 +27,7 @@ import org.junit.Test;
 import util.StreamGobbler;
 
 public class SearchWithFacetSpecTest {
-
   private String output;
-
   private String defaultSearchPlacementName;
 
   @Before
@@ -57,7 +55,7 @@ public class SearchWithFacetSpecTest {
 
   @Test
   public void testSearchWithFacetSpec() throws IOException {
-    SearchResponse response = SearchWithFacetSpec.search(defaultSearchPlacementName);
+    SearchResponse response = SearchWithFacetSpec.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Tee"));

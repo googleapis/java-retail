@@ -38,10 +38,10 @@ public class SearchSimpleQuery {
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    search(defaultSearchPlacementName);
+    getSearchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse search(String defaultSearchPlacementName) throws IOException {
+  public static SearchResponse getSearchResponse(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY PHRASES HERE:
     String queryPhrase = "Hoodie";
     String visitorId = UUID.randomUUID().toString();
