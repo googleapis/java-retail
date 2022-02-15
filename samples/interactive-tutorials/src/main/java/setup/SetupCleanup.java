@@ -55,9 +55,9 @@ import java.nio.file.Paths;
 
 public class SetupCleanup {
 
-  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final Storage STORAGE =
-      StorageOptions.newBuilder().setProjectId(PROJECT_NUMBER).build().getService();
+      StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
 
   public static Bucket createBucket(String bucketName) {
     Bucket bucket = null;
