@@ -30,24 +30,22 @@ public class ImportProductsBigQueryTableTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsBigQueryTable");
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=product.ImportProductsBigQueryTable");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testImportProductsBigQueryTable() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from big query table request.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Import products from big query table request.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Operation result.*)$"));
   }
 }

@@ -34,7 +34,6 @@ import com.google.cloud.retail.v2.ProductInlineSource;
 import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.FieldMask;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,11 +46,11 @@ import java.util.concurrent.TimeUnit;
 public class ImportProductsInlineSource {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch", PROJECT_ID);
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
-      .toString();
+  private static final String DEFAULT_CATALOG =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+          PROJECT_ID);
+  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -60,28 +59,27 @@ public class ImportProductsInlineSource {
 
   public static void importProductsFromInlineSource()
       throws IOException, ExecutionException, InterruptedException {
-    ImportProductsRequest importRequest = getImportProductsInlineRequest(
-        getProducts());
+    ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts());
 
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       OperationFuture<ImportProductsResponse, ImportMetadata> importOperation =
           serviceClient.importProductsAsync(importRequest);
 
-      System.out.printf("The operation was started: %s%n",
-          importOperation.getName());
+      System.out.printf("The operation was started: %s%n", importOperation.getName());
 
       while (!importOperation.isDone()) {
         System.out.println("Please wait till operation is done.");
         int awaitDuration = 5;
-        serviceClient.awaitTermination(
-            awaitDuration, TimeUnit.SECONDS);
+        serviceClient.awaitTermination(awaitDuration, TimeUnit.SECONDS);
         System.out.println("Import products operation is done.");
 
         if (importOperation.getMetadata().get() != null) {
-          System.out.printf("Number of successfully imported products: %s%n",
+          System.out.printf(
+              "Number of successfully imported products: %s%n",
               importOperation.getMetadata().get().getSuccessCount());
 
-          System.out.printf("Number of failures during the importing: %s%n",
+          System.out.printf(
+              "Number of failures during the importing: %s%n",
               importOperation.getMetadata().get().getFailureCount());
         } else {
           System.out.println("Metadata in bigQuery operation is empty.");
@@ -98,21 +96,19 @@ public class ImportProductsInlineSource {
 
   public static ImportProductsRequest getImportProductsInlineRequest(
       List<Product> productsToImport) {
-    ProductInlineSource inlineSource = ProductInlineSource.newBuilder()
-        .addAllProducts(productsToImport)
-        .build();
+    ProductInlineSource inlineSource =
+        ProductInlineSource.newBuilder().addAllProducts(productsToImport).build();
 
-    ProductInputConfig inputConfig = ProductInputConfig.newBuilder()
-        .setProductInlineSource(inlineSource)
-        .build();
+    ProductInputConfig inputConfig =
+        ProductInputConfig.newBuilder().setProductInlineSource(inlineSource).build();
 
-    ImportProductsRequest importRequest = ImportProductsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setInputConfig(inputConfig)
-        .build();
+    ImportProductsRequest importRequest =
+        ImportProductsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setInputConfig(inputConfig)
+            .build();
 
-    System.out.printf("Import products from inline source request: %s%n",
-        importRequest);
+    System.out.printf("Import products from inline source request: %s%n", importRequest);
 
     return importRequest;
   }
@@ -127,82 +123,90 @@ public class ImportProductsInlineSource {
     float originalPrice1 = 45.0f;
     float cost1 = 12.0f;
 
-    PriceInfo priceInfo1 = PriceInfo.newBuilder()
-        .setPrice(price1)
-        .setOriginalPrice(originalPrice1)
-        .setCost(cost1)
-        .setCurrencyCode("USD")
-        .build();
+    PriceInfo priceInfo1 =
+        PriceInfo.newBuilder()
+            .setPrice(price1)
+            .setOriginalPrice(originalPrice1)
+            .setCost(cost1)
+            .setCurrencyCode("USD")
+            .build();
 
-    ColorInfo colorInfo1 = ColorInfo.newBuilder()
-        .addColorFamilies("Blue")
-        .addAllColors(Arrays.asList("Light blue", "Blue", "Dark blue"))
-        .build();
+    ColorInfo colorInfo1 =
+        ColorInfo.newBuilder()
+            .addColorFamilies("Blue")
+            .addAllColors(Arrays.asList("Light blue", "Blue", "Dark blue"))
+            .build();
 
-    FulfillmentInfo fulfillmentInfo1 = FulfillmentInfo.newBuilder()
-        .setType("pickup-in-store")
-        .addAllPlaceIds(Arrays.asList("store1", "store2"))
-        .build();
+    FulfillmentInfo fulfillmentInfo1 =
+        FulfillmentInfo.newBuilder()
+            .setType("pickup-in-store")
+            .addAllPlaceIds(Arrays.asList("store1", "store2"))
+            .build();
 
-    FieldMask fieldMask1 = FieldMask.newBuilder()
-        .addAllPaths(
-            Arrays.asList("title", "categories", "price_info", "color_info"))
-        .build();
+    FieldMask fieldMask1 =
+        FieldMask.newBuilder()
+            .addAllPaths(Arrays.asList("title", "categories", "price_info", "color_info"))
+            .build();
 
     // TO CHECK ERROR HANDLING COMMENT OUT THE PRODUCT TITLE HERE:
-    product1 = Product.newBuilder()
-        .setTitle("#IamRemarkable Pen")
-        .setId(GENERATED_PRODUCT_ID)
-        .addAllCategories(Collections.singletonList("Office"))
-        .setUri(
-            "https://shop.googlemerchandisestore.com/Google+Redesign/"
-                + "Office/IamRemarkable+Pen")
-        .addBrands("#IamRemarkable")
-        .setPriceInfo(priceInfo1)
-        .setColorInfo(colorInfo1)
-        .addFulfillmentInfo(fulfillmentInfo1)
-        .setRetrievableFields(fieldMask1)
-        .build();
+    product1 =
+        Product.newBuilder()
+            .setTitle("#IamRemarkable Pen")
+            .setId(GENERATED_PRODUCT_ID)
+            .addAllCategories(Collections.singletonList("Office"))
+            .setUri(
+                "https://shop.googlemerchandisestore.com/Google+Redesign/"
+                    + "Office/IamRemarkable+Pen")
+            .addBrands("#IamRemarkable")
+            .setPriceInfo(priceInfo1)
+            .setColorInfo(colorInfo1)
+            .addFulfillmentInfo(fulfillmentInfo1)
+            .setRetrievableFields(fieldMask1)
+            .build();
 
     float price2 = 35f;
     float originalPrice2 = 45.0f;
     float cost2 = 12.0f;
 
-    PriceInfo priceInfo2 = PriceInfo.newBuilder()
-        .setPrice(price2)
-        .setOriginalPrice(originalPrice2)
-        .setCost(cost2)
-        .setCurrencyCode("USD")
-        .build();
+    PriceInfo priceInfo2 =
+        PriceInfo.newBuilder()
+            .setPrice(price2)
+            .setOriginalPrice(originalPrice2)
+            .setCost(cost2)
+            .setCurrencyCode("USD")
+            .build();
 
-    ColorInfo colorInfo2 = ColorInfo.newBuilder()
-        .addColorFamilies("Blue")
-        .addAllColors(Collections.singletonList("Sky blue"))
-        .build();
+    ColorInfo colorInfo2 =
+        ColorInfo.newBuilder()
+            .addColorFamilies("Blue")
+            .addAllColors(Collections.singletonList("Sky blue"))
+            .build();
 
-    FulfillmentInfo fulfillmentInfo2 = FulfillmentInfo.newBuilder()
-        .setType("pickup-in-store")
-        .addAllPlaceIds(Arrays.asList("store2", "store3"))
-        .build();
+    FulfillmentInfo fulfillmentInfo2 =
+        FulfillmentInfo.newBuilder()
+            .setType("pickup-in-store")
+            .addAllPlaceIds(Arrays.asList("store2", "store3"))
+            .build();
 
-    FieldMask fieldMask2 = FieldMask.newBuilder()
-        .addAllPaths(
-            Arrays.asList("title", "categories", "price_info", "color_info"))
-        .build();
+    FieldMask fieldMask2 =
+        FieldMask.newBuilder()
+            .addAllPaths(Arrays.asList("title", "categories", "price_info", "color_info"))
+            .build();
 
-    product2 = Product.newBuilder()
-        .setTitle("Android Embroidered Crewneck Sweater")
-        .setId(GENERATED_PRODUCT_ID)
-        .addCategories("Apparel")
-        .setUri(
-            "https://shop.googlemerchandisestore.com/Google+Redesign/"
-                + "Apparel/Android+Embroidered+Crewneck+Sweater")
-        .addBrands("Android")
-        .setPriceInfo(priceInfo2)
-        .setColorInfo(colorInfo2)
-        .addFulfillmentInfo(fulfillmentInfo2)
-        .setRetrievableFields(fieldMask2)
-        .build();
+    product2 =
+        Product.newBuilder()
+            .setTitle("Android Embroidered Crewneck Sweater")
+            .setId(GENERATED_PRODUCT_ID)
+            .addCategories("Apparel")
+            .setUri(
+                "https://shop.googlemerchandisestore.com/Google+Redesign/"
+                    + "Apparel/Android+Embroidered+Crewneck+Sweater")
+            .addBrands("Android")
+            .setPriceInfo(priceInfo2)
+            .setColorInfo(colorInfo2)
+            .addFulfillmentInfo(fulfillmentInfo2)
+            .setRetrievableFields(fieldMask2)
+            .build();
 
     products.add(product1);
     products.add(product2);

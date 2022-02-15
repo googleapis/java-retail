@@ -27,13 +27,13 @@ If you are using Maven, add this to your pom.xml file:
 If you are using Gradle without BOM, add this to your dependencies
 
 ```Groovy
-implementation 'com.google.cloud:google-cloud-retail:2.0.8'
+implementation 'com.google.cloud:google-cloud-retail:2.0.9'
 ```
 
 If you are using SBT, add this to your dependencies
 
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-retail" % "2.0.8"
+libraryDependencies += "com.google.cloud" % "google-cloud-retail" % "2.0.9"
 ```
 
 ## Authentication
@@ -69,6 +69,17 @@ use this Cloud Retail Client Library.
 
 
 
+
+
+## Samples
+
+Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/main/samples) directory.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+| Import Products Big Query Table | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/ImportProductsBigQueryTable.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/ImportProductsBigQueryTable.java) |
+| Import Products Gcs | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/ImportProductsGcs.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/ImportProductsGcs.java) |
+| Import Products Inline Source | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/ImportProductsInlineSource.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/ImportProductsInlineSource.java) |
 
 
 

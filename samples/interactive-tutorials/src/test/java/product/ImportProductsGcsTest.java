@@ -30,28 +30,25 @@ public class ImportProductsGcsTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.ImportProductsGcs");
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=product.ImportProductsGcs");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testImportProductsGcs() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import products from google cloud source request.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*input_uris: \"gs://.*/products.json\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Number of successfully imported products:.*316.*)$"));
+        output.matches("(?s)^(.*Import products from google cloud source request.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*input_uris: \"gs://.*/products.json\".*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*projects/.*/locations/global/catalogs/default_catalog/branches/0/operations/import-products.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported products:.*316.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Operation result.*)$"));
   }
 }
