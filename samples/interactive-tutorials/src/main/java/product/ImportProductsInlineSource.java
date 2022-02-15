@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_import_products_from_inline_source]
+
 /*
- * [START retail_import_products_from_inline_source]
  * Import products into a catalog from inline source using Retail API
  */
 
@@ -71,12 +72,9 @@ public class ImportProductsInlineSource {
 
       while (!importOperation.isDone()) {
         System.out.println("Please wait till operation is done.");
-
         int awaitDuration = 5;
-
         serviceClient.awaitTermination(
             awaitDuration, TimeUnit.SECONDS);
-
         System.out.println("Import products operation is done.");
 
         if (importOperation.getMetadata().get() != null) {
@@ -88,6 +86,7 @@ public class ImportProductsInlineSource {
         } else {
           System.out.println("Metadata in bigQuery operation is empty.");
         }
+
         if (importOperation.get() != null) {
           System.out.printf("Operation result: %s%n", importOperation.get());
         } else {

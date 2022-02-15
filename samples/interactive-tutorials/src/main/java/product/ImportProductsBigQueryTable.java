@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_import_products_from_big_query]
+
 /*
- * [START retail_import_products_from_big_query]
  * Import products into a catalog from big query table using Retail API
  */
 
@@ -55,7 +56,6 @@ public class ImportProductsBigQueryTable {
       throws IOException, InterruptedException {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
-
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode);
 
@@ -64,29 +64,23 @@ public class ImportProductsBigQueryTable {
           .importProductsCallable()
           .call(importBigQueryRequest)
           .getName();
-
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
-
       Operation operation = operationsClient.getOperation(operationName);
 
       while (!operation.getDone()) {
         // Keep polling the operation periodically until the import task is done.
         int awaitDuration = 30000;
-
         Thread.sleep(awaitDuration);
-
         operation = operationsClient.getOperation(operationName);
       }
 
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata()
             .unpack(ImportMetadata.class);
-
         System.out.printf("Number of successfully imported products: %s\n",
             metadata.getSuccessCount());
-
         System.out.printf("Number of failures during the importing: %s\n",
             metadata.getFailureCount());
       }
@@ -94,7 +88,6 @@ public class ImportProductsBigQueryTable {
       if (operation.hasResponse()) {
         ImportProductsResponse response = operation.getResponse()
             .unpack(ImportProductsResponse.class);
-
         System.out.printf("Operation result: %s%n", response);
       }
     }
@@ -118,7 +111,6 @@ public class ImportProductsBigQueryTable {
         .setReconciliationModeValue(reconciliationMode.getNumber())
         .setInputConfig(inputConfig)
         .build();
-
     System.out.printf("Import products from big query table request: %s%n",
         importRequest);
 

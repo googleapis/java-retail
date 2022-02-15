@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+// [START retail_import_products_from_gcs]
+
 /*
- * [START retail_import_products_from_gcs]
  * Import products into a catalog from gcs using Retail API
  */
 
@@ -64,29 +65,23 @@ public class ImportProductsGcs {
           .importProductsCallable()
           .call(importGcsRequest)
           .getName();
-
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
-
       Operation operation = operationsClient.getOperation(operationName);
 
       while (!operation.getDone()) {
         // Keep polling the operation periodically until the import task is done.
         int awaitDuration = 30000;
-
         Thread.sleep(awaitDuration);
-
         operation = operationsClient.getOperation(operationName);
       }
 
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata()
             .unpack(ImportMetadata.class);
-
         System.out.printf("Number of successfully imported products: %s\n",
             metadata.getSuccessCount());
-
         System.out.printf("Number of failures during the importing: %s\n",
             metadata.getFailureCount());
       }
@@ -94,7 +89,6 @@ public class ImportProductsGcs {
       if (operation.hasResponse()) {
         ImportProductsResponse response = operation.getResponse()
             .unpack(ImportProductsResponse.class);
-
         System.out.printf("Operation result: %s%n", response);
       }
     }
