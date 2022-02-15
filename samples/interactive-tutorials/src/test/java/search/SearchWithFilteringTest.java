@@ -30,7 +30,6 @@ public class SearchWithFilteringTest {
 
   private String output;
   private String defaultSearchPlacementName;
-  private String defaultBranchName;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
@@ -38,7 +37,6 @@ public class SearchWithFilteringTest {
     String defaultCatalogName =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
     defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
-    defaultBranchName = defaultCatalogName + "/branches/default_branch";
 
     Process exec =
         Runtime.getRuntime()
@@ -59,7 +57,7 @@ public class SearchWithFilteringTest {
   @Test
   public void TestSearchWithFiltering() throws IOException {
     SearchResponse response =
-        SearchWithFiltering.getSearchResponse(defaultSearchPlacementName, defaultBranchName);
+        SearchWithFiltering.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Google Black Cloud Tee"));

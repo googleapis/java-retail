@@ -33,17 +33,16 @@ public class SearchWithFiltering {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectNumber = System.getenv("PROJECT_NUMBER");
+    String projectNumber = System.getenv("PROJECT_ID");
     String defaultCatalogName =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
-    String defaultBranchName = defaultCatalogName + "/branches/default_branch";
 
-    getSearchResponse(defaultSearchPlacementName, defaultBranchName);
+    getSearchResponse(defaultSearchPlacementName);
   }
 
   public static SearchResponse getSearchResponse(
-      String defaultSearchPlacementName, String defaultBranchName) throws IOException {
+      String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT FILTER EXPRESSIONS HERE:
     String filter = "(colorFamilies: ANY(\"Black\"))";
     String queryPhrase = "Tee";
@@ -53,7 +52,6 @@ public class SearchWithFiltering {
     SearchRequest searchRequest =
         SearchRequest.newBuilder()
             .setPlacement(defaultSearchPlacementName)
-            .setBranch(defaultBranchName)
             .setVisitorId(visitorId)
             .setQuery(queryPhrase)
             .setPageSize(pageSize)
