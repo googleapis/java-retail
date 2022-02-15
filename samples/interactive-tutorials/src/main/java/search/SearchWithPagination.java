@@ -34,9 +34,9 @@ public class SearchWithPagination {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectNumber = System.getenv("PROJECT_ID");
+    String projectId = System.getenv("PROJECT_ID");
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     getSearchResponse(defaultSearchPlacementName);
