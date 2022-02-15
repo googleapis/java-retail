@@ -56,8 +56,7 @@ public class SearchWithFilteringTest {
 
   @Test
   public void TestSearchWithFiltering() throws IOException {
-    SearchResponse response =
-        SearchWithFiltering.getSearchResponse(defaultSearchPlacementName);
+    SearchResponse response = SearchWithFiltering.getSearchResponse(defaultSearchPlacementName);
     Assert.assertEquals(10, response.getResultsCount());
     String productTitle = response.getResults(0).getProduct().getTitle();
     Assert.assertTrue(productTitle.contains("Google Black Cloud Tee"));
