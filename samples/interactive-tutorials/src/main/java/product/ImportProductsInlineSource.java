@@ -46,10 +46,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ImportProductsInlineSource {
 
-  private static final String PROJECT_NUMBER = System.getenv("PROJECT_NUMBER");
+  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String DEFAULT_CATALOG = String.format(
       "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch", PROJECT_NUMBER);
+          + "branches/default_branch", PROJECT_ID);
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID()
       .toString();
 
