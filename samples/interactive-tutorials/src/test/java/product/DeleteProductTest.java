@@ -31,12 +31,10 @@ public class DeleteProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.DeleteProduct");
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=product.DeleteProduct");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -44,8 +42,9 @@ public class DeleteProductTest {
   @Test
   public void testDeleteProduct() {
     Assert.assertTrue(output.matches("(?s)^(.*Delete product request.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product .* was deleted.*)$"));
   }
 }

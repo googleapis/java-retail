@@ -31,12 +31,11 @@ public class RemoveFulfillmentPlacesTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.RemoveFulfillmentPlaces");
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=product.RemoveFulfillmentPlaces");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -46,8 +45,9 @@ public class RemoveFulfillmentPlacesTest {
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Remove fulfillment request product.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Remove fulfillment places.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Get product response: name: \"projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*Get product response: name: \"projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
 }

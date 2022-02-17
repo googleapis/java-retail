@@ -22,11 +22,11 @@
 
 package product;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class DeleteProduct {
 

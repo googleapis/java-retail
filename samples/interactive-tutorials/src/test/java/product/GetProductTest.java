@@ -31,12 +31,10 @@ public class GetProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.GetProduct");
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=product.GetProduct");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -45,10 +43,10 @@ public class GetProductTest {
   public void testGetProduct() {
     Assert.assertTrue(output.matches("(?s)^(.*Create product request.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Get product.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Get product response.*?name.*?projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Get product response.*?title.*?Nest Mini.*)$"));
+        output.matches(
+            "(?s)^(.*Get product response.*?name.*?projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Get product response.*?title.*?Nest Mini.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
 }

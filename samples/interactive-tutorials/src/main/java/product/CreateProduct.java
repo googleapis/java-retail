@@ -22,12 +22,12 @@
 
 package product;
 
+import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
+
 import com.google.cloud.retail.v2.Product;
 import java.io.IOException;
 import java.util.UUID;
-
-import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
 
 public class CreateProduct {
 

@@ -31,12 +31,10 @@ public class CreateProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.CreateProduct");
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=product.CreateProduct");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -45,8 +43,9 @@ public class CreateProductTest {
   public void testCreateProduct() {
     Assert.assertTrue(output.matches("(?s)^(.*Create product request.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*title: \"Nest Mini\".*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }

@@ -31,12 +31,10 @@ public class SetInventoryTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.SetInventory");
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=product.SetInventory");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -44,13 +42,16 @@ public class SetInventoryTest {
   @Test
   public void testSetInventoryTest() {
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*name: \"projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*name: \"projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Set inventory request.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store2\".*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store1\".*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*?fulfillment_info.*type: \"pickup-in-store\".*?place_ids: \"store2\".*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
 }
