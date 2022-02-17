@@ -28,7 +28,6 @@ import static setup.SetupCleanup.getProduct;
 import static setup.SetupCleanup.updateProduct;
 
 import com.google.cloud.retail.v2.Product;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -36,11 +35,12 @@ public class CrudProduct {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-  private static final String DEFAULT_BRANCH_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch", PROJECT_ID);
-  private static final String PRODUCT_NAME = String.format("%s/products/%s",
-      DEFAULT_BRANCH_NAME, GENERATED_PRODUCT_ID);
+  private static final String DEFAULT_BRANCH_NAME =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+          PROJECT_ID);
+  private static final String PRODUCT_NAME =
+      String.format("%s/products/%s", DEFAULT_BRANCH_NAME, GENERATED_PRODUCT_ID);
 
   public static void main(String[] args) throws IOException {
     Product createdProduct = createProduct(GENERATED_PRODUCT_ID);

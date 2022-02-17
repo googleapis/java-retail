@@ -20,6 +20,11 @@
 
 package product;
 
+import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
+import static setup.SetupCleanup.getProduct;
+import static setup.SetupCleanup.tryToDeleteProductIfExists;
+
 import com.google.cloud.retail.v2.FulfillmentInfo;
 import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
@@ -28,25 +33,21 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.SetInventoryRequest;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
-import static setup.SetupCleanup.getProduct;
-import static setup.SetupCleanup.tryToDeleteProductIfExists;
-
 public class SetInventory {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String PRODUCT_ID = UUID.randomUUID().toString();
-  private static final String PRODUCT_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/"
-          + "branches/default_branch/products/%s", PROJECT_ID, PRODUCT_ID);
+  private static final String PRODUCT_NAME =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/"
+              + "branches/default_branch/products/%s",
+          PROJECT_ID, PRODUCT_ID);
 
   public static void main(String[] args) throws IOException, InterruptedException {
     tryToDeleteProductIfExists(PRODUCT_NAME);
@@ -56,10 +57,8 @@ public class SetInventory {
     deleteProduct(PRODUCT_NAME);
   }
 
-  public static void setInventory(String productName)
-      throws IOException, InterruptedException {
-    SetInventoryRequest setInventoryRequest = getSetInventoryRequest(
-        productName);
+  public static void setInventory(String productName) throws IOException, InterruptedException {
+    SetInventoryRequest setInventoryRequest = getSetInventoryRequest(productName);
     ProductServiceClient.create().setInventoryAsync(setInventoryRequest);
     /*
     This is a long running operation and its result is not immediately
@@ -71,21 +70,26 @@ public class SetInventory {
 
   public static SetInventoryRequest getSetInventoryRequest(String productName) {
     // The request timestamp
-    Timestamp requestTime = Timestamp.newBuilder()
-        .setSeconds(Instant.now().getEpochSecond())
-        .setNanos(Instant.now().getNano()).build();
+    Timestamp requestTime =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
 
-    FieldMask setMask = FieldMask.newBuilder()
-        .addAllPaths(Arrays.asList("price_info", "availability",
-            "fulfillment_info", "available_quantity"))
-        .build();
+    FieldMask setMask =
+        FieldMask.newBuilder()
+            .addAllPaths(
+                Arrays.asList(
+                    "price_info", "availability", "fulfillment_info", "available_quantity"))
+            .build();
 
-    SetInventoryRequest setInventoryRequest = SetInventoryRequest.newBuilder()
-        .setInventory(getProductWithInventoryInfo(productName))
-        .setSetTime(requestTime)
-        .setAllowMissing(true)
-        .setSetMask(setMask)
-        .build();
+    SetInventoryRequest setInventoryRequest =
+        SetInventoryRequest.newBuilder()
+            .setInventory(getProductWithInventoryInfo(productName))
+            .setSetTime(requestTime)
+            .setAllowMissing(true)
+            .setSetMask(setMask)
+            .build();
     System.out.printf("Set inventory request: %s%n", setInventoryRequest);
 
     return setInventoryRequest;
@@ -96,17 +100,19 @@ public class SetInventory {
     float originalPrice = 20.0f;
     float cost = 8.0f;
 
-    PriceInfo priceInfo = PriceInfo.newBuilder()
-        .setPrice(price)
-        .setOriginalPrice(originalPrice)
-        .setCost(cost)
-        .setCurrencyCode("USD")
-        .build();
+    PriceInfo priceInfo =
+        PriceInfo.newBuilder()
+            .setPrice(price)
+            .setOriginalPrice(originalPrice)
+            .setCost(cost)
+            .setCurrencyCode("USD")
+            .build();
 
-    FulfillmentInfo fulfillmentInfo = FulfillmentInfo.newBuilder()
-        .setType("pickup-in-store")
-        .addAllPlaceIds(Arrays.asList("store1", "store2"))
-        .build();
+    FulfillmentInfo fulfillmentInfo =
+        FulfillmentInfo.newBuilder()
+            .setType("pickup-in-store")
+            .addAllPlaceIds(Arrays.asList("store1", "store2"))
+            .build();
 
     return Product.newBuilder()
         .setName(productName)

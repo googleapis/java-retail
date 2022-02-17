@@ -31,12 +31,10 @@ public class CrudProductTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=product.CrudProduct");
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=product.CrudProduct");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
@@ -44,26 +42,23 @@ public class CrudProductTest {
   @Test
   public void testCrudProduct() {
     Assert.assertTrue(output.matches("(?s)^(.*Create product request.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Create product request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Create product request.*?title: \"Nest Mini\".*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*Create product request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch\".*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Create product request.*?title: \"Nest Mini\".*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Created product.*?id:.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Created product.*?id:.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Created product.*?title: \"Nest Mini\".*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Created product.*?title: \"Nest Mini\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Get product response.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
+        output.matches(
+            "(?s)^(.*Get product response.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Update product request.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Update product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Updated product.*?title.*?Nest Mini.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Updated product.*?brands.*?Google.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Updated product.*?price.*?20.*)$"));
+        output.matches(
+            "(?s)^(.*Update product request.*?name: \"projects/.*?/locations/global/catalogs/default_catalog/branches/default_branch/products/.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Updated product.*?title.*?Nest Mini.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Updated product.*?brands.*?Google.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Updated product.*?price.*?20.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product .*? was deleted.*)$"));
   }
 }

@@ -20,6 +20,11 @@
 
 package product;
 
+import static setup.SetupCleanup.createProduct;
+import static setup.SetupCleanup.deleteProduct;
+import static setup.SetupCleanup.getProduct;
+import static setup.SetupCleanup.tryToDeleteProductIfExists;
+
 import com.google.cloud.retail.v2.AddFulfillmentPlacesRequest;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.Timestamp;
@@ -29,28 +34,29 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
-import static setup.SetupCleanup.getProduct;
-import static setup.SetupCleanup.tryToDeleteProductIfExists;
-
 public class AddFulfillmentPlaces {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-  private static final String PRODUCT_NAME = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog/branches/"
-          + "default_branch/products/%s", PROJECT_ID, GENERATED_PRODUCT_ID);
-  private static final Timestamp CURRENT_DATE = Timestamp.newBuilder()
-      .setSeconds(Instant.now().getEpochSecond())
-      .setNanos(Instant.now().getNano()).build();
+  private static final String PRODUCT_NAME =
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/branches/"
+              + "default_branch/products/%s",
+          PROJECT_ID, GENERATED_PRODUCT_ID);
+  private static final Timestamp CURRENT_DATE =
+      Timestamp.newBuilder()
+          .setSeconds(Instant.now().getEpochSecond())
+          .setNanos(Instant.now().getNano())
+          .build();
   /*
    * The time when the fulfillment updates are issued. If set with outdated time
    * (yesterday), the fulfillment information will not updated.
    */
-  private static final Timestamp OUTDATED_DATE = Timestamp.newBuilder()
-      .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS)
-          .getEpochSecond()).setNanos(Instant.now().getNano()).build();
+  private static final Timestamp OUTDATED_DATE =
+      Timestamp.newBuilder()
+          .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
+          .setNanos(Instant.now().getNano())
+          .build();
 
   public static void main(String[] args) throws IOException, InterruptedException {
     tryToDeleteProductIfExists(PRODUCT_NAME);
@@ -64,21 +70,18 @@ public class AddFulfillmentPlaces {
     deleteProduct(PRODUCT_NAME);
   }
 
-  public static void addFulfillmentPlaces(String productName,
-      Timestamp timestamp, String placeId)
+  public static void addFulfillmentPlaces(String productName, Timestamp timestamp, String placeId)
       throws IOException, InterruptedException {
     AddFulfillmentPlacesRequest addFulfillmentRequest =
         getAddFulfillmentRequest(productName, timestamp, placeId);
-    ProductServiceClient.create()
-        .addFulfillmentPlacesAsync(addFulfillmentRequest);
+    ProductServiceClient.create().addFulfillmentPlacesAsync(addFulfillmentRequest);
     System.out.println("Add fulfillment places, wait 30 seconds: ");
 
     /*
     This is a long-running operation and its result is not immediately
     present with get operations,thus we simulate wait with sleep method.
     */
-    ProductServiceClient.create()
-        .awaitTermination(30, TimeUnit.SECONDS);
+    ProductServiceClient.create().awaitTermination(30, TimeUnit.SECONDS);
   }
 
   public static AddFulfillmentPlacesRequest getAddFulfillmentRequest(
@@ -91,8 +94,7 @@ public class AddFulfillmentPlaces {
             .setAddTime(timestamp)
             .setAllowMissing(true)
             .build();
-    System.out.println(
-        "Add fulfillment request " + addfulfillmentPlacesRequest);
+    System.out.println("Add fulfillment request " + addfulfillmentPlacesRequest);
 
     return addfulfillmentPlacesRequest;
   }
