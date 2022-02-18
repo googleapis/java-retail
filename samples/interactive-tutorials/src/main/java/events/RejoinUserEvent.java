@@ -22,25 +22,23 @@
 
 package events;
 
+import static setup.SetupCleanup.purgeUserEvent;
+import static setup.SetupCleanup.writeUserEvent;
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.RejoinUserEventsMetadata;
 import com.google.cloud.retail.v2.RejoinUserEventsRequest;
 import com.google.cloud.retail.v2.RejoinUserEventsRequest.UserEventRejoinScope;
 import com.google.cloud.retail.v2.RejoinUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-
-import static setup.SetupCleanup.purgeUserEvent;
-import static setup.SetupCleanup.writeUserEvent;
 
 public class RejoinUserEvent {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
   // 'invalid_catalog' INSTEAD OF 'default_catalog'
   private static final String VISITOR_ID = "test_visitor_id";
@@ -54,12 +52,10 @@ public class RejoinUserEvent {
 
   public static void callRejoinUserEvents()
       throws IOException, ExecutionException, InterruptedException {
-    OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata>
-        rejoinOperation = UserEventServiceClient.create().rejoinUserEventsAsync(
-        getRejoinUserEventRequest());
+    OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata> rejoinOperation =
+        UserEventServiceClient.create().rejoinUserEventsAsync(getRejoinUserEventRequest());
 
-    System.out.printf("The rejoin operation was started: %s%n",
-        rejoinOperation.getName());
+    System.out.printf("The rejoin operation was started: %s%n", rejoinOperation.getName());
   }
 
   public static RejoinUserEventsRequest getRejoinUserEventRequest() {
@@ -69,8 +65,7 @@ public class RejoinUserEvent {
             .setUserEventRejoinScope(UserEventRejoinScope.UNJOINED_EVENTS)
             .build();
 
-    System.out.printf("Rejoin user events request: %s%n",
-        rejoinUserEventsRequest);
+    System.out.printf("Rejoin user events request: %s%n", rejoinUserEventsRequest);
 
     return rejoinUserEventsRequest;
   }

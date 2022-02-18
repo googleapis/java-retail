@@ -22,23 +22,21 @@
 
 package events;
 
+import static setup.SetupCleanup.purgeUserEvent;
+
 import com.google.cloud.retail.v2.UserEvent;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.cloud.retail.v2.WriteUserEventRequest;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
-import static setup.SetupCleanup.purgeUserEvent;
-
 public class WriteUserEvent {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
   // 'invalid_catalog' INSTEAD OF 'default_catalog'
   private static final String VISITOR_ID = "test_visitor_id";
@@ -50,16 +48,13 @@ public class WriteUserEvent {
   }
 
   public static void writeUserEvent() throws IOException {
-    WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(
-        getUserEvent());
-    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(
-        writeUserEventRequest);
+    WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(getUserEvent());
+    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(writeUserEventRequest);
 
     System.out.printf("Written user event: %s%n", userEvent);
   }
 
-  public static WriteUserEventRequest getWriteEventRequest(
-      UserEvent userEvent) {
+  public static WriteUserEventRequest getWriteEventRequest(UserEvent userEvent) {
     WriteUserEventRequest writeUserEventRequest =
         WriteUserEventRequest.newBuilder()
             .setUserEvent(userEvent)
@@ -74,15 +69,14 @@ public class WriteUserEvent {
   public static UserEvent getUserEvent() {
     Instant time = Instant.now();
 
-    Timestamp timestamp = Timestamp.newBuilder()
-        .setSeconds(time.getEpochSecond())
-        .build();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
 
-    UserEvent userEvent = UserEvent.newBuilder()
-        .setEventType("home-page-view")
-        .setVisitorId(VISITOR_ID)
-        .setEventTime(timestamp)
-        .build();
+    UserEvent userEvent =
+        UserEvent.newBuilder()
+            .setEventType("home-page-view")
+            .setVisitorId(VISITOR_ID)
+            .setEventTime(timestamp)
+            .build();
 
     System.out.println(userEvent);
 

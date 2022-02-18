@@ -27,7 +27,6 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.cloud.retail.v2.WriteUserEventRequest;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
@@ -36,47 +35,42 @@ import java.util.concurrent.ExecutionException;
 public class SetupCleanup {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
 
   public static UserEvent getUserEvent(String visitorId) {
     int value = 3;
 
-    Timestamp timestamp = Timestamp.newBuilder()
-        .setSeconds(Instant.now().getEpochSecond())
-        .build();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
 
-    Product product = Product.newBuilder()
-        .setId("test_id")
-        .build();
+    Product product = Product.newBuilder().setId("test_id").build();
 
-    ProductDetail productDetail = ProductDetail.newBuilder()
-        .setProduct(product)
-        .setQuantity(Int32Value.newBuilder().setValue(value).build())
-        .build();
+    ProductDetail productDetail =
+        ProductDetail.newBuilder()
+            .setProduct(product)
+            .setQuantity(Int32Value.newBuilder().setValue(value).build())
+            .build();
 
-    UserEvent userEvent = UserEvent.newBuilder()
-        .setEventType("detail-page-view")
-        .setVisitorId(visitorId)
-        .setEventTime(timestamp)
-        .addAllProductDetails(Collections.singletonList(productDetail))
-        .build();
+    UserEvent userEvent =
+        UserEvent.newBuilder()
+            .setEventType("detail-page-view")
+            .setVisitorId(visitorId)
+            .setEventTime(timestamp)
+            .addAllProductDetails(Collections.singletonList(productDetail))
+            .build();
     System.out.println(userEvent);
 
     return userEvent;
   }
 
-  public static UserEvent writeUserEvent(String visitorId)
-      throws IOException {
+  public static UserEvent writeUserEvent(String visitorId) throws IOException {
     WriteUserEventRequest writeUserEventRequest =
         WriteUserEventRequest.newBuilder()
             .setUserEvent(getUserEvent(visitorId))
             .setParent(DEFAULT_CATALOG)
             .build();
 
-    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(
-        writeUserEventRequest);
+    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(writeUserEventRequest);
     System.out.printf("The user event is written. %n%s%n", userEvent);
 
     return userEvent;
@@ -91,11 +85,9 @@ public class SetupCleanup {
             .setForce(true)
             .build();
 
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation
-        = UserEventServiceClient.create().purgeUserEventsAsync(
-        purgeUserEventsRequest);
+    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
+        UserEventServiceClient.create().purgeUserEventsAsync(purgeUserEventsRequest);
 
-    System.out.printf("The purge operation was started: %s%n",
-        purgeOperation.getName());
+    System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
   }
 }

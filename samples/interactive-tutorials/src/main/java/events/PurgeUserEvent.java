@@ -22,23 +22,21 @@
 
 package events;
 
+import static setup.SetupCleanup.writeUserEvent;
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.PurgeMetadata;
 import com.google.cloud.retail.v2.PurgeUserEventsRequest;
 import com.google.cloud.retail.v2.PurgeUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-
-import static setup.SetupCleanup.writeUserEvent;
 
 public class PurgeUserEvent {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   private static final String VISITOR_ID = "test_visitor_id";
 
   public static void main(String[] args)
@@ -49,12 +47,10 @@ public class PurgeUserEvent {
 
   public static void callPurgeUserEvents()
       throws IOException, ExecutionException, InterruptedException {
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata>
-        purgeOperation = UserEventServiceClient.create().purgeUserEventsAsync(
-        getPurgeUserEventRequest());
+    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
+        UserEventServiceClient.create().purgeUserEventsAsync(getPurgeUserEventRequest());
 
-    System.out.printf("The purge operation was started: %s%n",
-        purgeOperation.getName());
+    System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
   }
 
   private static PurgeUserEventsRequest getPurgeUserEventRequest() {
@@ -66,8 +62,7 @@ public class PurgeUserEvent {
             .setForce(true)
             .build();
 
-    System.out.printf("Purge user events request: %s%n",
-        purgeUserEventsRequest);
+    System.out.printf("Purge user events request: %s%n", purgeUserEventsRequest);
 
     return purgeUserEventsRequest;
   }

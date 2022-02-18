@@ -30,25 +30,23 @@ public class WriteUserEventTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=events.WriteUserEvent");
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
+    Process exec =
+        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=events.WriteUserEvent");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testWriteUserEvent() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Write user event request.*?user_event.*?event_type: \"home-page-view\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Written user event.*?event_type: \"home-page-view\".*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Written user event.*?visitor_id: \"test_visitor_id\".*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*Write user event request.*?user_event.*?event_type: \"home-page-view\".*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Written user event.*?event_type: \"home-page-view\".*)$"));
+    Assert.assertTrue(
+        output.matches("(?s)^(.*Written user event.*?visitor_id: \"test_visitor_id\".*)$"));
   }
 }
