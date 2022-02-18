@@ -30,29 +30,28 @@ public class ImportUserEventsInlineTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsInline");
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsInline");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testImportUserEventsInline() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import user events from inline source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import user events from inline source request.*?input_config.*?user_event_inline_source.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Number of successfully imported events.*)$"));
+        output.matches(
+            "(?s)^(.*Import user events from inline source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Number of successfully imported events.*)$"));
+        output.matches(
+            "(?s)^(.*Import user events from inline source request.*?input_config.*?user_event_inline_source.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported events.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported events.*)$"));
   }
 }

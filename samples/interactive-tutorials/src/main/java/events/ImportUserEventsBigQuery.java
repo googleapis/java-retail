@@ -20,7 +20,6 @@
  * Import user events into a catalog from GCS using Retail API
  */
 
-
 package events;
 
 import com.google.cloud.retail.v2.BigQuerySource;
@@ -29,7 +28,6 @@ import com.google.cloud.retail.v2.ImportUserEventsRequest;
 import com.google.cloud.retail.v2.ImportUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
@@ -37,8 +35,8 @@ import java.io.IOException;
 public class ImportUserEventsBigQuery {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   /*
   TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
   DEFAULT_CATALOG = "invalid_catalog_name"
@@ -51,22 +49,17 @@ public class ImportUserEventsBigQuery {
   */
   private static final String DATA_SCHEMA = "user_event";
 
-  public static void main(String[] args)
-      throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     importUserEventsFromBigQuery();
   }
 
-  public static void importUserEventsFromBigQuery()
-      throws IOException, InterruptedException {
-    ImportUserEventsRequest importBigQueryRequest =
-        getImportEventsBigQueryRequest();
+  public static void importUserEventsFromBigQuery() throws IOException, InterruptedException {
+    ImportUserEventsRequest importBigQueryRequest = getImportEventsBigQueryRequest();
 
     UserEventServiceClient serviceClient = UserEventServiceClient.create();
 
-    String operationName = serviceClient
-        .importUserEventsCallable()
-        .call(importBigQueryRequest)
-        .getName();
+    String operationName =
+        serviceClient.importUserEventsCallable().call(importBigQueryRequest).getName();
 
     System.out.printf("OperationName = %s\n", operationName);
     OperationsClient operationsClient = serviceClient.getOperationsClient();
@@ -80,40 +73,38 @@ public class ImportUserEventsBigQuery {
     }
 
     if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata()
-          .unpack(ImportMetadata.class);
-      System.out.printf("Number of successfully imported events: %s\n",
-          metadata.getSuccessCount());
-      System.out.printf("Number of failures during the importing: %s\n",
-          metadata.getFailureCount());
+      ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
+      System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
+      System.out.printf(
+          "Number of failures during the importing: %s\n", metadata.getFailureCount());
     }
 
     if (operation.hasResponse()) {
-      ImportUserEventsResponse response = operation.getResponse()
-          .unpack(ImportUserEventsResponse.class);
+      ImportUserEventsResponse response =
+          operation.getResponse().unpack(ImportUserEventsResponse.class);
       System.out.printf("Operation result: %s%n", response);
     }
   }
 
   public static ImportUserEventsRequest getImportEventsBigQueryRequest() {
-    BigQuerySource bigQuerySource = BigQuerySource.newBuilder()
-        .setProjectId(PROJECT_ID)
-        .setDatasetId(DATASET_ID)
-        .setTableId(TABLE_ID)
-        .setDataSchema(DATA_SCHEMA)
-        .build();
+    BigQuerySource bigQuerySource =
+        BigQuerySource.newBuilder()
+            .setProjectId(PROJECT_ID)
+            .setDatasetId(DATASET_ID)
+            .setTableId(TABLE_ID)
+            .setDataSchema(DATA_SCHEMA)
+            .build();
 
-    UserEventInputConfig inputConfig = UserEventInputConfig.newBuilder()
-        .setBigQuerySource(bigQuerySource)
-        .build();
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource).build();
 
-    ImportUserEventsRequest importRequest = ImportUserEventsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setInputConfig(inputConfig)
-        .build();
+    ImportUserEventsRequest importRequest =
+        ImportUserEventsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setInputConfig(inputConfig)
+            .build();
 
-    System.out.printf("Import user events from BigQuery source request: %s%n",
-        importRequest);
+    System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
 
     return importRequest;
   }

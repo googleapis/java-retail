@@ -33,10 +33,8 @@ public class StreamGobbler implements Callable<String> {
 
   @Override
   public String call() {
-    List<String> stringList = new BufferedReader(
-        new InputStreamReader(inputStream))
-        .lines()
-        .collect(Collectors.toList());
+    List<String> stringList =
+        new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList());
     return String.join("\n", stringList);
   }
 }

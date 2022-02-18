@@ -27,13 +27,13 @@ If you are using Maven, add this to your pom.xml file:
 If you are using Gradle without BOM, add this to your dependencies
 
 ```Groovy
-implementation 'com.google.cloud:google-cloud-retail:2.0.8'
+implementation 'com.google.cloud:google-cloud-retail:2.0.9'
 ```
 
 If you are using SBT, add this to your dependencies
 
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-retail" % "2.0.8"
+libraryDependencies += "com.google.cloud" % "google-cloud-retail" % "2.0.9"
 ```
 
 ## Authentication
@@ -69,6 +69,17 @@ use this Cloud Retail Client Library.
 
 
 
+
+
+## Samples
+
+Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/main/samples) directory.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+| Import User Events Big Query | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/events/ImportUserEventsBigQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/events/ImportUserEventsBigQuery.java) |
+| Import User Events Gcs | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/events/ImportUserEventsGcs.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/events/ImportUserEventsGcs.java) |
+| Import User Events Inline | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/events/ImportUserEventsInline.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/events/ImportUserEventsInline.java) |
 
 
 
