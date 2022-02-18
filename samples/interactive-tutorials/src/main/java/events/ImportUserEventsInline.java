@@ -31,7 +31,6 @@ import com.google.cloud.retail.v2.UserEventInlineSource;
 import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.protobuf.Timestamp;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,9 +41,8 @@ import java.util.concurrent.TimeUnit;
 public class ImportUserEventsInline {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog",
-      PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
@@ -57,28 +55,26 @@ public class ImportUserEventsInline {
     int awaitDuration = 30;
 
     ImportUserEventsRequest importInlineRequest =
-        getImportEventsInlineSourceRequest(
-            getUserEvents());
+        getImportEventsInlineSourceRequest(getUserEvents());
 
     OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
-        UserEventServiceClient.create().importUserEventsAsync(
-            importInlineRequest);
+        UserEventServiceClient.create().importUserEventsAsync(importInlineRequest);
 
-    System.out.printf("The operation was started: %s%n",
-        importOperation.getName());
+    System.out.printf("The operation was started: %s%n", importOperation.getName());
 
     System.out.println("Please wait till operation is done.");
 
-    UserEventServiceClient.create().awaitTermination(awaitDuration,
-        TimeUnit.SECONDS);
+    UserEventServiceClient.create().awaitTermination(awaitDuration, TimeUnit.SECONDS);
 
     System.out.println("Import user events operation is done.");
 
     if (importOperation.getMetadata().get() != null) {
-      System.out.printf("Number of successfully imported events: %s%n",
+      System.out.printf(
+          "Number of successfully imported events: %s%n",
           importOperation.getMetadata().get().getSuccessCount());
 
-      System.out.printf("Number of failures during the importing: %s%n",
+      System.out.printf(
+          "Number of failures during the importing: %s%n",
           importOperation.getMetadata().get().getFailureCount());
     } else {
       System.out.println("Metadata in bigQuery operation is empty.");
@@ -92,21 +88,19 @@ public class ImportUserEventsInline {
 
   public static ImportUserEventsRequest getImportEventsInlineSourceRequest(
       List<UserEvent> userEventsToImport) {
-    UserEventInlineSource inlineSource = UserEventInlineSource.newBuilder()
-        .addAllUserEvents(userEventsToImport)
-        .build();
+    UserEventInlineSource inlineSource =
+        UserEventInlineSource.newBuilder().addAllUserEvents(userEventsToImport).build();
 
-    UserEventInputConfig inputConfig = UserEventInputConfig.newBuilder()
-        .setUserEventInlineSource(inlineSource)
-        .build();
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setUserEventInlineSource(inlineSource).build();
 
-    ImportUserEventsRequest importRequest = ImportUserEventsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setInputConfig(inputConfig)
-        .build();
+    ImportUserEventsRequest importRequest =
+        ImportUserEventsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setInputConfig(inputConfig)
+            .build();
 
-    System.out.printf("Import user events from inline source request: %s%n",
-        importRequest);
+    System.out.printf("Import user events from inline source request: %s%n", importRequest);
 
     return importRequest;
   }
@@ -119,15 +113,14 @@ public class ImportUserEventsInline {
     for (int i = 0; i < userEventsNumber; i++) {
       Instant time = Instant.now();
 
-      Timestamp timestamp = Timestamp.newBuilder()
-          .setSeconds(time.getEpochSecond())
-          .build();
+      Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
 
-      UserEvent userEvent = UserEvent.newBuilder()
-          .setEventType("home-page-view")
-          .setVisitorId("test_visitor_id")
-          .setEventTime(timestamp)
-          .build();
+      UserEvent userEvent =
+          UserEvent.newBuilder()
+              .setEventType("home-page-view")
+              .setVisitorId("test_visitor_id")
+              .setEventTime(timestamp)
+              .build();
 
       userEvents.add(userEvent);
 

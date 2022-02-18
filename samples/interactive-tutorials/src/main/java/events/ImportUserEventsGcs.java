@@ -29,7 +29,6 @@ import com.google.cloud.retail.v2.ImportUserEventsRequest;
 import com.google.cloud.retail.v2.ImportUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
-
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
@@ -37,38 +36,32 @@ import java.io.IOException;
 public class ImportUserEventsGcs {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG = String.format(
-      "projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
+  private static final String DEFAULT_CATALOG =
+      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   /*
   TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
   DEFAULT_CATALOG = "invalid_catalog_name"
   */
-  private static final String GCS_BUCKET = String.format("gs://%s",
-      System.getenv("EVENTS_BUCKET_NAME"));
-  private static final String GCS_ERRORS_BUCKET = String.format("%s/error",
-      GCS_BUCKET);
+  private static final String GCS_BUCKET =
+      String.format("gs://%s", System.getenv("EVENTS_BUCKET_NAME"));
+  private static final String GCS_ERRORS_BUCKET = String.format("%s/error", GCS_BUCKET);
   private static final String GCS_EVENTS_OBJECT = "user_events.json";
   /*
   TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT
   GCS_EVENTS_OBJECT = "user_events_some_invalid.json"
    */
 
-  public static void main(String[] args)
-      throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     importUserEventsFromGcs();
   }
 
-  public static void importUserEventsFromGcs()
-      throws IOException, InterruptedException {
-    ImportUserEventsRequest importGcsRequest = getImportEventsGcsRequest(
-        GCS_EVENTS_OBJECT);
+  public static void importUserEventsFromGcs() throws IOException, InterruptedException {
+    ImportUserEventsRequest importGcsRequest = getImportEventsGcsRequest(GCS_EVENTS_OBJECT);
 
     UserEventServiceClient serviceClient = UserEventServiceClient.create();
 
-    String operationName = serviceClient
-        .importUserEventsCallable()
-        .call(importGcsRequest)
-        .getName();
+    String operationName =
+        serviceClient.importUserEventsCallable().call(importGcsRequest).getName();
 
     System.out.printf("OperationName = %s\n", operationName);
 
@@ -85,48 +78,43 @@ public class ImportUserEventsGcs {
     }
 
     if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata()
-          .unpack(ImportMetadata.class);
+      ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
 
-      System.out.printf("Number of successfully imported events: %s\n",
-          metadata.getSuccessCount());
+      System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
 
-      System.out.printf("Number of failures during the importing: %s\n",
-          metadata.getFailureCount());
+      System.out.printf(
+          "Number of failures during the importing: %s\n", metadata.getFailureCount());
     }
 
     if (operation.hasResponse()) {
-      ImportUserEventsResponse response = operation.getResponse()
-          .unpack(ImportUserEventsResponse.class);
+      ImportUserEventsResponse response =
+          operation.getResponse().unpack(ImportUserEventsResponse.class);
 
       System.out.printf("Operation result: %s%n", response);
     }
   }
 
-  public static ImportUserEventsRequest getImportEventsGcsRequest(
-      String gcsObjectName) {
+  public static ImportUserEventsRequest getImportEventsGcsRequest(String gcsObjectName) {
 
-    GcsSource gcsSource = GcsSource.newBuilder()
-        .addInputUris(String.format("%s/%s", GCS_BUCKET, gcsObjectName))
-        .build();
+    GcsSource gcsSource =
+        GcsSource.newBuilder()
+            .addInputUris(String.format("%s/%s", GCS_BUCKET, gcsObjectName))
+            .build();
 
-    UserEventInputConfig inputConfig = UserEventInputConfig.newBuilder()
-        .setGcsSource(gcsSource)
-        .build();
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
-    ImportErrorsConfig errorsConfig = ImportErrorsConfig.newBuilder()
-        .setGcsPrefix(GCS_ERRORS_BUCKET)
-        .build();
+    ImportErrorsConfig errorsConfig =
+        ImportErrorsConfig.newBuilder().setGcsPrefix(GCS_ERRORS_BUCKET).build();
 
-    ImportUserEventsRequest importRequest = ImportUserEventsRequest.newBuilder()
-        .setParent(DEFAULT_CATALOG)
-        .setInputConfig(inputConfig)
-        .setErrorsConfig(errorsConfig)
-        .build();
+    ImportUserEventsRequest importRequest =
+        ImportUserEventsRequest.newBuilder()
+            .setParent(DEFAULT_CATALOG)
+            .setInputConfig(inputConfig)
+            .setErrorsConfig(errorsConfig)
+            .build();
 
-    System.out.printf(
-        "Import user events from google cloud source request: %s%n",
-        importRequest);
+    System.out.printf("Import user events from google cloud source request: %s%n", importRequest);
 
     return importRequest;
   }

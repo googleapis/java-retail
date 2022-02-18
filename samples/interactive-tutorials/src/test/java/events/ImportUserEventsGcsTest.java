@@ -30,31 +30,29 @@ public class ImportUserEventsGcsTest {
   private String output;
 
   @Before
-  public void setUp()
-      throws IOException, InterruptedException, ExecutionException {
-    Process exec = Runtime.getRuntime()
-        .exec(
-            "mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsGcs");
+  public void setUp() throws IOException, InterruptedException, ExecutionException {
+    Process exec =
+        Runtime.getRuntime()
+            .exec("mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsGcs");
     StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor()
-        .submit(streamGobbler);
+    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
 
     output = stringFuture.get();
   }
 
   @Test
   public void testImportUserEventsGcs() {
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import user events from google cloud source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Import user events from google cloud source request.*?input_config.*?gcs_source.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Number of successfully imported events.*?4.*)$"));
-    Assert.assertTrue(output.matches(
-        "(?s)^(.*Number of failures during the importing.*?0.*)$"));
     Assert.assertTrue(
-        output.matches("(?s)^(.*Operation result.*?errors_config.*)$"));
+        output.matches(
+            "(?s)^(.*Import user events from google cloud source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*Import user events from google cloud source request.*?input_config.*?gcs_source.*)$"));
+    Assert.assertTrue(
+        output.matches(
+            "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported events.*?4.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Number of failures during the importing.*?0.*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Operation result.*?errors_config.*)$"));
   }
 }
