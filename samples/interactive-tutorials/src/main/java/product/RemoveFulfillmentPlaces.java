@@ -23,7 +23,6 @@ package product;
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
-import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
@@ -60,7 +59,6 @@ public class RemoveFulfillmentPlaces {
             .setNanos(Instant.now().getNano())
             .build();
 
-    tryToDeleteProductIfExists(productName);
     createProduct(generatedProductId);
     System.out.printf("Remove fulfilment places with current date: %s", currentDate);
     removeFulfillmentPlaces(productName, currentDate, "store0");

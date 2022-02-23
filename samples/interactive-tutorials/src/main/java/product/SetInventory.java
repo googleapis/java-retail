@@ -23,7 +23,6 @@ package product;
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
-import static setup.SetupCleanup.tryToDeleteProductIfExists;
 
 import com.google.cloud.retail.v2.FulfillmentInfo;
 import com.google.cloud.retail.v2.PriceInfo;
@@ -51,7 +50,6 @@ public class SetInventory {
                 + "branches/default_branch/products/%s",
             projectId, generatedProductId);
 
-    tryToDeleteProductIfExists(productName);
     createProduct(generatedProductId);
     setInventory(productName);
     getProduct(productName);

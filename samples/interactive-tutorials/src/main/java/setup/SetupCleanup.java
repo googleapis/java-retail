@@ -25,7 +25,6 @@ import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.UpdateProductRequest;
 import java.io.IOException;
 
 public class SetupCleanup {
@@ -54,29 +53,6 @@ public class SetupCleanup {
         .addBrands("Google")
         .setPriceInfo(priceInfo)
         .setAvailability(Availability.IN_STOCK)
-        .build();
-  }
-
-  public static Product generateProductForUpdate(String productId) {
-    final float price = 20.0f;
-    final float originalPrice = 25.5f;
-
-    PriceInfo priceInfo =
-        PriceInfo.newBuilder()
-            .setPrice(price)
-            .setOriginalPrice(originalPrice)
-            .setCurrencyCode("EUR")
-            .build();
-
-    return Product.newBuilder()
-        .setId(productId)
-        .setName(DEFAULT_BRANCH_NAME + "/products/" + productId)
-        .setTitle("Updated Nest Mini")
-        .setType(Type.PRIMARY)
-        .addCategories("Updated Speakers and displays")
-        .addBrands("Updated Google")
-        .setAvailability(Availability.OUT_OF_STOCK)
-        .setPriceInfo(priceInfo)
         .build();
   }
 
@@ -111,22 +87,6 @@ public class SetupCleanup {
     }
   }
 
-  public static UpdateProductRequest getUpdateProductRequest(Product productToUpdate) {
-    UpdateProductRequest updateProductRequest =
-        UpdateProductRequest.newBuilder().setProduct(productToUpdate).setAllowMissing(true).build();
-    System.out.printf("Update product request: %s%n", updateProductRequest);
-
-    return updateProductRequest;
-  }
-
-  public static void updateProduct(Product originalProduct) throws IOException {
-    Product updatedProduct =
-        ProductServiceClient.create()
-            .updateProduct(
-                getUpdateProductRequest(generateProductForUpdate(originalProduct.getId())));
-    System.out.printf("Updated product: %s%n", updatedProduct);
-  }
-
   public static void deleteProduct(String productName) throws IOException {
     DeleteProductRequest deleteProductRequest =
         DeleteProductRequest.newBuilder().setName(productName).build();
@@ -134,18 +94,5 @@ public class SetupCleanup {
 
     ProductServiceClient.create().deleteProduct(deleteProductRequest);
     System.out.printf("Product %s was deleted.%n", productName);
-  }
-
-  public static void tryToDeleteProductIfExists(String productName) {
-
-    GetProductRequest getProductRequest =
-        GetProductRequest.newBuilder().setName(productName).build();
-
-    try {
-      Product product = ProductServiceClient.create().getProduct(getProductRequest);
-      ProductServiceClient.create().deleteProduct(product.getName());
-    } catch (NotFoundException | IOException e) {
-      System.out.printf("Product %s is not found.%n", productName);
-    }
   }
 }
