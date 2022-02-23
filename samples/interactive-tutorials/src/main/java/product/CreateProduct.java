@@ -22,20 +22,68 @@
 
 package product;
 
-import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 
+import com.google.cloud.retail.v2.CreateProductRequest;
+import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
+import com.google.cloud.retail.v2.Product.Availability;
+import com.google.cloud.retail.v2.Product.Type;
+import com.google.cloud.retail.v2.ProductServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
 public class CreateProduct {
 
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-
   public static void main(String[] args) throws IOException {
-    Product createdProduct = createProduct(GENERATED_PRODUCT_ID);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultBranchName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+            projectId);
+    String generatedProductId = UUID.randomUUID().toString();
+
+    Product createdProduct = createProduct(generatedProductId, defaultBranchName);
     deleteProduct(createdProduct.getName());
+  }
+
+  // call the Retail API to create product
+  public static Product createProduct(String productId, String defaultBranchName) throws IOException {
+    CreateProductRequest createProductRequest =
+        CreateProductRequest.newBuilder()
+            .setProduct(generateProduct())
+            .setProductId(productId)
+            .setParent(defaultBranchName)
+            .build();
+    System.out.printf("Create product request: %s%n", createProductRequest);
+
+    Product createdProduct = ProductServiceClient.create().createProduct(createProductRequest);
+    System.out.printf("Created product: %s%n", createdProduct);
+
+    return createdProduct;
+  }
+
+  // generate product for create
+  public static Product generateProduct() {
+    float price = 30.0f;
+    float originalPrice = 35.5f;
+
+    PriceInfo priceInfo =
+        PriceInfo.newBuilder()
+            .setPrice(price)
+            .setOriginalPrice(originalPrice)
+            .setCurrencyCode("USD")
+            .build();
+
+    return Product.newBuilder()
+        .setTitle("Nest Mini")
+        .setType(Type.PRIMARY)
+        .addCategories("Speakers and displays")
+        .addBrands("Google")
+        .setPriceInfo(priceInfo)
+        .setAvailability(Availability.IN_STOCK)
+        .build();
   }
 }
 

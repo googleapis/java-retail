@@ -23,17 +23,29 @@
 package product;
 
 import static setup.SetupCleanup.createProduct;
-import static setup.SetupCleanup.deleteProduct;
 
+import com.google.cloud.retail.v2.DeleteProductRequest;
+import com.google.cloud.retail.v2.ProductServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
 public class DeleteProduct {
 
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-
   public static void main(String[] args) throws IOException {
-    deleteProduct(createProduct(GENERATED_PRODUCT_ID).getName());
+    String generatedProductId = UUID.randomUUID().toString();
+
+    String createdProductName = createProduct(generatedProductId).getName();
+    deleteProduct(createdProductName);
+  }
+
+  // call the Retail API to delete product
+  public static void deleteProduct(String productName) throws IOException {
+    DeleteProductRequest deleteProductRequest =
+        DeleteProductRequest.newBuilder().setName(productName).build();
+    System.out.printf("Delete product request %s%n", deleteProductRequest);
+
+    ProductServiceClient.create().deleteProduct(deleteProductRequest);
+    System.out.printf("Product %s was deleted.%n", productName);
   }
 }
 

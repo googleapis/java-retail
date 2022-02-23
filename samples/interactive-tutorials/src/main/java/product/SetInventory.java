@@ -41,20 +41,21 @@ import java.util.concurrent.TimeUnit;
 
 public class SetInventory {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String PRODUCT_ID = UUID.randomUUID().toString();
-  private static final String PRODUCT_NAME =
-      String.format(
-          "projects/%s/locations/global/catalogs/default_catalog/"
-              + "branches/default_branch/products/%s",
-          PROJECT_ID, PRODUCT_ID);
-
   public static void main(String[] args) throws IOException, InterruptedException {
-    tryToDeleteProductIfExists(PRODUCT_NAME);
-    createProduct(PRODUCT_ID);
-    setInventory(PRODUCT_NAME);
-    getProduct(PRODUCT_NAME);
-    deleteProduct(PRODUCT_NAME);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = System.getenv("PROJECT_ID");
+    String generatedProductId = UUID.randomUUID().toString();
+    String productName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/"
+                + "branches/default_branch/products/%s",
+            projectId, generatedProductId);
+
+    tryToDeleteProductIfExists(productName);
+    createProduct(generatedProductId);
+    setInventory(productName);
+    getProduct(productName);
+    deleteProduct(productName);
   }
 
   public static void setInventory(String productName) throws IOException, InterruptedException {

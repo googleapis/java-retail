@@ -36,38 +36,39 @@ import java.util.concurrent.TimeUnit;
 
 public class AddFulfillmentPlaces {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-  private static final String PRODUCT_NAME =
-      String.format(
-          "projects/%s/locations/global/catalogs/default_catalog/branches/"
-              + "default_branch/products/%s",
-          PROJECT_ID, GENERATED_PRODUCT_ID);
-  private static final Timestamp CURRENT_DATE =
-      Timestamp.newBuilder()
-          .setSeconds(Instant.now().getEpochSecond())
-          .setNanos(Instant.now().getNano())
-          .build();
-  /*
-   * The time when the fulfillment updates are issued. If set with outdated time
-   * (yesterday), the fulfillment information will not updated.
-   */
-  private static final Timestamp OUTDATED_DATE =
-      Timestamp.newBuilder()
-          .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
-          .setNanos(Instant.now().getNano())
-          .build();
-
   public static void main(String[] args) throws IOException, InterruptedException {
-    tryToDeleteProductIfExists(PRODUCT_NAME);
-    createProduct(GENERATED_PRODUCT_ID);
-    System.out.printf("Add fulfilment places with current date: %s", CURRENT_DATE);
-    addFulfillmentPlaces(PRODUCT_NAME, CURRENT_DATE, "store2");
-    getProduct(PRODUCT_NAME);
-    System.out.printf("Add outdated fulfilment places: %s", OUTDATED_DATE);
-    addFulfillmentPlaces(PRODUCT_NAME, OUTDATED_DATE, "store3");
-    getProduct(PRODUCT_NAME);
-    deleteProduct(PRODUCT_NAME);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = System.getenv("PROJECT_ID");
+    String generatedProductId = UUID.randomUUID().toString();
+    String productName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/"
+                + "default_branch/products/%s",
+            projectId, generatedProductId);
+    Timestamp currentDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
+    /*
+     * The time when the fulfillment updates are issued. If set with outdated time
+     * (yesterday), the fulfillment information will not updated.
+     */
+    Timestamp outdatedDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
+
+    tryToDeleteProductIfExists(productName);
+    createProduct(generatedProductId);
+    System.out.printf("Add fulfilment places with current date: %s", currentDate);
+    addFulfillmentPlaces(productName, currentDate, "store2");
+    getProduct(productName);
+    System.out.printf("Add outdated fulfilment places: %s", outdatedDate);
+    addFulfillmentPlaces(productName, outdatedDate, "store3");
+    getProduct(productName);
+    deleteProduct(productName);
   }
 
   public static void addFulfillmentPlaces(String productName, Timestamp timestamp, String placeId)

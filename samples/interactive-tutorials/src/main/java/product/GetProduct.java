@@ -24,20 +24,39 @@ package product;
 
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
-import static setup.SetupCleanup.getProduct;
 
+import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.retail.v2.GetProductRequest;
 import com.google.cloud.retail.v2.Product;
+import com.google.cloud.retail.v2.ProductServiceClient;
 import java.io.IOException;
 import java.util.UUID;
 
 public class GetProduct {
 
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-
   public static void main(String[] args) throws IOException {
-    Product createdProduct = createProduct(GENERATED_PRODUCT_ID);
+    String generatedProductId = UUID.randomUUID().toString();
+
+    Product createdProduct = createProduct(generatedProductId);
     Product product = getProduct(createdProduct.getName());
     deleteProduct(product.getName());
+  }
+
+  // call the Retail API to get product
+  public static Product getProduct(String productName) throws IOException {
+    Product product = Product.newBuilder().build();
+
+    GetProductRequest getProductRequest =
+        GetProductRequest.newBuilder().setName(productName).build();
+
+    try {
+      product = ProductServiceClient.create().getProduct(getProductRequest);
+      System.out.println("Get product response: " + product);
+      return product;
+    } catch (NotFoundException e) {
+      System.out.printf("Product %s not found", productName);
+      return product;
+    }
   }
 }
 

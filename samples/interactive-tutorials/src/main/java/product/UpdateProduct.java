@@ -24,20 +24,71 @@ package product;
 
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
-import static setup.SetupCleanup.updateProduct;
 
+import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
+import com.google.cloud.retail.v2.Product.Availability;
+import com.google.cloud.retail.v2.Product.Type;
+import com.google.cloud.retail.v2.ProductServiceClient;
+import com.google.cloud.retail.v2.UpdateProductRequest;
 import java.io.IOException;
 import java.util.UUID;
 
 public class UpdateProduct {
 
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
-
   public static void main(String[] args) throws IOException {
-    Product createdProduct = createProduct(GENERATED_PRODUCT_ID);
-    updateProduct(createdProduct);
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultBranchName = String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+            projectId);
+    String generatedProductId = UUID.randomUUID().toString();
+
+    Product createdProduct = createProduct(generatedProductId);
+    updateProduct(createdProduct, defaultBranchName);
     deleteProduct(createdProduct.getName());
+  }
+
+  // generate product for update
+  public static Product generateProductForUpdate(String productId, String defaultBranchName) {
+    final float price = 20.0f;
+    final float originalPrice = 25.5f;
+
+    PriceInfo priceInfo =
+        PriceInfo.newBuilder()
+            .setPrice(price)
+            .setOriginalPrice(originalPrice)
+            .setCurrencyCode("EUR")
+            .build();
+
+    return Product.newBuilder()
+        .setId(productId)
+        .setName(defaultBranchName + "/products/" + productId)
+        .setTitle("Updated Nest Mini")
+        .setType(Type.PRIMARY)
+        .addCategories("Updated Speakers and displays")
+        .addBrands("Updated Google")
+        .setAvailability(Availability.OUT_OF_STOCK)
+        .setPriceInfo(priceInfo)
+        .build();
+  }
+
+  // get update product request
+  public static UpdateProductRequest getUpdateProductRequest(Product productToUpdate) {
+    UpdateProductRequest updateProductRequest =
+        UpdateProductRequest.newBuilder().setProduct(productToUpdate).setAllowMissing(true).build();
+    System.out.printf("Update product request: %s%n", updateProductRequest);
+
+    return updateProductRequest;
+  }
+
+  // call the Retail API to update product
+  public static void updateProduct(Product originalProduct, String defaultBranchName) throws IOException {
+    Product updatedProduct =
+        ProductServiceClient.create()
+            .updateProduct(
+                getUpdateProductRequest(generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
+    System.out.printf("Updated product: %s%n", updatedProduct);
   }
 }
 
