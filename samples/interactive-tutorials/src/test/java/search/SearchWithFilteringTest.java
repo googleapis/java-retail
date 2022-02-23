@@ -33,9 +33,9 @@ public class SearchWithFilteringTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectNumber = System.getenv("PROJECT_NUMBER");
+    String projectId = System.getenv("PROJECT_ID");
     String defaultCatalogName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectNumber);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
     Process exec =
