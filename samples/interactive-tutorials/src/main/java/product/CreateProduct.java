@@ -49,7 +49,8 @@ public class CreateProduct {
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String defaultBranchName) throws IOException {
+  public static Product createProduct(String productId, String defaultBranchName)
+      throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())

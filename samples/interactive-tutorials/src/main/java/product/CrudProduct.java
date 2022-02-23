@@ -42,7 +42,8 @@ public class CrudProduct {
     String projectId = System.getenv("PROJECT_ID");
     String generatedProductId = UUID.randomUUID().toString();
     String defaultBranchName =
-        String.format("projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
             projectId);
     String productName = String.format("%s/products/%s", defaultBranchName, generatedProductId);
 
@@ -99,7 +100,8 @@ public class CrudProduct {
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String defaultBranchName) throws IOException {
+  public static Product createProduct(String productId, String defaultBranchName)
+      throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
@@ -136,12 +138,11 @@ public class CrudProduct {
     UpdateProductRequest updateProductRequest =
         UpdateProductRequest.newBuilder()
             .setProduct(generateProductForUpdate(originalProduct.getId(), productName))
-            .setAllowMissing(true).build();
+            .setAllowMissing(true)
+            .build();
     System.out.printf("Update product request: %s%n", updateProductRequest);
 
-    Product updatedProduct =
-        ProductServiceClient.create()
-            .updateProduct(updateProductRequest);
+    Product updatedProduct = ProductServiceClient.create().updateProduct(updateProductRequest);
     System.out.printf("Updated product: %s%n", updatedProduct);
   }
 

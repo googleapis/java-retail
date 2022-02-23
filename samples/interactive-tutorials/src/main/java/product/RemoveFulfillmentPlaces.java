@@ -72,7 +72,8 @@ public class RemoveFulfillmentPlaces {
   }
 
   // remove fulfillment places to product
-  public static void removeFulfillmentPlaces(String productName, Timestamp timestamp, String storeId)
+  public static void removeFulfillmentPlaces(
+      String productName, Timestamp timestamp, String storeId)
       throws IOException, InterruptedException {
     RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
         getRemoveFulfillmentRequest(productName, timestamp, storeId);
@@ -87,7 +88,8 @@ public class RemoveFulfillmentPlaces {
   }
 
   // remove fulfillment request
-  public static RemoveFulfillmentPlacesRequest getRemoveFulfillmentRequest(String productName, Timestamp timestamp, String storeId) {
+  public static RemoveFulfillmentPlacesRequest getRemoveFulfillmentRequest(
+      String productName, Timestamp timestamp, String storeId) {
     RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
         RemoveFulfillmentPlacesRequest.newBuilder()
             .setProduct(productName)

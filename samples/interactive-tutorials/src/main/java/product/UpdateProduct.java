@@ -39,7 +39,8 @@ public class UpdateProduct {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = System.getenv("PROJECT_ID");
-    String defaultBranchName = String.format(
+    String defaultBranchName =
+        String.format(
             "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
             projectId);
     String generatedProductId = UUID.randomUUID().toString();
@@ -83,11 +84,13 @@ public class UpdateProduct {
   }
 
   // call the Retail API to update product
-  public static void updateProduct(Product originalProduct, String defaultBranchName) throws IOException {
+  public static void updateProduct(Product originalProduct, String defaultBranchName)
+      throws IOException {
     Product updatedProduct =
         ProductServiceClient.create()
             .updateProduct(
-                getUpdateProductRequest(generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
+                getUpdateProductRequest(
+                    generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
     System.out.printf("Updated product: %s%n", updatedProduct);
   }
 }
