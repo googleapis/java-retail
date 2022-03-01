@@ -17,7 +17,7 @@
 // [START retail_write_user_event]
 
 /*
- * Import user events into a catalog from inline source using Retail API
+ * Write user events into a catalog from inline source using Retail API
  */
 
 package events;
@@ -34,31 +34,31 @@ import java.util.concurrent.ExecutionException;
 
 public class WriteUserEvent {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
-  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
-  // 'invalid_catalog' INSTEAD OF 'default_catalog'
-  private static final String VISITOR_ID = "test_visitor_id";
-
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    writeUserEvent();
-    purgeUserEvent(VISITOR_ID);
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String visitorId = "test_visitor_id";
+
+    writeUserEvent(defaultCatalog, visitorId);
+    purgeUserEvent(visitorId);
   }
 
-  public static void writeUserEvent() throws IOException {
-    WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(getUserEvent());
-    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(writeUserEventRequest);
+  public static void writeUserEvent(String defaultCatalog, String visitorId) throws IOException {
+    WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(getUserEvent(visitorId), defaultCatalog);
 
-    System.out.printf("Written user event: %s%n", userEvent);
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
+
+      System.out.printf("Written user event: %s%n", userEvent);
+    }
   }
 
-  public static WriteUserEventRequest getWriteEventRequest(UserEvent userEvent) {
+  public static WriteUserEventRequest getWriteEventRequest(UserEvent userEvent, String defaultCatalog) {
     WriteUserEventRequest writeUserEventRequest =
         WriteUserEventRequest.newBuilder()
             .setUserEvent(userEvent)
-            .setParent(DEFAULT_CATALOG)
+            .setParent(defaultCatalog)
             .build();
 
     System.out.printf("Write user event request: %s%n", writeUserEventRequest);
@@ -66,7 +66,7 @@ public class WriteUserEvent {
     return writeUserEventRequest;
   }
 
-  public static UserEvent getUserEvent() {
+  public static UserEvent getUserEvent(String visitorId) {
     Instant time = Instant.now();
 
     Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
@@ -74,7 +74,7 @@ public class WriteUserEvent {
     UserEvent userEvent =
         UserEvent.newBuilder()
             .setEventType("home-page-view")
-            .setVisitorId(VISITOR_ID)
+            .setVisitorId(visitorId)
             .setEventTime(timestamp)
             .build();
 

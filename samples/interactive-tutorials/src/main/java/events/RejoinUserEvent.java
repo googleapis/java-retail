@@ -17,7 +17,7 @@
 // [START retail_rejoin_user_event]
 
 /*
- * Import user events into a catalog from inline source using Retail API
+ * Rejoin user events into a catalog from inline source using Retail API
  */
 
 package events;
@@ -36,32 +36,30 @@ import java.util.concurrent.ExecutionException;
 
 public class RejoinUserEvent {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
-  // TO CHECK THE ERROR HANDLING TRY TO PASS INVALID CATALOG:
-  // 'invalid_catalog' INSTEAD OF 'default_catalog'
-  private static final String VISITOR_ID = "test_visitor_id";
+  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String visitorId = "test_visitor_id";
 
-  public static void main(final String[] args)
-      throws IOException, ExecutionException, InterruptedException {
-    writeUserEvent(VISITOR_ID);
-    callRejoinUserEvents();
-    purgeUserEvent(VISITOR_ID);
+    writeUserEvent(visitorId);
+    callRejoinUserEvents(defaultCatalog);
+    purgeUserEvent(visitorId);
   }
 
-  public static void callRejoinUserEvents()
+  public static void callRejoinUserEvents(String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
-    OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata> rejoinOperation =
-        UserEventServiceClient.create().rejoinUserEventsAsync(getRejoinUserEventRequest());
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata> rejoinOperation =
+          userEventServiceClient.rejoinUserEventsAsync(getRejoinUserEventRequest(defaultCatalog));
 
-    System.out.printf("The rejoin operation was started: %s%n", rejoinOperation.getName());
+      System.out.printf("The rejoin operation was started: %s%n", rejoinOperation.getName());
+    }
   }
 
-  public static RejoinUserEventsRequest getRejoinUserEventRequest() {
+  public static RejoinUserEventsRequest getRejoinUserEventRequest(String defaultCatalog) {
     RejoinUserEventsRequest rejoinUserEventsRequest =
         RejoinUserEventsRequest.newBuilder()
-            .setParent(DEFAULT_CATALOG)
+            .setParent(defaultCatalog)
             .setUserEventRejoinScope(UserEventRejoinScope.UNJOINED_EVENTS)
             .build();
 

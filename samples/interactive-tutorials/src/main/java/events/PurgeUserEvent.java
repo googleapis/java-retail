@@ -17,7 +17,7 @@
 // [START retail_purge_user_event]
 
 /*
- * Import user events into a catalog from inline source using Retail API
+ * Purge user events into a catalog from inline source using Retail API
  */
 
 package events;
@@ -34,31 +34,33 @@ import java.util.concurrent.ExecutionException;
 
 public class PurgeUserEvent {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
-  private static final String VISITOR_ID = "test_visitor_id";
+  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String visitorId = "test_visitor_id";
 
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
-    writeUserEvent(VISITOR_ID);
-    callPurgeUserEvents();
+    writeUserEvent(visitorId);
+    callPurgeUserEvents(visitorId, defaultCatalog);
   }
 
-  public static void callPurgeUserEvents()
+  public static void callPurgeUserEvents(String visitorId, String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
-        UserEventServiceClient.create().purgeUserEventsAsync(getPurgeUserEventRequest());
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
+          userEventServiceClient.purgeUserEventsAsync(
+              getPurgeUserEventRequest(visitorId, defaultCatalog));
 
-    System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
+      System.out.printf("The purge operation was started: %s%n",
+          purgeOperation.getName());
+    }
   }
 
-  private static PurgeUserEventsRequest getPurgeUserEventRequest() {
+  private static PurgeUserEventsRequest getPurgeUserEventRequest(String visitorId, String defaultCatalog) {
     PurgeUserEventsRequest purgeUserEventsRequest =
         PurgeUserEventsRequest.newBuilder()
             // TO CHECK ERROR HANDLING SET INVALID FILTER HERE:
-            .setFilter(String.format("visitorId=\"%s\"", VISITOR_ID))
-            .setParent(DEFAULT_CATALOG)
+            .setFilter(String.format("visitorId=\"%s\"", visitorId))
+            .setParent(defaultCatalog)
             .setForce(true)
             .build();
 

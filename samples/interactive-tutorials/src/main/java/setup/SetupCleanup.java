@@ -70,10 +70,11 @@ public class SetupCleanup {
             .setParent(DEFAULT_CATALOG)
             .build();
 
-    UserEvent userEvent = UserEventServiceClient.create().writeUserEvent(writeUserEventRequest);
-    System.out.printf("The user event is written. %n%s%n", userEvent);
-
-    return userEvent;
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
+      System.out.printf("The user event is written. %n%s%n", userEvent);
+      return userEvent;
+    }
   }
 
   public static void purgeUserEvent(String visitorId)
@@ -85,9 +86,10 @@ public class SetupCleanup {
             .setForce(true)
             .build();
 
-    OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
-        UserEventServiceClient.create().purgeUserEventsAsync(purgeUserEventsRequest);
-
-    System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
+          userEventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
+      System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
+    }
   }
 }
