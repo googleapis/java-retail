@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class RemoveFulfillmentPlaces {
 
@@ -77,12 +76,11 @@ public class RemoveFulfillmentPlaces {
         getRemoveFulfillmentRequest(productName, timestamp, storeId);
     ProductServiceClient.create().removeFulfillmentPlacesAsync(removeFulfillmentRequest);
     /*
-    This is a long running operation and its result is not immediately
+    This is a long-running operation and its result is not immediately
     present with get operations,thus we simulate wait with sleep method.
     */
     System.out.println("Remove fulfillment places, wait 30 seconds.");
-
-    ProductServiceClient.create().awaitTermination(30, TimeUnit.SECONDS);
+    Thread.sleep(30_000);
   }
 
   // remove fulfillment request

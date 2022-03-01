@@ -19,6 +19,7 @@ package setup;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.retail.v2.CreateProductRequest;
 import com.google.cloud.retail.v2.DeleteProductRequest;
+import com.google.cloud.retail.v2.FulfillmentInfo;
 import com.google.cloud.retail.v2.GetProductRequest;
 import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
@@ -26,6 +27,7 @@ import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class SetupCleanup {
 
@@ -46,6 +48,12 @@ public class SetupCleanup {
             .setCurrencyCode("USD")
             .build();
 
+    FulfillmentInfo fulfillmentInfo =
+        FulfillmentInfo.newBuilder()
+            .setType("pickup-in-store")
+            .addAllPlaceIds(Arrays.asList("store0", "store1"))
+            .build();
+
     return Product.newBuilder()
         .setTitle("Nest Mini")
         .setType(Type.PRIMARY)
@@ -53,6 +61,7 @@ public class SetupCleanup {
         .addBrands("Google")
         .setPriceInfo(priceInfo)
         .setAvailability(Availability.IN_STOCK)
+        .addFulfillmentInfo(fulfillmentInfo)
         .build();
   }
 

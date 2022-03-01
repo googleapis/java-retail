@@ -31,12 +31,12 @@ import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.SetInventoryRequest;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class SetInventory {
 
@@ -60,11 +60,11 @@ public class SetInventory {
     SetInventoryRequest setInventoryRequest = getSetInventoryRequest(productName);
     ProductServiceClient.create().setInventoryAsync(setInventoryRequest);
     /*
-    This is a long running operation and its result is not immediately
+    This is a long-running operation and its result is not immediately
     present with get operations,thus we simulate wait with sleep method.
     */
     System.out.println("Set inventory, wait 30 seconds.");
-    ProductServiceClient.create().awaitTermination(30, TimeUnit.SECONDS);
+    Thread.sleep(30_000);
   }
 
   public static SetInventoryRequest getSetInventoryRequest(String productName) {
@@ -118,6 +118,7 @@ public class SetInventory {
         .setPriceInfo(priceInfo)
         .addFulfillmentInfo(fulfillmentInfo)
         .setAvailability(Availability.IN_STOCK)
+        .setAvailableQuantity(Int32Value.newBuilder().setValue(5).build())
         .build();
   }
 }
