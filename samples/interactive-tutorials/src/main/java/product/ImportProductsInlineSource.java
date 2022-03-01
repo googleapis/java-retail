@@ -22,17 +22,13 @@
 
 package product;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.retail.v2.ColorInfo;
 import com.google.cloud.retail.v2.FulfillmentInfo;
-import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportProductsRequest;
-import com.google.cloud.retail.v2.ImportProductsResponse;
 import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.ProductInlineSource;
 import com.google.cloud.retail.v2.ProductInputConfig;
-import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,58 +36,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-public class ImportProductsInlineSource {
+public class ImportProductsInlineSource extends ImportProductsBase {
 
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String DEFAULT_CATALOG =
       String.format(
           "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
           PROJECT_ID);
-  private static final String GENERATED_PRODUCT_ID = UUID.randomUUID().toString();
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
-    importProductsFromInlineSource();
-  }
-
-  public static void importProductsFromInlineSource()
-      throws IOException, ExecutionException, InterruptedException {
+      throws IOException, InterruptedException {
     ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts());
-
-    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      OperationFuture<ImportProductsResponse, ImportMetadata> importOperation =
-          serviceClient.importProductsAsync(importRequest);
-
-      System.out.printf("The operation was started: %s%n", importOperation.getName());
-
-      while (!importOperation.isDone()) {
-        System.out.println("Please wait till operation is done.");
-        int awaitDuration = 5;
-        serviceClient.awaitTermination(awaitDuration, TimeUnit.SECONDS);
-        System.out.println("Import products operation is done.");
-
-        if (importOperation.getMetadata().get() != null) {
-          System.out.printf(
-              "Number of successfully imported products: %s%n",
-              importOperation.getMetadata().get().getSuccessCount());
-
-          System.out.printf(
-              "Number of failures during the importing: %s%n",
-              importOperation.getMetadata().get().getFailureCount());
-        } else {
-          System.out.println("Metadata in bigQuery operation is empty.");
-        }
-
-        if (importOperation.get() != null) {
-          System.out.printf("Operation result: %s%n", importOperation.get());
-        } else {
-          System.out.println("Operation result is empty.");
-        }
-      }
-    }
+    waitForOperationCompletion(importRequest);
   }
 
   public static ImportProductsRequest getImportProductsInlineRequest(
@@ -152,7 +109,7 @@ public class ImportProductsInlineSource {
     product1 =
         Product.newBuilder()
             .setTitle("#IamRemarkable Pen")
-            .setId(GENERATED_PRODUCT_ID)
+            .setId(UUID.randomUUID().toString())
             .addAllCategories(Collections.singletonList("Office"))
             .setUri(
                 "https://shop.googlemerchandisestore.com/Google+Redesign/"
@@ -196,7 +153,7 @@ public class ImportProductsInlineSource {
     product2 =
         Product.newBuilder()
             .setTitle("Android Embroidered Crewneck Sweater")
-            .setId(GENERATED_PRODUCT_ID)
+            .setId(UUID.randomUUID().toString())
             .addCategories("Apparel")
             .setUri(
                 "https://shop.googlemerchandisestore.com/Google+Redesign/"
