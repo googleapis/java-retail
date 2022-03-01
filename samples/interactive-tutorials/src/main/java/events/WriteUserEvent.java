@@ -37,7 +37,8 @@ public class WriteUserEvent {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String visitorId = "test_visitor_id";
 
     writeUserEvent(defaultCatalog, visitorId);
@@ -45,7 +46,8 @@ public class WriteUserEvent {
   }
 
   public static void writeUserEvent(String defaultCatalog, String visitorId) throws IOException {
-    WriteUserEventRequest writeUserEventRequest = getWriteEventRequest(getUserEvent(visitorId), defaultCatalog);
+    WriteUserEventRequest writeUserEventRequest =
+        getWriteEventRequest(getUserEvent(visitorId), defaultCatalog);
 
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
       UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
@@ -54,7 +56,8 @@ public class WriteUserEvent {
     }
   }
 
-  public static WriteUserEventRequest getWriteEventRequest(UserEvent userEvent, String defaultCatalog) {
+  public static WriteUserEventRequest getWriteEventRequest(
+      UserEvent userEvent, String defaultCatalog) {
     WriteUserEventRequest writeUserEventRequest =
         WriteUserEventRequest.newBuilder()
             .setUserEvent(userEvent)

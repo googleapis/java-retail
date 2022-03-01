@@ -34,9 +34,11 @@ import java.util.concurrent.ExecutionException;
 
 public class PurgeUserEvent {
 
-  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String visitorId = "test_visitor_id";
 
     writeUserEvent(visitorId);
@@ -50,12 +52,12 @@ public class PurgeUserEvent {
           userEventServiceClient.purgeUserEventsAsync(
               getPurgeUserEventRequest(visitorId, defaultCatalog));
 
-      System.out.printf("The purge operation was started: %s%n",
-          purgeOperation.getName());
+      System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
     }
   }
 
-  private static PurgeUserEventsRequest getPurgeUserEventRequest(String visitorId, String defaultCatalog) {
+  private static PurgeUserEventsRequest getPurgeUserEventRequest(
+      String visitorId, String defaultCatalog) {
     PurgeUserEventsRequest purgeUserEventsRequest =
         PurgeUserEventsRequest.newBuilder()
             // TO CHECK ERROR HANDLING SET INVALID FILTER HERE:
