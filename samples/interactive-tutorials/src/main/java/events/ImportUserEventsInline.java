@@ -40,9 +40,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsInline {
 
-  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
 
     importUserEventsFromInlineSource(defaultCatalog);
   }
@@ -59,8 +61,7 @@ public class ImportUserEventsInline {
       OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
           userEventServiceClient.importUserEventsAsync(importInlineRequest);
 
-      System.out.printf("The operation was started: %s%n",
-          importOperation.getName());
+      System.out.printf("The operation was started: %s%n", importOperation.getName());
       System.out.println("Please wait till operation is done.");
 
       try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {

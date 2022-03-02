@@ -36,16 +36,18 @@ public class ImportUserEventsBigQuery {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog = "invalid_catalog_name"
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
+    // "invalid_catalog_name"
 
     importUserEventsFromBigQuery(projectId, defaultCatalog);
   }
 
   public static void importUserEventsFromBigQuery(String projectId, String defaultCatalog)
       throws IOException, InterruptedException {
-    ImportUserEventsRequest importBigQueryRequest = getImportEventsBigQueryRequest(projectId, defaultCatalog);
+    ImportUserEventsRequest importBigQueryRequest =
+        getImportEventsBigQueryRequest(projectId, defaultCatalog);
 
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
       String operationName =
@@ -64,7 +66,8 @@ public class ImportUserEventsBigQuery {
 
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-        System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
+        System.out.printf(
+            "Number of successfully imported events: %s\n", metadata.getSuccessCount());
         System.out.printf(
             "Number of failures during the importing: %s\n", metadata.getFailureCount());
       }
@@ -77,7 +80,8 @@ public class ImportUserEventsBigQuery {
     }
   }
 
-  public static ImportUserEventsRequest getImportEventsBigQueryRequest(String projectId, String defaultCatalog) {
+  public static ImportUserEventsRequest getImportEventsBigQueryRequest(
+      String projectId, String defaultCatalog) {
     String datasetId = "user_events";
     String tableId = "events";
     // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"

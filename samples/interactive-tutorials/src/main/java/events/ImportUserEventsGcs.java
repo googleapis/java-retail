@@ -37,19 +37,25 @@ public class ImportUserEventsGcs {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog = "invalid_catalog_name"
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
+    // "invalid_catalog_name"
     String gcsEventsObject = "user_events.json";
-    // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT: gcsEventsObject = "user_events_some_invalid.json"
+    // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT: gcsEventsObject =
+    // "user_events_some_invalid.json"
 
     importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
   }
 
-  public static void importUserEventsFromGcs(String gcsEventsObject, String defaultCatalog) throws IOException, InterruptedException {
-    ImportUserEventsRequest importGcsRequest = getImportEventsGcsRequest(gcsEventsObject, defaultCatalog);
+  public static void importUserEventsFromGcs(String gcsEventsObject, String defaultCatalog)
+      throws IOException, InterruptedException {
+    ImportUserEventsRequest importGcsRequest =
+        getImportEventsGcsRequest(gcsEventsObject, defaultCatalog);
 
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-      String operationName = serviceClient.importUserEventsCallable().call(importGcsRequest).getName();
+      String operationName =
+          serviceClient.importUserEventsCallable().call(importGcsRequest).getName();
 
       System.out.printf("OperationName = %s\n", operationName);
 
@@ -65,7 +71,8 @@ public class ImportUserEventsGcs {
 
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-        System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
+        System.out.printf(
+            "Number of successfully imported events: %s\n", metadata.getSuccessCount());
         System.out.printf(
             "Number of failures during the importing: %s\n", metadata.getFailureCount());
       }
@@ -78,7 +85,8 @@ public class ImportUserEventsGcs {
     }
   }
 
-  public static ImportUserEventsRequest getImportEventsGcsRequest(String gcsObjectName, String defaultCatalog) {
+  public static ImportUserEventsRequest getImportEventsGcsRequest(
+      String gcsObjectName, String defaultCatalog) {
     String gcsBucket = String.format("gs://%s", System.getenv("EVENTS_BUCKET_NAME"));
     String gcsErrorsBucket = String.format("%s/error", gcsBucket);
 
