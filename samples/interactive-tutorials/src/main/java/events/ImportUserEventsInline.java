@@ -40,54 +40,55 @@ import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsInline {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
+  public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
 
-  public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
-    importUserEventsFromInlineSource();
+    importUserEventsFromInlineSource(defaultCatalog);
   }
 
-  public static void importUserEventsFromInlineSource()
+  public static void importUserEventsFromInlineSource(String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
 
     int awaitDuration = 30;
 
     ImportUserEventsRequest importInlineRequest =
-        getImportEventsInlineSourceRequest(getUserEvents());
+        getImportEventsInlineSourceRequest(getUserEvents(), defaultCatalog);
 
-    OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
-        UserEventServiceClient.create().importUserEventsAsync(importInlineRequest);
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
+          userEventServiceClient.importUserEventsAsync(importInlineRequest);
 
-    System.out.printf("The operation was started: %s%n", importOperation.getName());
+      System.out.printf("The operation was started: %s%n",
+          importOperation.getName());
+      System.out.println("Please wait till operation is done.");
 
-    System.out.println("Please wait till operation is done.");
+      try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
+        serviceClient.awaitTermination(awaitDuration, TimeUnit.SECONDS);
+        System.out.println("Import user events operation is done.");
 
-    UserEventServiceClient.create().awaitTermination(awaitDuration, TimeUnit.SECONDS);
+        if (importOperation.getMetadata().get() != null) {
+          System.out.printf(
+              "Number of successfully imported events: %s%n",
+              importOperation.getMetadata().get().getSuccessCount());
 
-    System.out.println("Import user events operation is done.");
-
-    if (importOperation.getMetadata().get() != null) {
-      System.out.printf(
-          "Number of successfully imported events: %s%n",
-          importOperation.getMetadata().get().getSuccessCount());
-
-      System.out.printf(
-          "Number of failures during the importing: %s%n",
-          importOperation.getMetadata().get().getFailureCount());
-    } else {
-      System.out.println("Metadata in bigQuery operation is empty.");
-    }
-    if (importOperation.get() != null) {
-      System.out.printf("Operation result: %s%n", importOperation.get());
-    } else {
-      System.out.println("Operation result is empty.");
+          System.out.printf(
+              "Number of failures during the importing: %s%n",
+              importOperation.getMetadata().get().getFailureCount());
+        } else {
+          System.out.println("Metadata in bigQuery operation is empty.");
+        }
+        if (importOperation.get() != null) {
+          System.out.printf("Operation result: %s%n", importOperation.get());
+        } else {
+          System.out.println("Operation result is empty.");
+        }
+      }
     }
   }
 
   public static ImportUserEventsRequest getImportEventsInlineSourceRequest(
-      List<UserEvent> userEventsToImport) {
+      List<UserEvent> userEventsToImport, String defaultCatalog) {
     UserEventInlineSource inlineSource =
         UserEventInlineSource.newBuilder().addAllUserEvents(userEventsToImport).build();
 
@@ -96,10 +97,9 @@ public class ImportUserEventsInline {
 
     ImportUserEventsRequest importRequest =
         ImportUserEventsRequest.newBuilder()
-            .setParent(DEFAULT_CATALOG)
+            .setParent(defaultCatalog)
             .setInputConfig(inputConfig)
             .build();
-
     System.out.printf("Import user events from inline source request: %s%n", importRequest);
 
     return importRequest;

@@ -34,65 +34,61 @@ import java.io.IOException;
 
 public class ImportUserEventsBigQuery {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
-  /*
-  TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
-  DEFAULT_CATALOG = "invalid_catalog_name"
-  */
-  private static final String DATASET_ID = "user_events";
-  private static final String TABLE_ID = "events";
-  /*
-  TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS:
-  TABLE_ID = "events_some_invalid"
-  */
-  private static final String DATA_SCHEMA = "user_event";
-
   public static void main(String[] args) throws IOException, InterruptedException {
-    importUserEventsFromBigQuery();
+    String projectId = System.getenv("PROJECT_ID");
+    String defaultCatalog = String.format(
+        "projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog = "invalid_catalog_name"
+
+    importUserEventsFromBigQuery(projectId, defaultCatalog);
   }
 
-  public static void importUserEventsFromBigQuery() throws IOException, InterruptedException {
-    ImportUserEventsRequest importBigQueryRequest = getImportEventsBigQueryRequest();
+  public static void importUserEventsFromBigQuery(String projectId, String defaultCatalog)
+      throws IOException, InterruptedException {
+    ImportUserEventsRequest importBigQueryRequest = getImportEventsBigQueryRequest(projectId, defaultCatalog);
 
-    UserEventServiceClient serviceClient = UserEventServiceClient.create();
+    try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
+      String operationName =
+          serviceClient.importUserEventsCallable().call(importBigQueryRequest).getName();
 
-    String operationName =
-        serviceClient.importUserEventsCallable().call(importBigQueryRequest).getName();
+      System.out.printf("OperationName = %s\n", operationName);
+      OperationsClient operationsClient = serviceClient.getOperationsClient();
+      Operation operation = operationsClient.getOperation(operationName);
 
-    System.out.printf("OperationName = %s\n", operationName);
-    OperationsClient operationsClient = serviceClient.getOperationsClient();
-    Operation operation = operationsClient.getOperation(operationName);
+      while (!operation.getDone()) {
+        // Keep polling the operation periodically until the import task is done.
+        int awaitDuration = 30000;
+        Thread.sleep(awaitDuration);
+        operation = operationsClient.getOperation(operationName);
+      }
 
-    while (!operation.getDone()) {
-      // Keep polling the operation periodically until the import task is done.
-      int awaitDuration = 30000;
-      Thread.sleep(awaitDuration);
-      operation = operationsClient.getOperation(operationName);
-    }
+      if (operation.hasMetadata()) {
+        ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
+        System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
+        System.out.printf(
+            "Number of failures during the importing: %s\n", metadata.getFailureCount());
+      }
 
-    if (operation.hasMetadata()) {
-      ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-      System.out.printf("Number of successfully imported events: %s\n", metadata.getSuccessCount());
-      System.out.printf(
-          "Number of failures during the importing: %s\n", metadata.getFailureCount());
-    }
-
-    if (operation.hasResponse()) {
-      ImportUserEventsResponse response =
-          operation.getResponse().unpack(ImportUserEventsResponse.class);
-      System.out.printf("Operation result: %s%n", response);
+      if (operation.hasResponse()) {
+        ImportUserEventsResponse response =
+            operation.getResponse().unpack(ImportUserEventsResponse.class);
+        System.out.printf("Operation result: %s%n", response);
+      }
     }
   }
 
-  public static ImportUserEventsRequest getImportEventsBigQueryRequest() {
+  public static ImportUserEventsRequest getImportEventsBigQueryRequest(String projectId, String defaultCatalog) {
+    String datasetId = "user_events";
+    String tableId = "events";
+    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
+    String dataSchema = "user_event";
+
     BigQuerySource bigQuerySource =
         BigQuerySource.newBuilder()
-            .setProjectId(PROJECT_ID)
-            .setDatasetId(DATASET_ID)
-            .setTableId(TABLE_ID)
-            .setDataSchema(DATA_SCHEMA)
+            .setProjectId(projectId)
+            .setDatasetId(datasetId)
+            .setTableId(tableId)
+            .setDataSchema(dataSchema)
             .build();
 
     UserEventInputConfig inputConfig =
@@ -100,7 +96,7 @@ public class ImportUserEventsBigQuery {
 
     ImportUserEventsRequest importRequest =
         ImportUserEventsRequest.newBuilder()
-            .setParent(DEFAULT_CATALOG)
+            .setParent(defaultCatalog)
             .setInputConfig(inputConfig)
             .build();
 

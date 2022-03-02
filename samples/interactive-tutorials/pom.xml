@@ -25,11 +25,22 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>libraries-bom</artifactId>
+        <version>24.3.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-retail</artifactId>
-      <version>2.0.6</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -40,12 +51,10 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-bigquery</artifactId>
-      <version>2.5.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-storage</artifactId>
-      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -61,7 +70,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+          <cleanupDaemonThreads>true</cleanupDaemonThreads>
         </configuration>
       </plugin>
     </plugins>
