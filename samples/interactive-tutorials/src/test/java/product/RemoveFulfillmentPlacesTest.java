@@ -47,7 +47,7 @@ public class RemoveFulfillmentPlacesTest {
     Assert.assertTrue(output.matches("(?s)^(.*Remove fulfillment places.*)$"));
     Assert.assertTrue(
         output.matches(
-            "(?s)^(.*Get product response: name: \"projects/.*/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+            "(?s)^(.*Get product response: name: \"projects/.*/locations/global/catalogs/default_catalog/branches/.*/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
 }

@@ -45,7 +45,7 @@ public class CreateProductTest {
     Assert.assertTrue(output.matches("(?s)^(.*Created product.*)$"));
     Assert.assertTrue(
         output.matches(
-            "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/0/products/.*)$"));
+            "(?s)^(.*name: \"projects/.+/locations/global/catalogs/default_catalog/branches/.*/products/.*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*title: \"Nest Mini\".*)$"));
     Assert.assertTrue(output.matches("(?s)^(.*Product.*was deleted.*)$"));
   }
