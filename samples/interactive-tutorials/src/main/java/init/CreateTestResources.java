@@ -40,7 +40,8 @@ public class CreateTestResources {
   private static final String GCS_BUCKET = String.format("gs://%s", System.getenv("BUCKET_NAME"));
   private static final String GCS_ERROR_BUCKET = String.format("%s/errors", GCS_BUCKET);
   private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog/" + "branches/0", PROJECT_ID);
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/0", PROJECT_ID);
 
   public static void main(String[] args) throws IOException, InterruptedException {
     productsCreateGcsBucketAndUploadJsonFiles();

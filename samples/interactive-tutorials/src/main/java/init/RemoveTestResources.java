@@ -32,7 +32,8 @@ public class RemoveTestResources {
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
   private static final String DEFAULT_CATALOG =
-      String.format("projects/%s/locations/global/catalogs/default_catalog/" + "branches/0", PROJECT_ID);
+      String.format(
+          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/0", PROJECT_ID);
 
   public static void main(String[] args) throws IOException {
     deleteBucket(BUCKET_NAME);
