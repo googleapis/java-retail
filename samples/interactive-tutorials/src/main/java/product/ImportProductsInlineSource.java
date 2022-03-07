@@ -45,8 +45,7 @@ public class ImportProductsInlineSource extends ImportProductsBase {
           "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
           PROJECT_ID);
 
-  public static void main(String[] args)
-      throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts());
     waitForOperationCompletion(importRequest);
   }

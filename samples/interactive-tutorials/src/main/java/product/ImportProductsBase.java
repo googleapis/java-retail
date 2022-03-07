@@ -13,8 +13,7 @@ public abstract class ImportProductsBase {
   protected static void waitForOperationCompletion(ImportProductsRequest importRequest)
       throws IOException, InterruptedException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      String operationName =
-          serviceClient.importProductsCallable().call(importRequest).getName();
+      String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
