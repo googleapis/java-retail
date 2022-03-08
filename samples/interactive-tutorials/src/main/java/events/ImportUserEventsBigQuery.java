@@ -74,8 +74,7 @@ public class ImportUserEventsBigQuery {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-      String operationName =
-          serviceClient.importUserEventsCallable().call(importRequest).getName();
+      String operationName = serviceClient.importUserEventsCallable().call(importRequest).getName();
 
       System.out.printf("OperationName = %s\n", operationName);
       OperationsClient operationsClient = serviceClient.getOperationsClient();
