@@ -86,6 +86,7 @@ Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/m
 | Search With Query Expansion Spec | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithQueryExpansionSpec.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithQueryExpansionSpec.java) |
 
 
+
 ## Troubleshooting
 
 To get help, follow the instructions in the [shared Troubleshooting document][troubleshooting].
