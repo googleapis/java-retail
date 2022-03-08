@@ -30,6 +30,7 @@ import com.google.cloud.retail.v2.WriteUserEventRequest;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class WriteUserEvent {
@@ -39,39 +40,14 @@ public class WriteUserEvent {
     String projectId = System.getenv("PROJECT_ID");
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String visitorId = "test_visitor_id";
+    String visitorId = UUID.randomUUID().toString();
 
     writeUserEvent(defaultCatalog, visitorId);
     purgeUserEvent(visitorId);
   }
 
   public static void writeUserEvent(String defaultCatalog, String visitorId) throws IOException {
-    WriteUserEventRequest writeUserEventRequest =
-        getWriteEventRequest(getUserEvent(visitorId), defaultCatalog);
-
-    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
-      UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
-
-      System.out.printf("Written user event: %s%n", userEvent);
-    }
-  }
-
-  public static WriteUserEventRequest getWriteEventRequest(
-      UserEvent userEvent, String defaultCatalog) {
-    WriteUserEventRequest writeUserEventRequest =
-        WriteUserEventRequest.newBuilder()
-            .setUserEvent(userEvent)
-            .setParent(defaultCatalog)
-            .build();
-
-    System.out.printf("Write user event request: %s%n", writeUserEventRequest);
-
-    return writeUserEventRequest;
-  }
-
-  public static UserEvent getUserEvent(String visitorId) {
     Instant time = Instant.now();
-
     Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
 
     UserEvent userEvent =
@@ -80,10 +56,22 @@ public class WriteUserEvent {
             .setVisitorId(visitorId)
             .setEventTime(timestamp)
             .build();
-
     System.out.println(userEvent);
 
-    return userEvent;
+    WriteUserEventRequest writeUserEventRequest =
+        WriteUserEventRequest.newBuilder()
+            .setUserEvent(userEvent)
+            .setParent(defaultCatalog)
+            .build();
+    System.out.printf("Write user event request: %s%n", writeUserEventRequest);
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      userEventServiceClient.writeUserEvent(writeUserEventRequest);
+      System.out.printf("Written user event: %s%n", userEvent);
+    }
   }
 }
 

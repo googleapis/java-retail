@@ -32,6 +32,7 @@ import com.google.cloud.retail.v2.RejoinUserEventsRequest.UserEventRejoinScope;
 import com.google.cloud.retail.v2.RejoinUserEventsResponse;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class RejoinUserEvent {
@@ -39,9 +40,9 @@ public class RejoinUserEvent {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String visitorId = "test_visitor_id";
+    String defaultCatalog = String.format(
+        "projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String visitorId = UUID.randomUUID().toString();
 
     writeUserEvent(visitorId);
     callRejoinUserEvents(defaultCatalog);
@@ -50,24 +51,22 @@ public class RejoinUserEvent {
 
   public static void callRejoinUserEvents(String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
-    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
-      OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata> rejoinOperation =
-          userEventServiceClient.rejoinUserEventsAsync(getRejoinUserEventRequest(defaultCatalog));
-
-      System.out.printf("The rejoin operation was started: %s%n", rejoinOperation.getName());
-    }
-  }
-
-  public static RejoinUserEventsRequest getRejoinUserEventRequest(String defaultCatalog) {
     RejoinUserEventsRequest rejoinUserEventsRequest =
         RejoinUserEventsRequest.newBuilder()
             .setParent(defaultCatalog)
             .setUserEventRejoinScope(UserEventRejoinScope.UNJOINED_EVENTS)
             .build();
-
     System.out.printf("Rejoin user events request: %s%n", rejoinUserEventsRequest);
 
-    return rejoinUserEventsRequest;
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
+    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      OperationFuture<RejoinUserEventsResponse, RejoinUserEventsMetadata> rejoinOperation =
+          userEventServiceClient.rejoinUserEventsAsync(rejoinUserEventsRequest);
+
+      System.out.printf("The rejoin operation was started: %s%n", rejoinOperation.getName());
+    }
   }
 }
 

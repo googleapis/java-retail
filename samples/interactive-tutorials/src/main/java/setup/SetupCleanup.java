@@ -30,6 +30,7 @@ import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class SetupCleanup {
@@ -41,9 +42,13 @@ public class SetupCleanup {
   public static UserEvent getUserEvent(String visitorId) {
     int value = 3;
 
-    Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
+    Timestamp timestamp = Timestamp.newBuilder()
+        .setSeconds(Instant.now().getEpochSecond())
+        .build();
 
-    Product product = Product.newBuilder().setId("test_id").build();
+    Product product = Product.newBuilder()
+        .setId(UUID.randomUUID().toString())
+        .build();
 
     ProductDetail productDetail =
         ProductDetail.newBuilder()
@@ -70,6 +75,9 @@ public class SetupCleanup {
             .setParent(DEFAULT_CATALOG)
             .build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
       UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
       System.out.printf("The user event is written. %n%s%n", userEvent);
@@ -86,6 +94,9 @@ public class SetupCleanup {
             .setForce(true)
             .build();
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
       OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
           userEventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
