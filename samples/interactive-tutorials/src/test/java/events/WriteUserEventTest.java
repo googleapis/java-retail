@@ -46,7 +46,6 @@ public class WriteUserEventTest {
             "(?s)^(.*Write user event request.*?user_event.*?event_type: \"home-page-view\".*)$"));
     Assert.assertTrue(
         output.matches("(?s)^(.*Written user event.*?event_type: \"home-page-view\".*)$"));
-    Assert.assertTrue(
-        output.matches("(?s)^(.*Written user event.*?visitor_id: .*)$"));
+    Assert.assertTrue(output.matches("(?s)^(.*Written user event.*?visitor_id: .*)$"));
   }
 }

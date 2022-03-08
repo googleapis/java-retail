@@ -46,8 +46,7 @@ public class PurgeUserEventTest {
         output.matches(
             "(?s)^(.*Purge user events request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
     Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Purge user events request.*?filter: \"visitorId=.*?\".*)$"));
+        output.matches("(?s)^(.*Purge user events request.*?filter: \"visitorId=.*?\".*)$"));
     Assert.assertTrue(
         output.matches(
             "(?s)^(.*Purge user events request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));

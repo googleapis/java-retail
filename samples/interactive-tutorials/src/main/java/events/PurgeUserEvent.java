@@ -38,8 +38,8 @@ public class PurgeUserEvent {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
     String projectId = System.getenv("PROJECT_ID");
-    String defaultCatalog = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String visitorId = UUID.randomUUID().toString();
 
     writeUserEvent(visitorId);
@@ -64,8 +64,7 @@ public class PurgeUserEvent {
       OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
           userEventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
 
-      System.out.printf("The purge operation was started: %s%n",
-          purgeOperation.getName());
+      System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
     }
   }
 }
