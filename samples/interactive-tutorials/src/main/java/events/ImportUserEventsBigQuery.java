@@ -46,12 +46,36 @@ public class ImportUserEventsBigQuery {
 
   public static void importUserEventsFromBigQuery(String projectId, String defaultCatalog)
       throws IOException, InterruptedException {
-    ImportUserEventsRequest importBigQueryRequest =
-        getImportEventsBigQueryRequest(projectId, defaultCatalog);
+    String datasetId = "user_events";
+    String tableId = "events";
+    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
+    String dataSchema = "user_event";
 
+    BigQuerySource bigQuerySource =
+        BigQuerySource.newBuilder()
+            .setProjectId(projectId)
+            .setDatasetId(datasetId)
+            .setTableId(tableId)
+            .setDataSchema(dataSchema)
+            .build();
+
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource).build();
+
+    ImportUserEventsRequest importRequest =
+        ImportUserEventsRequest.newBuilder()
+            .setParent(defaultCatalog)
+            .setInputConfig(inputConfig)
+            .build();
+
+    System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
       String operationName =
-          serviceClient.importUserEventsCallable().call(importBigQueryRequest).getName();
+          serviceClient.importUserEventsCallable().call(importRequest).getName();
 
       System.out.printf("OperationName = %s\n", operationName);
       OperationsClient operationsClient = serviceClient.getOperationsClient();
@@ -78,35 +102,6 @@ public class ImportUserEventsBigQuery {
         System.out.printf("Operation result: %s%n", response);
       }
     }
-  }
-
-  public static ImportUserEventsRequest getImportEventsBigQueryRequest(
-      String projectId, String defaultCatalog) {
-    String datasetId = "user_events";
-    String tableId = "events";
-    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
-    String dataSchema = "user_event";
-
-    BigQuerySource bigQuerySource =
-        BigQuerySource.newBuilder()
-            .setProjectId(projectId)
-            .setDatasetId(datasetId)
-            .setTableId(tableId)
-            .setDataSchema(dataSchema)
-            .build();
-
-    UserEventInputConfig inputConfig =
-        UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource).build();
-
-    ImportUserEventsRequest importRequest =
-        ImportUserEventsRequest.newBuilder()
-            .setParent(defaultCatalog)
-            .setInputConfig(inputConfig)
-            .build();
-
-    System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
-
-    return importRequest;
   }
 }
 

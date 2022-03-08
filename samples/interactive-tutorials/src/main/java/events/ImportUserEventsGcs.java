@@ -50,12 +50,35 @@ public class ImportUserEventsGcs {
 
   public static void importUserEventsFromGcs(String gcsEventsObject, String defaultCatalog)
       throws IOException, InterruptedException {
-    ImportUserEventsRequest importGcsRequest =
-        getImportEventsGcsRequest(gcsEventsObject, defaultCatalog);
+    String gcsBucket = String.format("gs://%s", System.getenv("EVENTS_BUCKET_NAME"));
+    String gcsErrorsBucket = String.format("%s/error", gcsBucket);
 
+    GcsSource gcsSource =
+        GcsSource.newBuilder()
+            .addInputUris(String.format("%s/%s", gcsBucket, gcsEventsObject))
+            .build();
+
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setGcsSource(gcsSource).build();
+
+    ImportErrorsConfig errorsConfig =
+        ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorsBucket).build();
+
+    ImportUserEventsRequest importRequest =
+        ImportUserEventsRequest.newBuilder()
+            .setParent(defaultCatalog)
+            .setInputConfig(inputConfig)
+            .setErrorsConfig(errorsConfig)
+            .build();
+
+    System.out.printf("Import user events from google cloud source request: %s%n", importRequest);
+
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
       String operationName =
-          serviceClient.importUserEventsCallable().call(importGcsRequest).getName();
+          serviceClient.importUserEventsCallable().call(importRequest).getName();
 
       System.out.printf("OperationName = %s\n", operationName);
 
@@ -83,34 +106,6 @@ public class ImportUserEventsGcs {
         System.out.printf("Operation result: %s%n", response);
       }
     }
-  }
-
-  public static ImportUserEventsRequest getImportEventsGcsRequest(
-      String gcsObjectName, String defaultCatalog) {
-    String gcsBucket = String.format("gs://%s", System.getenv("EVENTS_BUCKET_NAME"));
-    String gcsErrorsBucket = String.format("%s/error", gcsBucket);
-
-    GcsSource gcsSource =
-        GcsSource.newBuilder()
-            .addInputUris(String.format("%s/%s", gcsBucket, gcsObjectName))
-            .build();
-
-    UserEventInputConfig inputConfig =
-        UserEventInputConfig.newBuilder().setGcsSource(gcsSource).build();
-
-    ImportErrorsConfig errorsConfig =
-        ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorsBucket).build();
-
-    ImportUserEventsRequest importRequest =
-        ImportUserEventsRequest.newBuilder()
-            .setParent(defaultCatalog)
-            .setInputConfig(inputConfig)
-            .setErrorsConfig(errorsConfig)
-            .build();
-
-    System.out.printf("Import user events from google cloud source request: %s%n", importRequest);
-
-    return importRequest;
   }
 }
 
