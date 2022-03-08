@@ -19,7 +19,7 @@ If you are using Maven, add this to your pom.xml file:
 <dependency>
   <groupId>com.google.cloud</groupId>
   <artifactId>google-cloud-retail</artifactId>
-  <version>2.0.7</version>
+  <version>2.0.10</version>
 </dependency>
 
 ```
@@ -84,6 +84,10 @@ Samples are in the [`samples/`](https://github.com/googleapis/java-retail/tree/m
 | Products Create Bigquery Table | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateBigqueryTable.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateBigqueryTable.java) |
 | Products Create Gcs Bucket | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/product/setup/ProductsCreateGcsBucket.java) |
 | Setup Cleanup | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/setup/SetupCleanup.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/setup/SetupCleanup.java) |
+| Search With Filtering | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithFiltering.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithFiltering.java) |
+| Search With Ordering | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithOrdering.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithOrdering.java) |
+| Search With Pagination | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithPagination.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithPagination.java) |
+| Search With Query Expansion Spec | [source code](https://github.com/googleapis/java-retail/blob/main/samples/interactive-tutorials/src/main/java/search/SearchWithQueryExpansionSpec.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-retail&page=editor&open_in_editor=samples/interactive-tutorials/src/main/java/search/SearchWithQueryExpansionSpec.java) |
 
 
 
