@@ -53,9 +53,8 @@ public class WriteUserEvent {
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
-      Timestamp timestamp = Timestamp.newBuilder()
-          .setSeconds(Instant.now().getEpochSecond())
-          .build();
+      Timestamp timestamp =
+          Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
 
       UserEvent userEvent =
           UserEvent.newBuilder()

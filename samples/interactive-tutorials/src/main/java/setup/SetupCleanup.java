@@ -42,9 +42,7 @@ public class SetupCleanup {
   public static UserEvent getUserEvent(String visitorId) {
     int value = 3;
 
-    Timestamp timestamp = Timestamp.newBuilder()
-        .setSeconds(Instant.now().getEpochSecond())
-        .build();
+    Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
 
     Product product = Product.newBuilder().setId(UUID.randomUUID().toString()).build();
 
