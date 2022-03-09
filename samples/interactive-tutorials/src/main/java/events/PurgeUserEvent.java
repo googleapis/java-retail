@@ -37,30 +37,33 @@ public class PurgeUserEvent {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
     String projectId = System.getenv("PROJECT_ID");
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // visitorId generated randomly.
     String visitorId = UUID.randomUUID().toString();
 
-    writeUserEvent(visitorId);
     callPurgeUserEvents(visitorId, defaultCatalog);
   }
 
   public static void callPurgeUserEvents(String visitorId, String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
-    PurgeUserEventsRequest purgeUserEventsRequest =
-        PurgeUserEventsRequest.newBuilder()
-            // TO CHECK ERROR HANDLING SET INVALID FILTER HERE:
-            .setFilter(String.format("visitorId=\"%s\"", visitorId))
-            .setParent(defaultCatalog)
-            .setForce(true)
-            .build();
-    System.out.printf("Purge user events request: %s%n", purgeUserEventsRequest);
+    writeUserEvent(visitorId);
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      PurgeUserEventsRequest purgeUserEventsRequest =
+          PurgeUserEventsRequest.newBuilder()
+              // TO CHECK ERROR HANDLING SET INVALID FILTER HERE:
+              .setFilter(String.format("visitorId=\"%s\"", visitorId))
+              .setParent(defaultCatalog)
+              .setForce(true)
+              .build();
+      System.out.printf("Purge user events request: %s%n", purgeUserEventsRequest);
+
       OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
           userEventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
 

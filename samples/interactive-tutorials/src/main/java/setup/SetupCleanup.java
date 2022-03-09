@@ -42,7 +42,9 @@ public class SetupCleanup {
   public static UserEvent getUserEvent(String visitorId) {
     int value = 3;
 
-    Timestamp timestamp = Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();
+    Timestamp timestamp = Timestamp.newBuilder()
+        .setSeconds(Instant.now().getEpochSecond())
+        .build();
 
     Product product = Product.newBuilder().setId(UUID.randomUUID().toString()).build();
 
@@ -65,16 +67,16 @@ public class SetupCleanup {
   }
 
   public static UserEvent writeUserEvent(String visitorId) throws IOException {
-    WriteUserEventRequest writeUserEventRequest =
-        WriteUserEventRequest.newBuilder()
-            .setUserEvent(getUserEvent(visitorId))
-            .setParent(DEFAULT_CATALOG)
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      WriteUserEventRequest writeUserEventRequest =
+          WriteUserEventRequest.newBuilder()
+              .setUserEvent(getUserEvent(visitorId))
+              .setParent(DEFAULT_CATALOG)
+              .build();
+
       UserEvent userEvent = userEventServiceClient.writeUserEvent(writeUserEventRequest);
       System.out.printf("The user event is written. %n%s%n", userEvent);
       return userEvent;
@@ -83,17 +85,17 @@ public class SetupCleanup {
 
   public static void purgeUserEvent(String visitorId)
       throws IOException, ExecutionException, InterruptedException {
-    PurgeUserEventsRequest purgeUserEventsRequest =
-        PurgeUserEventsRequest.newBuilder()
-            .setFilter(String.format("visitorId=\"%s\"", visitorId))
-            .setParent(DEFAULT_CATALOG)
-            .setForce(true)
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
     // the "close" method on the client to safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+      PurgeUserEventsRequest purgeUserEventsRequest =
+          PurgeUserEventsRequest.newBuilder()
+              .setFilter(String.format("visitorId=\"%s\"", visitorId))
+              .setParent(DEFAULT_CATALOG)
+              .setForce(true)
+              .build();
+
       OperationFuture<PurgeUserEventsResponse, PurgeMetadata> purgeOperation =
           userEventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
       System.out.printf("The purge operation was started: %s%n", purgeOperation.getName());
