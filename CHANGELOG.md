@@ -1,5 +1,22 @@
 # Changelog
 
+### [2.0.13](https://github.com/googleapis/java-retail/compare/v2.0.12...v2.0.13) (2022-03-09)
+
+
+### Dependencies
+
+* update dependency com.google.cloud:google-cloud-bigquery to v2.9.4 ([#351](https://github.com/googleapis/java-retail/issues/351)) ([2685a82](https://github.com/googleapis/java-retail/commit/2685a8204114658de54981a84ab297a6a5b87cbb))
+* update dependency com.google.cloud:google-cloud-storage to v2.4.5 ([#329](https://github.com/googleapis/java-retail/issues/329)) ([002a240](https://github.com/googleapis/java-retail/commit/002a2400b5fb7e1c4947915fe9b1ab8adbb5e30a))
+
+### [2.0.12](https://github.com/googleapis/java-retail/compare/v2.0.11...v2.0.12) (2022-03-08)
+
+
+### Dependencies
+
+* update dependency com.google.cloud:google-cloud-bigquery to v2.9.3 ([#322](https://github.com/googleapis/java-retail/issues/322)) ([571af55](https://github.com/googleapis/java-retail/commit/571af55e64f10d4b0b9f6f58d2806b10eed1f60c))
+* update dependency com.google.cloud:google-cloud-storage to v2.4.4 ([#323](https://github.com/googleapis/java-retail/issues/323)) ([bbd9526](https://github.com/googleapis/java-retail/commit/bbd952667da77bbf601d929f881ea9968d09398f))
+* update dependency com.google.code.gson:gson to v2.9.0 ([#324](https://github.com/googleapis/java-retail/issues/324)) ([f0c348d](https://github.com/googleapis/java-retail/commit/f0c348d1d407c80b9553c850a94998d54d3e05f5))
+
 ### [2.0.11](https://github.com/googleapis/java-retail/compare/v2.0.10...v2.0.11) (2022-03-02)
 
 
