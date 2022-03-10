@@ -47,7 +47,7 @@ public class SetInventory {
     String productName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/"
-                + "branches/default_branch/products/%s",
+                + "branches/0/products/%s",
             projectId, generatedProductId);
 
     createProduct(generatedProductId);

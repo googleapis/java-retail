@@ -41,7 +41,7 @@ public class RemoveFulfillmentPlaces {
     String productName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/"
-                + "default_branch/products/%s",
+                + "0/products/%s",
             projectId, generatedProductId);
     Timestamp currentDate =
         Timestamp.newBuilder()
