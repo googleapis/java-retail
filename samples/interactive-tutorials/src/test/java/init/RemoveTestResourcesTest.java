@@ -49,7 +49,6 @@ public class RemoveTestResourcesTest {
 
   @After
   public void restoreRemove() throws IOException {
-    Runtime.getRuntime()
-        .exec("mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
+    Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
   }
 }

@@ -16,24 +16,9 @@
 
 package setup;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.retail.v2.Product;
-import com.google.cloud.retail.v2.ProductDetail;
-import com.google.cloud.retail.v2.PurgeMetadata;
-import com.google.cloud.retail.v2.PurgeUserEventsRequest;
-import com.google.cloud.retail.v2.PurgeUserEventsResponse;
-import com.google.cloud.retail.v2.UserEvent;
-import com.google.cloud.retail.v2.UserEventServiceClient;
-import com.google.cloud.retail.v2.WriteUserEventRequest;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.Timestamp;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import static com.google.cloud.storage.StorageClass.STANDARD;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.bigquery.BigQuery;
@@ -60,9 +45,17 @@ import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.FulfillmentInfo;
 import com.google.cloud.retail.v2.GetProductRequest;
 import com.google.cloud.retail.v2.PriceInfo;
+import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
+import com.google.cloud.retail.v2.ProductDetail;
 import com.google.cloud.retail.v2.ProductServiceClient;
+import com.google.cloud.retail.v2.PurgeMetadata;
+import com.google.cloud.retail.v2.PurgeUserEventsRequest;
+import com.google.cloud.retail.v2.PurgeUserEventsResponse;
+import com.google.cloud.retail.v2.UserEvent;
+import com.google.cloud.retail.v2.UserEventServiceClient;
+import com.google.cloud.retail.v2.WriteUserEventRequest;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
@@ -74,9 +67,16 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Timestamp;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class SetupCleanup {
 
@@ -86,8 +86,7 @@ public class SetupCleanup {
   private static final Storage STORAGE =
       StorageOptions.newBuilder().setProjectId(PROJECT_ID).build().getService();
   private static final String DEFAULT_BRANCH_NAME =
-      String.format(
-          "projects/%s/locations/global/catalogs/default_catalog/branches/0", PROJECT_ID);
+      String.format("projects/%s/locations/global/catalogs/default_catalog/branches/0", PROJECT_ID);
 
   public static UserEvent getUserEvent(String visitorId) {
     int value = 3;
