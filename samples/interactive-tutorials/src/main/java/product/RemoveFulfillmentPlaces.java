@@ -40,8 +40,7 @@ public class RemoveFulfillmentPlaces {
     String generatedProductId = UUID.randomUUID().toString();
     String productName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/"
-                + "0/products/%s",
+            "projects/%s/locations/global/catalogs/default_catalog/branches/" + "0/products/%s",
             projectId, generatedProductId);
     Timestamp currentDate =
         Timestamp.newBuilder()
