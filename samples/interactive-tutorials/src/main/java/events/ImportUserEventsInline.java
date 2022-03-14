@@ -23,6 +23,8 @@
 package events;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportUserEventsRequest;
 import com.google.cloud.retail.v2.ImportUserEventsResponse;
@@ -41,80 +43,93 @@ import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsInline {
 
-  public static void main(String[] args)
+  public static void main(String... args)
       throws IOException, ExecutionException, InterruptedException {
-    String projectId = System.getenv("PROJECT_ID");
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectId);
 
     importUserEventsFromInlineSource(defaultCatalog);
   }
 
   public static void importUserEventsFromInlineSource(String defaultCatalog)
       throws IOException, ExecutionException, InterruptedException {
-    int userEventsNumber = 3;
-    int awaitDuration = 30;
-    List<UserEvent> userEvents = new ArrayList<>();
+    try {
+      int userEventsNumber = 3;
+      int awaitDuration = 30;
+      List<UserEvent> userEvents = new ArrayList<>();
 
-    for (int i = 0; i < userEventsNumber; i++) {
-      Instant time = Instant.now();
-      Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
+      for (int i = 0; i < userEventsNumber; i++) {
+        Instant time = Instant.now();
+        Timestamp timestamp = Timestamp.newBuilder()
+            .setSeconds(time.getEpochSecond()).build();
 
-      UserEvent userEvent =
-          UserEvent.newBuilder()
-              .setEventType("home-page-view")
-              .setVisitorId(UUID.randomUUID().toString())
-              .setEventTime(timestamp)
+        UserEvent userEvent =
+            UserEvent.newBuilder()
+                .setEventType("home-page-view")
+                .setVisitorId(UUID.randomUUID().toString())
+                .setEventTime(timestamp)
+                .build();
+
+        userEvents.add(userEvent);
+
+        System.out.printf("User Event: %s%n", i);
+        System.out.println(userEvent);
+      }
+
+      UserEventInlineSource inlineSource =
+          UserEventInlineSource.newBuilder().addAllUserEvents(userEvents)
               .build();
 
-      userEvents.add(userEvent);
+      UserEventInputConfig inputConfig =
+          UserEventInputConfig.newBuilder()
+              .setUserEventInlineSource(inlineSource).build();
 
-      System.out.printf("User Event: %s%n", i);
-      System.out.println(userEvent);
-    }
+      ImportUserEventsRequest importRequest =
+          ImportUserEventsRequest.newBuilder()
+              .setParent(defaultCatalog)
+              .setInputConfig(inputConfig)
+              .build();
+      System.out.printf("Import user events from inline source request: %s%n",
+          importRequest);
 
-    UserEventInlineSource inlineSource =
-        UserEventInlineSource.newBuilder().addAllUserEvents(userEvents).build();
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests. After completing all of your requests, call
+      // the "close" method on the client to safely clean up any remaining background resources.
+      try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
+        OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
+            userEventServiceClient.importUserEventsAsync(importRequest);
 
-    UserEventInputConfig inputConfig =
-        UserEventInputConfig.newBuilder().setUserEventInlineSource(inlineSource).build();
+        System.out.printf("The operation was started: %s%n",
+            importOperation.getName());
+        System.out.println("Please wait till operation is done.");
 
-    ImportUserEventsRequest importRequest =
-        ImportUserEventsRequest.newBuilder()
-            .setParent(defaultCatalog)
-            .setInputConfig(inputConfig)
-            .build();
-    System.out.printf("Import user events from inline source request: %s%n", importRequest);
+        userEventServiceClient.awaitTermination(awaitDuration,
+            TimeUnit.SECONDS);
+        System.out.println("Import user events operation is done.");
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
-      OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
-          userEventServiceClient.importUserEventsAsync(importRequest);
+        if (importOperation.getMetadata().get() != null) {
+          System.out.printf(
+              "Number of successfully imported events: %s%n",
+              importOperation.getMetadata().get().getSuccessCount());
 
-      System.out.printf("The operation was started: %s%n", importOperation.getName());
-      System.out.println("Please wait till operation is done.");
-
-      userEventServiceClient.awaitTermination(awaitDuration, TimeUnit.SECONDS);
-      System.out.println("Import user events operation is done.");
-
-      if (importOperation.getMetadata().get() != null) {
-        System.out.printf(
-            "Number of successfully imported events: %s%n",
-            importOperation.getMetadata().get().getSuccessCount());
-
-        System.out.printf(
-            "Number of failures during the importing: %s%n",
-            importOperation.getMetadata().get().getFailureCount());
-      } else {
-        System.out.println("Metadata in bigQuery operation is empty.");
+          System.out.printf(
+              "Number of failures during the importing: %s%n",
+              importOperation.getMetadata().get().getFailureCount());
+        } else {
+          System.out.println("Metadata in bigQuery operation is empty.");
+        }
+        if (importOperation.get() != null) {
+          System.out.printf("Operation result: %s%n", importOperation.get());
+        } else {
+          System.out.println("Operation result is empty.");
+        }
       }
-      if (importOperation.get() != null) {
-        System.out.printf("Operation result: %s%n", importOperation.get());
-      } else {
-        System.out.println("Operation result is empty.");
-      }
+    } catch (
+        BigQueryException e) {
+      System.out.printf("Exception message: %s", e.getMessage());
     }
   }
 }

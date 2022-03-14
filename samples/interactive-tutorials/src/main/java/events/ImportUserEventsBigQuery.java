@@ -22,6 +22,8 @@
 
 package events;
 
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportUserEventsRequest;
@@ -34,72 +36,86 @@ import java.io.IOException;
 
 public class ImportUserEventsBigQuery {
 
-  public static void main(String[] args) throws IOException, InterruptedException {
-    String projectId = System.getenv("PROJECT_ID");
+  public static void main(String... args)
+      throws IOException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectId);
     // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
     // "invalid_catalog_name"
-
-    importUserEventsFromBigQuery(projectId, defaultCatalog);
-  }
-
-  public static void importUserEventsFromBigQuery(String projectId, String defaultCatalog)
-      throws IOException, InterruptedException {
     String datasetId = "user_events";
     String tableId = "events";
     // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
-    String dataSchema = "user_event";
 
-    BigQuerySource bigQuerySource =
-        BigQuerySource.newBuilder()
-            .setProjectId(projectId)
-            .setDatasetId(datasetId)
-            .setTableId(tableId)
-            .setDataSchema(dataSchema)
-            .build();
+    importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
+  }
 
-    UserEventInputConfig inputConfig =
-        UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource).build();
+  public static void importUserEventsFromBigQuery(String projectId,
+      String defaultCatalog, String datasetId, String tableId)
+      throws IOException, InterruptedException {
+    try {
+      String dataSchema = "user_event";
 
-    ImportUserEventsRequest importRequest =
-        ImportUserEventsRequest.newBuilder()
-            .setParent(defaultCatalog)
-            .setInputConfig(inputConfig)
-            .build();
+      BigQuerySource bigQuerySource =
+          BigQuerySource.newBuilder()
+              .setProjectId(projectId)
+              .setDatasetId(datasetId)
+              .setTableId(tableId)
+              .setDataSchema(dataSchema)
+              .build();
 
-    System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
+      UserEventInputConfig inputConfig =
+          UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource)
+              .build();
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
-    try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-      String operationName = serviceClient.importUserEventsCallable().call(importRequest).getName();
+      ImportUserEventsRequest importRequest =
+          ImportUserEventsRequest.newBuilder()
+              .setParent(defaultCatalog)
+              .setInputConfig(inputConfig)
+              .build();
 
-      System.out.printf("OperationName = %s\n", operationName);
-      OperationsClient operationsClient = serviceClient.getOperationsClient();
-      Operation operation = operationsClient.getOperation(operationName);
+      System.out.printf("Import user events from BigQuery source request: %s%n",
+          importRequest);
 
-      while (!operation.getDone()) {
-        // Keep polling the operation periodically until the import task is done.
-        int awaitDuration = 30000;
-        Thread.sleep(awaitDuration);
-        operation = operationsClient.getOperation(operationName);
+      // Initialize client that will be used to send requests. This client only needs to be created
+      // once, and can be reused for multiple requests. After completing all of your requests, call
+      // the "close" method on the client to safely clean up any remaining background resources.
+      try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
+        String operationName = serviceClient.importUserEventsCallable()
+            .call(importRequest).getName();
+
+        System.out.printf("OperationName = %s\n", operationName);
+        OperationsClient operationsClient = serviceClient.getOperationsClient();
+        Operation operation = operationsClient.getOperation(operationName);
+
+        while (!operation.getDone()) {
+          // Keep polling the operation periodically until the import task is done.
+          int awaitDuration = 30000;
+          Thread.sleep(awaitDuration);
+          operation = operationsClient.getOperation(operationName);
+        }
+
+        if (operation.hasMetadata()) {
+          ImportMetadata metadata = operation.getMetadata()
+              .unpack(ImportMetadata.class);
+          System.out.printf(
+              "Number of successfully imported events: %s\n",
+              metadata.getSuccessCount());
+          System.out.printf(
+              "Number of failures during the importing: %s\n",
+              metadata.getFailureCount());
+        }
+
+        if (operation.hasResponse()) {
+          ImportUserEventsResponse response =
+              operation.getResponse().unpack(ImportUserEventsResponse.class);
+          System.out.printf("Operation result: %s%n", response);
+        }
       }
-
-      if (operation.hasMetadata()) {
-        ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
-        System.out.printf(
-            "Number of successfully imported events: %s\n", metadata.getSuccessCount());
-        System.out.printf(
-            "Number of failures during the importing: %s\n", metadata.getFailureCount());
-      }
-
-      if (operation.hasResponse()) {
-        ImportUserEventsResponse response =
-            operation.getResponse().unpack(ImportUserEventsResponse.class);
-        System.out.printf("Operation result: %s%n", response);
-      }
+    } catch (BigQueryException e) {
+      System.out.printf("Exception message: %s", e.getMessage());
     }
   }
 }

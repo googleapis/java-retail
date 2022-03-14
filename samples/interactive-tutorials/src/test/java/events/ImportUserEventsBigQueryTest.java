@@ -16,43 +16,45 @@
 
 package events;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.junit.Assert;
+import java.io.PrintStream;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import util.StreamGobbler;
 
 public class ImportUserEventsBigQueryTest {
 
-  private String output;
+  private ByteArrayOutputStream bout;
+  private PrintStream originalPrintStream;
+  private PrintStream out;
 
   @Before
-  public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec =
-        Runtime.getRuntime()
-            .exec("mvn compile exec:java -Dexec.mainClass=events.ImportUserEventsBigQuery");
-    StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
-
-    output = stringFuture.get();
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
   }
 
   @Test
-  public void testImportUserEventsBigQuery() {
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Import user events from BigQuery source request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Import user events from BigQuery source request.*?input_config.*?big_query_source.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*?projects/.*?/locations/global/catalogs/default_catalog/operations/import-user-events.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported events.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Number of failures during the importing.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Operation result.*?errors_config.*)$"));
+  public void testImportUserEventsBigQuery()
+      throws IOException, InterruptedException {
+    ImportUserEventsBigQuery.main();
+    String got = bout.toString();
+
+    assertThat(got).contains("Import user events from BigQuery source request");
+    assertThat(got).contains("Number of successfully imported events");
+    assertThat(got).contains("Number of failures during the importing");
+    assertThat(got).contains("Operation result");
+  }
+
+  @After
+  public void tearDown() {
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }
