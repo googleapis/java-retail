@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,13 +40,11 @@ public class ImportUserEventsGcsTest {
   }
 
   @Test
-  public void testImportUserEventsGcs()
-      throws IOException, InterruptedException {
+  public void testImportUserEventsGcs() throws IOException, InterruptedException {
     ImportUserEventsGcs.main();
     String got = bout.toString();
 
-    assertThat(got).contains(
-        "Import user events from google cloud source request");
+    assertThat(got).contains("Import user events from google cloud source request");
     assertThat(got).contains("Number of successfully imported events");
     assertThat(got).contains("Number of failures during the importing");
     assertThat(got).contains("Operation result");

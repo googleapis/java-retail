@@ -48,8 +48,7 @@ public class ImportUserEventsInline {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
 
     importUserEventsFromInlineSource(defaultCatalog);
   }
@@ -63,8 +62,7 @@ public class ImportUserEventsInline {
 
       for (int i = 0; i < userEventsNumber; i++) {
         Instant time = Instant.now();
-        Timestamp timestamp = Timestamp.newBuilder()
-            .setSeconds(time.getEpochSecond()).build();
+        Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
 
         UserEvent userEvent =
             UserEvent.newBuilder()
@@ -80,20 +78,17 @@ public class ImportUserEventsInline {
       }
 
       UserEventInlineSource inlineSource =
-          UserEventInlineSource.newBuilder().addAllUserEvents(userEvents)
-              .build();
+          UserEventInlineSource.newBuilder().addAllUserEvents(userEvents).build();
 
       UserEventInputConfig inputConfig =
-          UserEventInputConfig.newBuilder()
-              .setUserEventInlineSource(inlineSource).build();
+          UserEventInputConfig.newBuilder().setUserEventInlineSource(inlineSource).build();
 
       ImportUserEventsRequest importRequest =
           ImportUserEventsRequest.newBuilder()
               .setParent(defaultCatalog)
               .setInputConfig(inputConfig)
               .build();
-      System.out.printf("Import user events from inline source request: %s%n",
-          importRequest);
+      System.out.printf("Import user events from inline source request: %s%n", importRequest);
 
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -102,12 +97,10 @@ public class ImportUserEventsInline {
         OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
             userEventServiceClient.importUserEventsAsync(importRequest);
 
-        System.out.printf("The operation was started: %s%n",
-            importOperation.getName());
+        System.out.printf("The operation was started: %s%n", importOperation.getName());
         System.out.println("Please wait till operation is done.");
 
-        userEventServiceClient.awaitTermination(awaitDuration,
-            TimeUnit.SECONDS);
+        userEventServiceClient.awaitTermination(awaitDuration, TimeUnit.SECONDS);
         System.out.println("Import user events operation is done.");
 
         if (importOperation.getMetadata().get() != null) {
@@ -127,8 +120,7 @@ public class ImportUserEventsInline {
           System.out.println("Operation result is empty.");
         }
       }
-    } catch (
-        BigQueryException e) {
+    } catch (BigQueryException e) {
       System.out.printf("Exception message: %s", e.getMessage());
     }
   }

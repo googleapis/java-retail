@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +40,7 @@ public class ImportUserEventsBigQueryTest {
   }
 
   @Test
-  public void testImportUserEventsBigQuery()
-      throws IOException, InterruptedException {
+  public void testImportUserEventsBigQuery() throws IOException, InterruptedException {
     ImportUserEventsBigQuery.main();
     String got = bout.toString();
 
