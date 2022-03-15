@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,8 +53,7 @@ public class ImportUserEventsBigQueryTest {
   public void setUp() {
     projectId = System.getenv("PROJECT_ID");
     defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     datasetId = "user_events";
     tableId = "events";
 
@@ -67,7 +65,8 @@ public class ImportUserEventsBigQueryTest {
 
   @Test
   public void testImportUserEventsBigQuery() throws IOException, InterruptedException {
-    ImportUserEventsBigQuery.importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
+    ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+        projectId, defaultCatalog, datasetId, tableId);
     String got = bout.toString();
 
     assertThat(got).contains("Import user events from BigQuery source request");

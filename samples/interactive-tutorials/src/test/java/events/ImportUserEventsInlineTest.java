@@ -52,8 +52,7 @@ public class ImportUserEventsInlineTest {
   public void setUp() {
     projectId = System.getenv("PROJECT_ID");
     defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
 
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);

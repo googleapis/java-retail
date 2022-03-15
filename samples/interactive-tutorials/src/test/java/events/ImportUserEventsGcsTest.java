@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,8 +52,7 @@ public class ImportUserEventsGcsTest {
   public void setUp() {
     projectId = System.getenv("PROJECT_ID");
     defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     gcsEventsObject = "user_events.json";
 
     bout = new ByteArrayOutputStream();
@@ -64,13 +62,11 @@ public class ImportUserEventsGcsTest {
   }
 
   @Test
-  public void testImportUserEventsGcs()
-      throws IOException, InterruptedException {
+  public void testImportUserEventsGcs() throws IOException, InterruptedException {
     ImportUserEventsGcs.importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
     String got = bout.toString();
 
-    assertThat(got).contains(
-        "Import user events from google cloud source request");
+    assertThat(got).contains("Import user events from google cloud source request");
     assertThat(got).contains("Number of successfully imported events");
     assertThat(got).contains("Number of failures during the importing");
     assertThat(got).contains("Operation result");
