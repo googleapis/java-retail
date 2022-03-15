@@ -17,6 +17,7 @@
 package events;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,16 +25,38 @@ import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ImportUserEventsGcsTest {
+
+  private String projectId;
+  private String defaultCatalog;
+  private String gcsEventsObject;
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
   private PrintStream out;
 
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        "Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("PROJECT_ID");
+  }
+
   @Before
   public void setUp() {
+    projectId = System.getenv("PROJECT_ID");
+    defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog",
+            projectId);
+    gcsEventsObject = "user_events.json";
+
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
@@ -43,7 +66,7 @@ public class ImportUserEventsGcsTest {
   @Test
   public void testImportUserEventsGcs()
       throws IOException, InterruptedException {
-    ImportUserEventsGcs.main();
+    ImportUserEventsGcs.importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
     String got = bout.toString();
 
     assertThat(got).contains(
