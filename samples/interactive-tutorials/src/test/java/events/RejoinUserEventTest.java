@@ -64,8 +64,7 @@ public class RejoinUserEventTest {
   }
 
   @Test
-  public void testPurgeUserEvent()
-      throws IOException, ExecutionException, InterruptedException {
+  public void testPurgeUserEvent() throws IOException, ExecutionException, InterruptedException {
     RejoinUserEvent.callRejoinUserEvents(defaultCatalog, visitorId);
     String got = bout.toString();
 

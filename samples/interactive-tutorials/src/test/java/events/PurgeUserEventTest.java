@@ -64,8 +64,7 @@ public class PurgeUserEventTest {
   }
 
   @Test
-  public void testPurgeUserEvent()
-      throws IOException, ExecutionException, InterruptedException {
+  public void testPurgeUserEvent() throws IOException, ExecutionException, InterruptedException {
     PurgeUserEvent.callPurgeUserEvents(defaultCatalog, visitorId);
     String got = bout.toString();
 
