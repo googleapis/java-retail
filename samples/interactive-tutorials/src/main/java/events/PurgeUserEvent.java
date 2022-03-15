@@ -44,10 +44,10 @@ public class PurgeUserEvent {
     // visitorId generated randomly.
     String visitorId = UUID.randomUUID().toString();
 
-    callPurgeUserEvents(visitorId, defaultCatalog);
+    callPurgeUserEvents(defaultCatalog, visitorId);
   }
 
-  public static void callPurgeUserEvents(String visitorId, String defaultCatalog)
+  public static void callPurgeUserEvents(String defaultCatalog, String visitorId)
       throws IOException, ExecutionException, InterruptedException {
     writeUserEvent(visitorId);
 

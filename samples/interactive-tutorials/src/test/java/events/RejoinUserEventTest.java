@@ -16,43 +16,67 @@
 
 package events;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import util.StreamGobbler;
 
 public class RejoinUserEventTest {
 
-  private String output;
+  private ByteArrayOutputStream bout;
+  private PrintStream originalPrintStream;
+  private PrintStream out;
+
+  private String projectId;
+  private String defaultCatalog;
+  private String visitorId;
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        "Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("PROJECT_ID");
+  }
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec =
-        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=events.RejoinUserEvent");
-    StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    projectId = System.getenv("PROJECT_ID");
+    defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    visitorId = UUID.randomUUID().toString();
 
-    output = stringFuture.get();
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
   }
 
   @Test
-  public void testRejoinUserEvent() {
-    Assert.assertTrue(output.matches("(?s)^(.*The user event is written.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Rejoin user events request.*?parent: \"projects/.*?/locations/global/catalogs/default_catalog.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Rejoin user events request.*?user_event_rejoin_scope: UNJOINED_EVENTS.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*The rejoin operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/rejoin-user-events.*)$"));
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*The purge operation was started.*?projects/.*?/locations/global/catalogs/default_catalog/operations/purge-user-events.*)$"));
+  public void testPurgeUserEvent()
+      throws IOException, ExecutionException, InterruptedException {
+    RejoinUserEvent.callRejoinUserEvents(defaultCatalog, visitorId);
+    String got = bout.toString();
+
+    assertThat(got).contains("The user event is written");
+    assertThat(got).contains("Rejoin user events request");
+    assertThat(got).contains("The rejoin operation was started");
+  }
+
+  @After
+  public void tearDown() {
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }

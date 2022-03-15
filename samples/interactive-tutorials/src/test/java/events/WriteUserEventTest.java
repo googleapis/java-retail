@@ -16,36 +16,66 @@
 
 package events;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import util.StreamGobbler;
 
 public class WriteUserEventTest {
 
-  private String output;
+  private ByteArrayOutputStream bout;
+  private PrintStream originalPrintStream;
+  private PrintStream out;
+
+  private String projectId;
+  private String defaultCatalog;
+  private String visitorId;
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(
+        "Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("PROJECT_ID");
+  }
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec =
-        Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=events.WriteUserEvent");
-    StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    projectId = System.getenv("PROJECT_ID");
+    defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    visitorId = UUID.randomUUID().toString();
 
-    output = stringFuture.get();
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
   }
 
   @Test
-  public void testWriteUserEvent() {
-    Assert.assertTrue(
-        output.matches(
-            "(?s)^(.*Write user event request.*?user_event.*?event_type: \"home-page-view\".*)$"));
-    Assert.assertTrue(
-        output.matches("(?s)^(.*Written user event.*?event_type: \"home-page-view\".*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Written user event.*?visitor_id: .*)$"));
+  public void testPurgeUserEvent()
+      throws IOException {
+    WriteUserEvent.writeUserEvent(defaultCatalog, visitorId);
+    String got = bout.toString();
+
+    assertThat(got).contains("Write user event request");
+    assertThat(got).contains("Written user event");
+  }
+
+  @After
+  public void tearDown() {
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }
