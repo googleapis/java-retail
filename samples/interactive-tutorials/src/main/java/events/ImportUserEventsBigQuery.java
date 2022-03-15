@@ -36,13 +36,11 @@ import java.io.IOException;
 
 public class ImportUserEventsBigQuery {
 
-  public static void main(String... args)
-      throws IOException, InterruptedException {
+  public static void main(String... args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog",
-            projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
     // "invalid_catalog_name"
     String datasetId = "user_events";
@@ -52,8 +50,8 @@ public class ImportUserEventsBigQuery {
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
 
-  public static void importUserEventsFromBigQuery(String projectId,
-      String defaultCatalog, String datasetId, String tableId)
+  public static void importUserEventsFromBigQuery(
+      String projectId, String defaultCatalog, String datasetId, String tableId)
       throws IOException, InterruptedException {
     try {
       String dataSchema = "user_event";
@@ -67,8 +65,7 @@ public class ImportUserEventsBigQuery {
               .build();
 
       UserEventInputConfig inputConfig =
-          UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource)
-              .build();
+          UserEventInputConfig.newBuilder().setBigQuerySource(bigQuerySource).build();
 
       ImportUserEventsRequest importRequest =
           ImportUserEventsRequest.newBuilder()
@@ -76,15 +73,14 @@ public class ImportUserEventsBigQuery {
               .setInputConfig(inputConfig)
               .build();
 
-      System.out.printf("Import user events from BigQuery source request: %s%n",
-          importRequest);
+      System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
 
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests. After completing all of your requests, call
       // the "close" method on the client to safely clean up any remaining background resources.
       try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-        String operationName = serviceClient.importUserEventsCallable()
-            .call(importRequest).getName();
+        String operationName =
+            serviceClient.importUserEventsCallable().call(importRequest).getName();
 
         System.out.printf("OperationName = %s\n", operationName);
         OperationsClient operationsClient = serviceClient.getOperationsClient();
@@ -98,14 +94,11 @@ public class ImportUserEventsBigQuery {
         }
 
         if (operation.hasMetadata()) {
-          ImportMetadata metadata = operation.getMetadata()
-              .unpack(ImportMetadata.class);
+          ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
           System.out.printf(
-              "Number of successfully imported events: %s\n",
-              metadata.getSuccessCount());
+              "Number of successfully imported events: %s\n", metadata.getSuccessCount());
           System.out.printf(
-              "Number of failures during the importing: %s\n",
-              metadata.getFailureCount());
+              "Number of failures during the importing: %s\n", metadata.getFailureCount());
         }
 
         if (operation.hasResponse()) {
