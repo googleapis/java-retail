@@ -64,8 +64,7 @@ public class WriteUserEventTest {
   }
 
   @Test
-  public void testPurgeUserEvent()
-      throws IOException {
+  public void testPurgeUserEvent() throws IOException {
     WriteUserEvent.writeUserEvent(defaultCatalog, visitorId);
     String got = bout.toString();
 
