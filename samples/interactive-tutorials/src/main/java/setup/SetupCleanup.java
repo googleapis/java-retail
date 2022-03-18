@@ -21,6 +21,7 @@ import static com.google.cloud.storage.StorageClass.STANDARD;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -80,7 +81,8 @@ import java.util.concurrent.ExecutionException;
 
 public class SetupCleanup {
 
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
+  // TODO(developer): Replace these variables before running the sample.
+  private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
   private static final String DEFAULT_CATALOG =
       String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
   private static final Storage STORAGE =
@@ -186,10 +188,11 @@ public class SetupCleanup {
             .build();
     System.out.printf("Create product request: %s%n", createProductRequest);
 
-    Product createdProduct = ProductServiceClient.create().createProduct(createProductRequest);
-    System.out.printf("Created product: %s%n", createdProduct);
-
-    return createdProduct;
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      Product createdProduct = serviceClient.createProduct(createProductRequest);
+      System.out.printf("Created product: %s%n", createdProduct);
+      return createdProduct;
+    }
   }
 
   public static Product getProduct(String productName) throws IOException {
@@ -198,8 +201,8 @@ public class SetupCleanup {
     GetProductRequest getProductRequest =
         GetProductRequest.newBuilder().setName(productName).build();
 
-    try {
-      product = ProductServiceClient.create().getProduct(getProductRequest);
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      product = serviceClient.getProduct(getProductRequest);
       System.out.println("Get product response: " + product);
       return product;
     } catch (NotFoundException e) {
@@ -213,8 +216,10 @@ public class SetupCleanup {
         DeleteProductRequest.newBuilder().setName(productName).build();
     System.out.printf("Delete product request %s%n", deleteProductRequest);
 
-    ProductServiceClient.create().deleteProduct(deleteProductRequest);
-    System.out.printf("Product %s was deleted.%n", productName);
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      serviceClient.deleteProduct(deleteProductRequest);
+      System.out.printf("Product %s was deleted.%n", productName);
+    }
   }
 
   public static Bucket createBucket(String bucketName) {
@@ -320,7 +325,7 @@ public class SetupCleanup {
         System.out.printf("Dataset '%s' was not found.%n", datasetName);
       }
     } catch (BigQueryException e) {
-      System.out.printf("Dataset '%s' was not deleted.%n%s", datasetName, e);
+      System.out.printf("%nDataset '%s' was not deleted.%n%s", datasetName, e);
     }
   }
 
