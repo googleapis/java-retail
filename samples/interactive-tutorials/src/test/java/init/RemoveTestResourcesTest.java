@@ -16,39 +16,55 @@
 
 package init;
 
+import static com.google.common.truth.Truth.assertThat;
+import static init.RemoveTestResources.deleteAllProducts;
+import static setup.SetupCleanup.deleteBucket;
+import static setup.SetupCleanup.deleteDataset;
+
+import com.google.cloud.ServiceOptions;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import util.StreamGobbler;
 
 public class RemoveTestResourcesTest {
 
-  private String output;
+  private ByteArrayOutputStream bout;
+  private PrintStream originalPrintStream;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec =
-        Runtime.getRuntime()
-            .exec("mvn compile exec:java -Dexec.mainClass=init.RemoveTestResources");
-    StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String bucketName = System.getenv("BUCKET_NAME");
+    String defaultCatalog =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
 
-    output = stringFuture.get();
+    deleteBucket(bucketName);
+    deleteAllProducts(defaultCatalog);
+    deleteDataset(projectId, "products");
+    deleteDataset(projectId, "user_events");
   }
 
   @Test
   public void testRemoveTestResources() {
-    Assert.assertTrue(output.matches("(?s)^(.*Deleting products in process, please wait.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*products were deleted from.*)$"));
+    String got = bout.toString();
+
+    assertThat(got).contains("Deleting products in process, please wait...");
   }
 
   @After
-  public void restoreRemove() throws IOException {
-    Runtime.getRuntime().exec("mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
+  public void restoreRemoveAndTearDown() throws IOException {
+    RemoveTestResources.main();
+
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }

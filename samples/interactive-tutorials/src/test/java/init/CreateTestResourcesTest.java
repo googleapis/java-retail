@@ -16,37 +16,69 @@
 
 package init;
 
+import static com.google.common.truth.Truth.assertThat;
+import static events.setup.EventsCreateBigQueryTable.createBqTableWithEvents;
+import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJsonFiles;
+import static product.setup.ProductsCreateBigqueryTable.createBqTableWithProducts;
+import static product.setup.ProductsCreateGcsBucket.productsCreateGcsBucketAndUploadJsonFiles;
+
+import com.google.cloud.ServiceOptions;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import util.StreamGobbler;
 
 public class CreateTestResourcesTest {
 
-  private String output;
+  private ByteArrayOutputStream bout;
+  private PrintStream originalPrintStream;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    Process exec =
-        Runtime.getRuntime()
-            .exec("mvn compile exec:java -Dexec.mainClass=init.CreateTestResources");
-    StreamGobbler streamGobbler = new StreamGobbler(exec.getInputStream());
-    Future<String> stringFuture = Executors.newSingleThreadExecutor().submit(streamGobbler);
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String bucketName = System.getenv("BUCKET_NAME");
+    String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
+    String gcsErrorBucket = String.format("%s/errors", gcsBucket);
+    String defaultCatalog = String.format(
+        "projects/%s/locations/global/catalogs/default_catalog/branches/0",
+        projectId);
+    bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
 
-    output = stringFuture.get();
+    productsCreateGcsBucketAndUploadJsonFiles();
+    eventsCreateGcsBucketAndUploadJsonFiles();
+    CreateTestResources.importProductsFromGcs(bucketName, gcsErrorBucket,
+        defaultCatalog);
+    createBqTableWithProducts();
+    createBqTableWithEvents();
   }
 
   @Test
   public void testCreateTestResources() {
-    Assert.assertTrue(output.matches("(?s)^(.*Creating new bucket.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Import products operation is completed.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Number of successfully imported products:.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Number of failures during the importing:.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Creating new bucket:.*)$"));
-    Assert.assertTrue(output.matches("(?s)^(.*Json from GCS successfully loaded in a table.*)$"));
+    String got = bout.toString();
+
+    assertThat(got).contains("Creating new bucket");
+    assertThat(got).contains("Import products operation is completed");
+    assertThat(got).contains("Number of successfully imported products");
+    assertThat(got).contains("Number of failures during the importing");
+    assertThat(got).contains(
+        "Json from GCS successfully loaded in a table 'products'");
+    assertThat(got).contains(
+        "Json from GCS successfully loaded in a table 'products_some_invalid'");
+    assertThat(got).contains(
+        "Json from GCS successfully loaded in a table 'events'");
+    assertThat(got).contains(
+        "Json from GCS successfully loaded in a table 'events_some_invalid'");
+  }
+
+  @After
+  public void tearDown() {
+    System.out.flush();
+    System.setOut(originalPrintStream);
   }
 }

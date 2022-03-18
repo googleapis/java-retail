@@ -21,6 +21,7 @@ import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJ
 import static product.setup.ProductsCreateBigqueryTable.createBqTableWithProducts;
 import static product.setup.ProductsCreateGcsBucket.productsCreateGcsBucketAndUploadJsonFiles;
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -35,52 +36,49 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class CreateTestResources {
-  private static final String PROJECT_ID = System.getenv("PROJECT_ID");
-  private static final String BUCKET_NAME = System.getenv("BUCKET_NAME");
-  private static final String GCS_BUCKET = String.format("gs://%s", System.getenv("BUCKET_NAME"));
-  private static final String GCS_ERROR_BUCKET = String.format("%s/errors", GCS_BUCKET);
-  private static final String DEFAULT_CATALOG =
-      String.format(
-          "projects/%s/locations/global/catalogs/default_catalog/" + "branches/0", PROJECT_ID);
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+  public static void main(String... args) throws IOException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String bucketName = System.getenv("BUCKET_NAME");
+    String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
+    String gcsErrorBucket = String.format("%s/errors", gcsBucket);
+    String defaultCatalog =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+
     productsCreateGcsBucketAndUploadJsonFiles();
     eventsCreateGcsBucketAndUploadJsonFiles();
-    importProductsFromGcs();
+    importProductsFromGcs(bucketName, gcsErrorBucket, defaultCatalog);
     createBqTableWithProducts();
     createBqTableWithEvents();
   }
 
-  public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName) {
+  public static void importProductsFromGcs(String bucketName, String gcsErrorBucket,
+      String defaultCatalog) throws IOException, InterruptedException {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
-                Collections.singleton(String.format("gs://%s/%s", BUCKET_NAME, gcsObjectName)))
+                Collections.singleton(String.format("gs://%s/%s", bucketName, "products.json")))
             .build();
     ProductInputConfig inputConfig =
         ProductInputConfig.newBuilder().setGcsSource(gcsSource).build();
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
     ImportErrorsConfig errorsConfig =
-        ImportErrorsConfig.newBuilder().setGcsPrefix(GCS_ERROR_BUCKET).build();
+        ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorBucket).build();
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
-            .setParent(DEFAULT_CATALOG)
+            .setParent(defaultCatalog)
             .setReconciliationMode(ReconciliationMode.INCREMENTAL)
             .setInputConfig(inputConfig)
             .setErrorsConfig(errorsConfig)
             .build();
     System.out.println("Import products from google cloud source request: " + importRequest);
 
-    return importRequest;
-  }
-
-  public static void importProductsFromGcs() throws IOException, InterruptedException {
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest("products.json");
-
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName =
-          serviceClient.importProductsCallable().call(importGcsRequest).getName();
+          serviceClient.importProductsCallable().call(importRequest).getName();
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
@@ -89,8 +87,7 @@ public class CreateTestResources {
       while (!operation.getDone()) {
         System.out.println("Please wait till operation is completed.");
         // Keep polling the operation periodically until the import task is done.
-        int awaitDuration = 30000;
-        Thread.sleep(awaitDuration);
+        Thread.sleep(30_000);
         operation = operationsClient.getOperation(operationName);
       }
 
