@@ -25,6 +25,7 @@ package product;
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.PriceInfo;
 import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.Product.Availability;
@@ -38,10 +39,10 @@ public class UpdateProduct {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = System.getenv("PROJECT_ID");
+    String projectId = ServiceOptions.getDefaultProjectId();
     String defaultBranchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/" + "branches/default_branch",
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
     String generatedProductId = UUID.randomUUID().toString();
 
@@ -86,12 +87,14 @@ public class UpdateProduct {
   // call the Retail API to update product
   public static void updateProduct(Product originalProduct, String defaultBranchName)
       throws IOException {
-    Product updatedProduct =
-        ProductServiceClient.create()
-            .updateProduct(
-                getUpdateProductRequest(
-                    generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
-    System.out.printf("Updated product: %s%n", updatedProduct);
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      Product updatedProduct =
+          serviceClient
+              .updateProduct(
+                  getUpdateProductRequest(
+                      generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
+      System.out.printf("Updated product: %s%n", updatedProduct);
+    }
   }
 }
 
