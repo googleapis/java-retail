@@ -61,9 +61,7 @@ public class RemoveTestResourcesTest {
   }
 
   @After
-  public void restoreRemoveAndTearDown() throws IOException {
-    RemoveTestResources.main();
-
+  public void tearDown() throws IOException {
     System.out.flush();
     System.setOut(originalPrintStream);
   }

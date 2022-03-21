@@ -19,6 +19,7 @@ package events;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
+import init.CreateTestResources;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -42,6 +43,7 @@ public class ImportUserEventsGcsTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
+    CreateTestResources.main();
     ImportUserEventsGcs.importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
   }
 

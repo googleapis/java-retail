@@ -34,6 +34,7 @@ import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import init.CreateTestResources;
 import java.io.IOException;
 
 public class ImportUserEventsGcs {
@@ -49,6 +50,7 @@ public class ImportUserEventsGcs {
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT: gcsEventsObject =
     // "user_events_some_invalid.json"
 
+    CreateTestResources.main();
     importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
   }
 

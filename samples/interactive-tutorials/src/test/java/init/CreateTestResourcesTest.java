@@ -62,7 +62,6 @@ public class CreateTestResourcesTest {
   public void testCreateTestResources() {
     String got = bout.toString();
 
-    assertThat(got).contains("Creating new bucket");
     assertThat(got).contains("Import products operation is completed");
     assertThat(got).contains("Number of successfully imported products");
     assertThat(got).contains("Number of failures during the importing");
