@@ -223,33 +223,32 @@ public class SetupCleanup {
   }
 
   public static Bucket createBucket(String bucketName) {
-    Bucket bucket = null;
-    System.out.printf("Creating new bucket: %s %n", bucketName);
-
     if (checkIfBucketExists(bucketName)) {
       System.out.printf("Bucket %s already exists. %n", bucketName);
       Page<Bucket> bucketList = STORAGE.list();
       for (Bucket itrBucket : bucketList.iterateAll()) {
         if (itrBucket.getName().equals(bucketName)) {
-          bucket = itrBucket;
+          return itrBucket;
         }
       }
-    } else {
-      bucket =
-          STORAGE.create(
-              BucketInfo.newBuilder(bucketName)
-                  .setStorageClass(STANDARD)
-                  .setLocation("US")
-                  .build());
-
-      System.out.println(
-          "Bucket was created "
-              + bucket.getName()
-              + " in "
-              + bucket.getLocation()
-              + " with storage class "
-              + bucket.getStorageClass());
     }
+
+    System.out.printf("Creating new bucket: %s %n", bucketName);
+
+    Bucket bucket =
+        STORAGE.create(
+            BucketInfo.newBuilder(bucketName)
+                .setStorageClass(STANDARD)
+                .setLocation("US")
+                .build());
+
+    System.out.println(
+        "Bucket was created "
+            + bucket.getName()
+            + " in "
+            + bucket.getLocation()
+            + " with storage class "
+            + bucket.getStorageClass());
 
     return bucket;
   }
