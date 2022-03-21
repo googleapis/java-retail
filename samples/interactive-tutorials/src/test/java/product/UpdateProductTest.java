@@ -40,7 +40,7 @@ public class UpdateProductTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultBranchName =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
@@ -51,7 +51,7 @@ public class UpdateProductTest {
     System.setOut(out);
 
     Product createdProduct = createProduct(generatedProductId);
-    updateProduct(createdProduct, defaultBranchName);
+    updateProduct(createdProduct, branchName);
     deleteProduct(createdProduct.getName());
   }
 

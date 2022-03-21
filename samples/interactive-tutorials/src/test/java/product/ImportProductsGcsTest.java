@@ -39,7 +39,7 @@ public class ImportProductsGcsTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
@@ -52,7 +52,7 @@ public class ImportProductsGcsTest {
 
     CreateTestResources.main();
     ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(gscProductsObject,
-        gcsBucket, gcsErrorBucket, defaultCatalog);
+        gcsBucket, gcsErrorBucket, branchName);
     waitForOperationCompletion(importGcsRequest);
   }
 

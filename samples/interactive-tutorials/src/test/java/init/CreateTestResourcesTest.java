@@ -42,7 +42,7 @@ public class CreateTestResourcesTest {
     String bucketName = System.getenv("BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
-    String defaultCatalog = String.format(
+    String branchName = String.format(
         "projects/%s/locations/global/catalogs/default_catalog/branches/0",
         projectId);
     bout = new ByteArrayOutputStream();
@@ -53,7 +53,7 @@ public class CreateTestResourcesTest {
     productsCreateGcsBucketAndUploadJsonFiles();
     eventsCreateGcsBucketAndUploadJsonFiles();
     CreateTestResources.importProductsFromGcs(bucketName, gcsErrorBucket,
-        defaultCatalog);
+        branchName);
     createBqTableWithProducts();
     createBqTableWithEvents();
   }

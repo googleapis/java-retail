@@ -318,14 +318,13 @@ public class SetupCleanup {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
-      boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
+      boolean success = bigquery.delete(datasetId,
+          DatasetDeleteOption.deleteContents());
       if (success) {
         System.out.printf("Dataset '%s' deleted successfully.%n", datasetName);
-      } else {
-        System.out.printf("Dataset '%s' was not found.%n", datasetName);
       }
     } catch (BigQueryException e) {
-      System.out.printf("%nDataset '%s' was not deleted.%n%s", datasetName, e);
+      System.out.printf("Dataset '%s' was not found.%n", datasetName);
     }
   }
 

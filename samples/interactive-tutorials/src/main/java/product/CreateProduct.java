@@ -39,24 +39,24 @@ public class CreateProduct {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultBranchName =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
     String generatedProductId = UUID.randomUUID().toString();
 
-    Product createdProduct = createProduct(generatedProductId, defaultBranchName);
+    Product createdProduct = createProduct(generatedProductId, branchName);
     deleteProduct(createdProduct.getName());
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String defaultBranchName)
+  public static Product createProduct(String productId, String branchName)
       throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
             .setProductId(productId)
-            .setParent(defaultBranchName)
+            .setParent(branchName)
             .build();
     System.out.printf("Create product request: %s%n", createProductRequest);
 

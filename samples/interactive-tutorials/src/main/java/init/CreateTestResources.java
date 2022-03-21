@@ -43,19 +43,19 @@ public class CreateTestResources {
     String bucketName = System.getenv("BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
 
     productsCreateGcsBucketAndUploadJsonFiles();
     eventsCreateGcsBucketAndUploadJsonFiles();
-    importProductsFromGcs(bucketName, gcsErrorBucket, defaultCatalog);
+    importProductsFromGcs(bucketName, gcsErrorBucket, branchName);
     createBqTableWithProducts();
     createBqTableWithEvents();
   }
 
   public static void importProductsFromGcs(String bucketName, String gcsErrorBucket,
-      String defaultCatalog) throws IOException, InterruptedException {
+      String branchName) throws IOException, InterruptedException {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
@@ -69,7 +69,7 @@ public class CreateTestResources {
         ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorBucket).build();
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
-            .setParent(defaultCatalog)
+            .setParent(branchName)
             .setReconciliationMode(ReconciliationMode.INCREMENTAL)
             .setInputConfig(inputConfig)
             .setErrorsConfig(errorsConfig)

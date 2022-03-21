@@ -39,7 +39,7 @@ public class ImportProductsBigQueryTable {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String datasetId = "products";
@@ -52,13 +52,13 @@ public class ImportProductsBigQueryTable {
 
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
-            tableId, dataSchema, defaultCatalog);
+            tableId, dataSchema, branchName);
     waitForOperationCompletion(importBigQueryRequest);
   }
 
   public static ImportProductsRequest getImportProductsBigQueryRequest(
       ReconciliationMode reconciliationMode, String projectId, String datasetId,
-      String tableId, String dataSchema, String defaultCatalog) {
+      String tableId, String dataSchema, String branchName) {
     BigQuerySource bigQuerySource =
         BigQuerySource.newBuilder()
             .setProjectId(projectId)
@@ -72,7 +72,7 @@ public class ImportProductsBigQueryTable {
 
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
-            .setParent(defaultCatalog)
+            .setParent(branchName)
             .setReconciliationMode(reconciliationMode)
             .setInputConfig(inputConfig)
             .build();

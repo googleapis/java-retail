@@ -39,7 +39,7 @@ public class RemoveTestResourcesTest {
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String bucketName = System.getenv("BUCKET_NAME");
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     bout = new ByteArrayOutputStream();
@@ -48,7 +48,7 @@ public class RemoveTestResourcesTest {
     System.setOut(out);
 
     deleteBucket(bucketName);
-    deleteAllProducts(defaultCatalog);
+    deleteAllProducts(branchName);
     deleteDataset(projectId, "products");
     deleteDataset(projectId, "user_events");
   }

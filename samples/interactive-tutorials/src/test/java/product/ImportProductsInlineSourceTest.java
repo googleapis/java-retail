@@ -39,7 +39,7 @@ public class ImportProductsInlineSourceTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     bout = new ByteArrayOutputStream();
@@ -48,7 +48,7 @@ public class ImportProductsInlineSourceTest {
     System.setOut(out);
 
     ImportProductsRequest importRequest = getImportProductsInlineRequest(
-        getProducts(), defaultCatalog);
+        getProducts(), branchName);
     waitForOperationCompletion(importRequest);
   }
 

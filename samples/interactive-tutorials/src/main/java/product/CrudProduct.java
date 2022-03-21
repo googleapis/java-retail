@@ -42,13 +42,13 @@ public class CrudProduct {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
-    String defaultBranchName =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
-    String productName = String.format("%s/products/%s", defaultBranchName, generatedProductId);
+    String productName = String.format("%s/products/%s", branchName, generatedProductId);
 
-    Product createdProduct = createProduct(generatedProductId, defaultBranchName);
+    Product createdProduct = createProduct(generatedProductId, branchName);
     getProduct(productName);
     updateProduct(createdProduct, productName);
     deleteProduct(productName);
@@ -101,13 +101,13 @@ public class CrudProduct {
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String defaultBranchName)
+  public static Product createProduct(String productId, String branchName)
       throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
             .setProductId(productId)
-            .setParent(defaultBranchName)
+            .setParent(branchName)
             .build();
     System.out.printf("Create product request: %s%n", createProductRequest);
 

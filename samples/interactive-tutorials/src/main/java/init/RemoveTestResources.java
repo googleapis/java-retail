@@ -34,22 +34,22 @@ public class RemoveTestResources {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String bucketName = System.getenv("BUCKET_NAME");
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
 
     deleteBucket(bucketName);
-    deleteAllProducts(defaultCatalog);
+    deleteAllProducts(branchName);
     deleteDataset(projectId, "products");
     deleteDataset(projectId, "user_events");
   }
 
-  public static void deleteAllProducts(String defaultCatalog) throws IOException {
+  public static void deleteAllProducts(String branchName) throws IOException {
     System.out.println("Deleting products in process, please wait...");
 
     try (ProductServiceClient productServiceClient = ProductServiceClient.create()) {
       ListProductsRequest listRequest =
-          ListProductsRequest.newBuilder().setParent(defaultCatalog).build();
+          ListProductsRequest.newBuilder().setParent(branchName).build();
       ListProductsPagedResponse products = productServiceClient.listProducts(listRequest);
 
       int deleteCount = 0;
@@ -68,7 +68,7 @@ public class RemoveTestResources {
         }
       }
 
-      System.out.printf("%s products were deleted from %s%n", deleteCount, defaultCatalog);
+      System.out.printf("%s products were deleted from %s%n", deleteCount, branchName);
     }
   }
 }

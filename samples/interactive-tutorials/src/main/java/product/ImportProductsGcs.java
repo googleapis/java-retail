@@ -41,7 +41,7 @@ public class ImportProductsGcs {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
@@ -51,12 +51,12 @@ public class ImportProductsGcs {
     // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
 
     ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(gscProductsObject,
-        gcsBucket, gcsErrorBucket, defaultCatalog);
+        gcsBucket, gcsErrorBucket, branchName);
     waitForOperationCompletion(importGcsRequest);
   }
 
   public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName,
-      String gcsBucket, String gcsErrorBucket, String defaultCatalog) {
+      String gcsBucket, String gcsErrorBucket, String branchName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
@@ -73,7 +73,7 @@ public class ImportProductsGcs {
 
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
-            .setParent(defaultCatalog)
+            .setParent(branchName)
             .setReconciliationMode(ReconciliationMode.INCREMENTAL)
             .setInputConfig(inputConfig)
             .setErrorsConfig(errorsConfig)

@@ -48,16 +48,16 @@ public class ImportProductsInlineSource {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
 
-    ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts(), defaultCatalog);
+    ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts(), branchName);
     waitForOperationCompletion(importRequest);
   }
 
   public static ImportProductsRequest getImportProductsInlineRequest(
-      List<Product> productsToImport, String defaultCatalog) {
+      List<Product> productsToImport, String branchName) {
     ProductInlineSource inlineSource =
         ProductInlineSource.newBuilder().addAllProducts(productsToImport).build();
 
@@ -66,7 +66,7 @@ public class ImportProductsInlineSource {
 
     ImportProductsRequest importRequest =
         ImportProductsRequest.newBuilder()
-            .setParent(defaultCatalog)
+            .setParent(branchName)
             .setInputConfig(inputConfig)
             .build();
 

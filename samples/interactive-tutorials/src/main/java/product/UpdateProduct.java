@@ -40,19 +40,19 @@ public class UpdateProduct {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultBranchName =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
     String generatedProductId = UUID.randomUUID().toString();
 
     Product createdProduct = createProduct(generatedProductId);
-    updateProduct(createdProduct, defaultBranchName);
+    updateProduct(createdProduct, branchName);
     deleteProduct(createdProduct.getName());
   }
 
   // generate product for update
-  public static Product generateProductForUpdate(String productId, String defaultBranchName) {
+  public static Product generateProductForUpdate(String productId, String branchName) {
     final float price = 20.0f;
     final float originalPrice = 25.5f;
 
@@ -65,7 +65,7 @@ public class UpdateProduct {
 
     return Product.newBuilder()
         .setId(productId)
-        .setName(defaultBranchName + "/products/" + productId)
+        .setName(branchName + "/products/" + productId)
         .setTitle("Updated Nest Mini")
         .setType(Type.PRIMARY)
         .addCategories("Updated Speakers and displays")

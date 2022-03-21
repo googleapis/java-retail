@@ -39,7 +39,7 @@ public class ImportProductsBigQueryTableTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String datasetId = "products";
@@ -53,7 +53,7 @@ public class ImportProductsBigQueryTableTest {
 
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
-            tableId, dataSchema, defaultCatalog);
+            tableId, dataSchema, branchName);
     waitForOperationCompletion(importBigQueryRequest);
   }
 

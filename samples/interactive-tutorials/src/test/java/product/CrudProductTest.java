@@ -42,17 +42,17 @@ public class CrudProductTest {
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
-    String defaultBranchName =
+    String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0",
             projectId);
-    String productName = String.format("%s/products/%s", defaultBranchName, generatedProductId);
+    String productName = String.format("%s/products/%s", branchName, generatedProductId);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
-    Product createdProduct = createProduct(generatedProductId, defaultBranchName);
+    Product createdProduct = createProduct(generatedProductId, branchName);
     getProduct(productName);
     updateProduct(createdProduct, productName);
     deleteProduct(productName);
