@@ -53,6 +53,7 @@ If you don't have a Google Cloud project yet or you're not the owner of an exist
 [create a new project](https://console.cloud.google.com/projectcreate).
 
 After the project is created, set your PROJECT_ID to a ```project``` variable.
+
 1. Run the following command in Terminal:
     ```bash
     gcloud config set project <YOUR_PROJECT_ID>
@@ -98,16 +99,6 @@ To run a code sample from the Cloud Shell, you need to be authenticated using th
     ```bash
     export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
     ```
-
-### Set the GOOGLE_CLOUD_PROJECT environment variable
-
-You will run the code samples in your own Google Cloud project. To use the **project_id** in every request to the Retail API, you should first specify them as environment variables.
-
-1. Find the project ID in the Project Info card displayed on **Home/Dashboard**.
-
-1. Set the **project_id** with the following command:
-    ```bash
-    export GOOGLE_CLOUD_PROJECT=<YOUR_PROJECT_ID>
 
 ## Import Catalog Data
 
