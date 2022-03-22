@@ -36,6 +36,7 @@ The Retail API provides you with the following possibilities to:
 
 You can find the information about the Retail services in the [documentation](https://cloud.google.com/retail/docs)
 
+<!--TODO(tkarasova) update the link to the tutorials when will be published-->
 If you would like to have a closer look at the Retail API features and try them yourself,
 the best option is to use the [Interactive Tutorials](https://cloud.google.com/retail/docs/overview). In the documentation chapters find the "Guide me" button, the tutorials will be launched in the CloudShell environment, and you will be able to request the Retail services and check the response with minimum time and effort.
 
