@@ -32,6 +32,7 @@ import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import init.CreateTestResources;
 import java.io.IOException;
 
 public class ImportProductsBigQueryTable {
@@ -50,6 +51,7 @@ public class ImportProductsBigQueryTable {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
 
+    CreateTestResources.main();
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
             tableId, dataSchema, branchName);

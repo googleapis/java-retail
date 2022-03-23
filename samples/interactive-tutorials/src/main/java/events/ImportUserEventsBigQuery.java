@@ -32,6 +32,7 @@ import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import init.CreateTestResources;
 import java.io.IOException;
 
 public class ImportUserEventsBigQuery {
@@ -47,6 +48,7 @@ public class ImportUserEventsBigQuery {
     String tableId = "events";
     // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
 
+    CreateTestResources.main();
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
 
