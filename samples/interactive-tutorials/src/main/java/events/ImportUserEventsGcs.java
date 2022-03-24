@@ -34,8 +34,10 @@ import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import events.setup.EventsCreateGcsBucket;
 import init.CreateTestResources;
 import java.io.IOException;
+import product.setup.ProductsCreateGcsBucket;
 
 public class ImportUserEventsGcs {
 
@@ -57,7 +59,7 @@ public class ImportUserEventsGcs {
   public static void importUserEventsFromGcs(String gcsEventsObject, String defaultCatalog)
       throws IOException, InterruptedException {
     try {
-      String gcsBucket = String.format("gs://%s", System.getenv("EVENTS_BUCKET_NAME"));
+      String gcsBucket = String.format("gs://%s", EventsCreateGcsBucket.getBucketName());
       String gcsErrorsBucket = String.format("%s/error", gcsBucket);
 
       GcsSource gcsSource =
