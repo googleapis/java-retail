@@ -60,10 +60,10 @@ public class AddFulfillmentPlaces {
         getAddFulfillmentRequest(productName, timestamp, placeId);
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.addFulfillmentPlacesAsync(addFulfillmentRequest);
-    /*
-    This is a long-running operation and its result is not immediately
-    present with get operations,thus we simulate wait with sleep method.
-    */
+      /*
+      This is a long-running operation and its result is not immediately
+      present with get operations,thus we simulate wait with sleep method.
+      */
       System.out.println("Add fulfillment places, wait 30 seconds: ");
       Thread.sleep(30_000);
     }

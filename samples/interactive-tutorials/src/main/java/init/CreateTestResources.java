@@ -53,8 +53,9 @@ public class CreateTestResources {
     EventsCreateBigQueryTable.main();
   }
 
-  public static void importProductsFromGcs(String bucketName, String gcsErrorBucket,
-      String branchName) throws IOException, InterruptedException {
+  public static void importProductsFromGcs(
+      String bucketName, String gcsErrorBucket, String branchName)
+      throws IOException, InterruptedException {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
@@ -76,8 +77,7 @@ public class CreateTestResources {
     System.out.println("Import products from google cloud source request: " + importRequest);
 
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      String operationName =
-          serviceClient.importProductsCallable().call(importRequest).getName();
+      String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
       System.out.printf("OperationName = %s\n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();

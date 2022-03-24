@@ -44,8 +44,7 @@ public class CrudProductTest {
     String generatedProductId = UUID.randomUUID().toString();
     String branchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
-            projectId);
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String productName = String.format("%s/products/%s", branchName, generatedProductId);
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

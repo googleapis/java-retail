@@ -47,8 +47,7 @@ public class ImportProductsInlineSourceTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    ImportProductsRequest importRequest = getImportProductsInlineRequest(
-        getProducts(), branchName);
+    ImportProductsRequest importRequest = getImportProductsInlineRequest(getProducts(), branchName);
     waitForOperationCompletion(importRequest);
   }
 

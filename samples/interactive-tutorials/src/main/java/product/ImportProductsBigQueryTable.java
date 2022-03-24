@@ -53,14 +53,18 @@ public class ImportProductsBigQueryTable {
 
     CreateTestResources.main();
     ImportProductsRequest importBigQueryRequest =
-        getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
-            tableId, dataSchema, branchName);
+        getImportProductsBigQueryRequest(
+            reconciliationMode, projectId, datasetId, tableId, dataSchema, branchName);
     waitForOperationCompletion(importBigQueryRequest);
   }
 
   public static ImportProductsRequest getImportProductsBigQueryRequest(
-      ReconciliationMode reconciliationMode, String projectId, String datasetId,
-      String tableId, String dataSchema, String branchName) {
+      ReconciliationMode reconciliationMode,
+      String projectId,
+      String datasetId,
+      String tableId,
+      String dataSchema,
+      String branchName) {
     BigQuerySource bigQuerySource =
         BigQuerySource.newBuilder()
             .setProjectId(projectId)

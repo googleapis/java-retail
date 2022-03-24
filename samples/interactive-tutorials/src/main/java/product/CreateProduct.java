@@ -41,8 +41,7 @@ public class CreateProduct {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
-            projectId);
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String generatedProductId = UUID.randomUUID().toString();
 
     Product createdProduct = createProduct(generatedProductId, branchName);
@@ -50,8 +49,7 @@ public class CreateProduct {
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String branchName)
-      throws IOException {
+  public static Product createProduct(String productId, String branchName) throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())

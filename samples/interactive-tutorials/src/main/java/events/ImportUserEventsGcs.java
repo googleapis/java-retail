@@ -37,7 +37,6 @@ import com.google.longrunning.OperationsClient;
 import events.setup.EventsCreateGcsBucket;
 import init.CreateTestResources;
 import java.io.IOException;
-import product.setup.ProductsCreateGcsBucket;
 
 public class ImportUserEventsGcs {
 

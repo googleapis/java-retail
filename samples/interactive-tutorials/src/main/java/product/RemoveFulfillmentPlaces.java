@@ -77,10 +77,10 @@ public class RemoveFulfillmentPlaces {
 
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest);
-    /*
-    This is a long-running operation and its result is not immediately
-    present with get operations,thus we simulate wait with sleep method.
-    */
+      /*
+      This is a long-running operation and its result is not immediately
+      present with get operations,thus we simulate wait with sleep method.
+      */
       System.out.println("Remove fulfillment places, wait 30 seconds.");
       Thread.sleep(30_000);
     }

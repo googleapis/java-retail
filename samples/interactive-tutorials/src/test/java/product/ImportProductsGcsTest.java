@@ -52,8 +52,8 @@ public class ImportProductsGcsTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(gscProductsObject,
-        gcsBucket, gcsErrorBucket, branchName);
+    ImportProductsRequest importGcsRequest =
+        getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
     waitForOperationCompletion(importGcsRequest);
   }
 

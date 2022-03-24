@@ -54,8 +54,8 @@ public class ImportProductsBigQueryTableTest {
 
     ProductsCreateBigqueryTable.main();
     ImportProductsRequest importBigQueryRequest =
-        getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
-            tableId, dataSchema, branchName);
+        getImportProductsBigQueryRequest(
+            reconciliationMode, projectId, datasetId, tableId, dataSchema, branchName);
     waitForOperationCompletion(importBigQueryRequest);
   }
 

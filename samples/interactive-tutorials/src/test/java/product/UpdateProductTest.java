@@ -42,8 +42,7 @@ public class UpdateProductTest {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
-            projectId);
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String generatedProductId = UUID.randomUUID().toString();
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

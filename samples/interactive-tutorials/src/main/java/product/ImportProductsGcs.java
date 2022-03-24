@@ -52,13 +52,13 @@ public class ImportProductsGcs {
     // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
 
     CreateTestResources.main();
-    ImportProductsRequest importGcsRequest = getImportProductsGcsRequest(gscProductsObject,
-        gcsBucket, gcsErrorBucket, branchName);
+    ImportProductsRequest importGcsRequest =
+        getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
     waitForOperationCompletion(importGcsRequest);
   }
 
-  public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName,
-      String gcsBucket, String gcsErrorBucket, String branchName) {
+  public static ImportProductsRequest getImportProductsGcsRequest(
+      String gcsObjectName, String gcsBucket, String gcsErrorBucket, String branchName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(

@@ -46,7 +46,8 @@ public class ImportUserEventsBigQueryTest {
     System.setOut(out);
 
     EventsCreateBigQueryTable.main();
-    ImportUserEventsBigQuery.importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
+    ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+        projectId, defaultCatalog, datasetId, tableId);
   }
 
   @Test

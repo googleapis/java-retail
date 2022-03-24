@@ -42,8 +42,7 @@ public class UpdateProduct {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
-            projectId);
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String generatedProductId = UUID.randomUUID().toString();
 
     Product createdProduct = createProduct(generatedProductId);
@@ -89,10 +88,9 @@ public class UpdateProduct {
       throws IOException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       Product updatedProduct =
-          serviceClient
-              .updateProduct(
-                  getUpdateProductRequest(
-                      generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
+          serviceClient.updateProduct(
+              getUpdateProductRequest(
+                  generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
       System.out.printf("Updated product: %s%n", updatedProduct);
     }
   }

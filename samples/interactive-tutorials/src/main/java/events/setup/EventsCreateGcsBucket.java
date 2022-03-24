@@ -34,7 +34,8 @@ public class EventsCreateGcsBucket {
           .setNanos(Instant.now().getNano())
           .build();
 
-  private static final String BUCKET_NAME = String.format("%s_events_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
+  private static final String BUCKET_NAME =
+      String.format("%s_events_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
 
   public static void main(String... args) throws IOException {
     createBucket(BUCKET_NAME);
@@ -43,8 +44,12 @@ public class EventsCreateGcsBucket {
     uploadObject(BUCKET_NAME, "user_events.json", "src/main/resources/user_events.json");
     System.out.printf("File 'user_events.json' was uploaded into bucket '%s'.", BUCKET_NAME);
 
-    uploadObject(BUCKET_NAME,"user_events_some_invalid.json","src/main/resources/user_events_some_invalid.json");
-    System.out.printf("File 'user_events_some_invalid.json' was uploaded into bucket '%s'.", BUCKET_NAME);
+    uploadObject(
+        BUCKET_NAME,
+        "user_events_some_invalid.json",
+        "src/main/resources/user_events_some_invalid.json");
+    System.out.printf(
+        "File 'user_events_some_invalid.json' was uploaded into bucket '%s'.", BUCKET_NAME);
   }
 
   public static String getBucketName() {

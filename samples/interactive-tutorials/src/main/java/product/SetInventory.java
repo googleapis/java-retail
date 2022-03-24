@@ -59,7 +59,7 @@ public class SetInventory {
   public static void setInventory(String productName) throws IOException, InterruptedException {
     SetInventoryRequest setInventoryRequest = getSetInventoryRequest(productName);
 
-    try(ProductServiceClient serviceClient = ProductServiceClient.create()) {
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.setInventoryAsync(setInventoryRequest);
     }
 

@@ -36,8 +36,8 @@ public class PurgeUserEventTest {
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String visitorId = UUID.randomUUID().toString();
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);

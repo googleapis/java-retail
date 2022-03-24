@@ -44,8 +44,7 @@ public class CrudProduct {
     String generatedProductId = UUID.randomUUID().toString();
     String branchName =
         String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0",
-            projectId);
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String productName = String.format("%s/products/%s", branchName, generatedProductId);
 
     Product createdProduct = createProduct(generatedProductId, branchName);
@@ -101,8 +100,7 @@ public class CrudProduct {
   }
 
   // call the Retail API to create product
-  public static Product createProduct(String productId, String branchName)
-      throws IOException {
+  public static Product createProduct(String productId, String branchName) throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
             .setProduct(generateProduct())
@@ -143,7 +141,7 @@ public class CrudProduct {
             .build();
     System.out.printf("Update product request: %s%n", updateProductRequest);
 
-    try(ProductServiceClient serviceClient = ProductServiceClient.create()) {
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       Product updatedProduct = serviceClient.updateProduct(updateProductRequest);
       System.out.printf("Updated product: %s%n", updatedProduct);
     }
@@ -155,7 +153,7 @@ public class CrudProduct {
         DeleteProductRequest.newBuilder().setName(productName).build();
     System.out.printf("Delete product request %s%n", deleteProductRequest);
 
-    try(ProductServiceClient serviceClient = ProductServiceClient.create()) {
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.deleteProduct(deleteProductRequest);
       System.out.printf("Product %s was deleted.%n", productName);
     }

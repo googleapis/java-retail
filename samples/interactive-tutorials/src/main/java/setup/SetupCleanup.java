@@ -237,10 +237,7 @@ public class SetupCleanup {
 
     Bucket bucket =
         STORAGE.create(
-            BucketInfo.newBuilder(bucketName)
-                .setStorageClass(STANDARD)
-                .setLocation("US")
-                .build());
+            BucketInfo.newBuilder(bucketName).setStorageClass(STANDARD).setLocation("US").build());
 
     System.out.println(
         "Bucket was created "
@@ -317,8 +314,7 @@ public class SetupCleanup {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
-      boolean success = bigquery.delete(datasetId,
-          DatasetDeleteOption.deleteContents());
+      boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
       if (success) {
         System.out.printf("Dataset '%s' deleted successfully.%n", datasetName);
       }
