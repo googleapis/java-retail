@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import product.setup.ProductsCreateBigqueryTable;
 
 public class ImportProductsBigQueryTableTest {
 
@@ -51,6 +52,7 @@ public class ImportProductsBigQueryTableTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
+    ProductsCreateBigqueryTable.main();
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
             tableId, dataSchema, branchName);

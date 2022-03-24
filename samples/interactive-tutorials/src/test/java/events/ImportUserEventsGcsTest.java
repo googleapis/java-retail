@@ -19,6 +19,7 @@ package events;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.cloud.ServiceOptions;
+import events.setup.EventsCreateGcsBucket;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,6 +34,8 @@ public class ImportUserEventsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException {
+    EventsCreateGcsBucket.main();
+
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
