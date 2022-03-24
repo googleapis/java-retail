@@ -16,11 +16,6 @@
 
 package init;
 
-import static events.setup.EventsCreateBigQueryTable.createBqTableWithEvents;
-import static events.setup.EventsCreateGcsBucket.eventsCreateGcsBucketAndUploadJsonFiles;
-import static product.setup.ProductsCreateBigqueryTable.createBqTableWithProducts;
-import static product.setup.ProductsCreateGcsBucket.productsCreateGcsBucketAndUploadJsonFiles;
-
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
@@ -32,8 +27,12 @@ import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
+import events.setup.EventsCreateBigQueryTable;
+import events.setup.EventsCreateGcsBucket;
 import java.io.IOException;
 import java.util.Collections;
+import product.setup.ProductsCreateBigqueryTable;
+import product.setup.ProductsCreateGcsBucket;
 
 public class CreateTestResources {
 
@@ -47,11 +46,11 @@ public class CreateTestResources {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
 
-    productsCreateGcsBucketAndUploadJsonFiles();
-    eventsCreateGcsBucketAndUploadJsonFiles();
+    ProductsCreateGcsBucket.main();
+    EventsCreateGcsBucket.main();
     importProductsFromGcs(bucketName, gcsErrorBucket, branchName);
-    createBqTableWithProducts();
-    createBqTableWithEvents();
+    ProductsCreateBigqueryTable.main();
+    EventsCreateBigQueryTable.main();
   }
 
   public static void importProductsFromGcs(String bucketName, String gcsErrorBucket,

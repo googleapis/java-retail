@@ -23,7 +23,6 @@ import static product.ImportProductsBigQueryTable.waitForOperationCompletion;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ImportProductsRequest;
 import com.google.cloud.retail.v2.ImportProductsRequest.ReconciliationMode;
-import init.CreateTestResources;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -52,7 +51,6 @@ public class ImportProductsBigQueryTableTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    CreateTestResources.main();
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(reconciliationMode, projectId, datasetId,
             tableId, dataSchema, branchName);
