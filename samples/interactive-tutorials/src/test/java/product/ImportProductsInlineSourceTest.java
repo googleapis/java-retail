@@ -53,11 +53,11 @@ public class ImportProductsInlineSourceTest {
 
   @Test
   public void testImportProductsInlineSource() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Import products from inline source request");
-    assertThat(got).contains("Number of successfully imported products");
-    assertThat(got).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Import products from inline source request");
+    assertThat(outputResult).contains("Number of successfully imported products");
+    assertThat(outputResult).contains("Number of failures during the importing");
   }
 
   @After

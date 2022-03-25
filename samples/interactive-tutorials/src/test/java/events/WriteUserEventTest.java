@@ -49,10 +49,10 @@ public class WriteUserEventTest {
 
   @Test
   public void testPurgeUserEvent() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Write user event request");
-    assertThat(got).contains("Written user event");
+    assertThat(outputResult).contains("Write user event request");
+    assertThat(outputResult).contains("Written user event");
   }
 
   @After

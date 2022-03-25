@@ -75,12 +75,12 @@ public class RemoveFulfillmentPlacesTest {
 
   @Test
   public void testRemoveFulfillmentPlaces() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Remove fulfilment places with current date");
-    assertThat(got).contains("Remove fulfillment places, wait 30 seconds");
-    assertThat(got).contains("Delete product request name");
-    assertThat(got).contains("was deleted");
+    assertThat(outputResult).contains("Remove fulfilment places with current date");
+    assertThat(outputResult).contains("Remove fulfillment places, wait 30 seconds");
+    assertThat(outputResult).contains("Delete product request name");
+    assertThat(outputResult).contains("was deleted");
   }
 
   @After

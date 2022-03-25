@@ -52,11 +52,11 @@ public class ImportUserEventsBigQueryTest {
 
   @Test
   public void testImportUserEventsBigQuery() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Import user events from BigQuery source request");
-    assertThat(got).contains("Number of successfully imported events");
-    assertThat(got).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Import user events from BigQuery source request");
+    assertThat(outputResult).contains("Number of successfully imported events");
+    assertThat(outputResult).contains("Number of failures during the importing");
   }
 
   @After

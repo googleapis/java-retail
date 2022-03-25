@@ -59,14 +59,14 @@ public class CrudProductTest {
 
   @Test
   public void testCrudProduct() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Create product request");
-    assertThat(got).contains("Created product");
-    assertThat(got).contains("Get product response");
-    assertThat(got).contains("Update product request");
-    assertThat(got).contains("Updated product");
-    assertThat(got).contains("Delete product request name");
+    assertThat(outputResult).contains("Create product request");
+    assertThat(outputResult).contains("Created product");
+    assertThat(outputResult).contains("Get product response");
+    assertThat(outputResult).contains("Update product request");
+    assertThat(outputResult).contains("Updated product");
+    assertThat(outputResult).contains("Delete product request name");
   }
 
   @After

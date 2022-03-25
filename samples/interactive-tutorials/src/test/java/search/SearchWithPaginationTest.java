@@ -49,10 +49,10 @@ public class SearchWithPaginationTest {
 
   @Test
   public void testOutput() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Search request");
-    assertThat(got).contains("Search response");
+    assertThat(outputResult).contains("Search request");
+    assertThat(outputResult).contains("Search response");
   }
 
   @After

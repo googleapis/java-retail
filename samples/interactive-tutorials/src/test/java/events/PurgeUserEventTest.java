@@ -49,11 +49,11 @@ public class PurgeUserEventTest {
 
   @Test
   public void testPurgeUserEvent() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("The user event is written");
-    assertThat(got).contains("Purge user events request");
-    assertThat(got).contains("The purge operation was started");
+    assertThat(outputResult).contains("The user event is written");
+    assertThat(outputResult).contains("Purge user events request");
+    assertThat(outputResult).contains("The purge operation was started");
   }
 
   @After

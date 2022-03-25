@@ -50,11 +50,11 @@ public class ImportUserEventsGcsTest {
 
   @Test
   public void testImportUserEventsGcs() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Import user events from google cloud source request");
-    assertThat(got).contains("Number of successfully imported events");
-    assertThat(got).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Import user events from google cloud source request");
+    assertThat(outputResult).contains("Number of successfully imported events");
+    assertThat(outputResult).contains("Number of failures during the importing");
   }
 
   @After

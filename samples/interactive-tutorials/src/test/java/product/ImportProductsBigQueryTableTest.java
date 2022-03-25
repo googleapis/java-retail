@@ -61,11 +61,11 @@ public class ImportProductsBigQueryTableTest {
 
   @Test
   public void testImportProductsBigQueryTable() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Import products from big query table request");
-    assertThat(got).contains("Number of successfully imported products");
-    assertThat(got).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Import products from big query table request");
+    assertThat(outputResult).contains("Number of successfully imported products");
+    assertThat(outputResult).contains("Number of failures during the importing");
   }
 
   @After

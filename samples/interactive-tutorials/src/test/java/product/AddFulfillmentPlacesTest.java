@@ -67,10 +67,10 @@ public class AddFulfillmentPlacesTest {
 
   @Test
   public void testAddFulfillment() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Add fulfilment places with current date");
-    assertThat(got).contains("Add fulfillment places, wait 30 seconds");
+    assertThat(outputResult).contains("Add fulfilment places with current date");
+    assertThat(outputResult).contains("Add fulfillment places, wait 30 seconds");
   }
 
   @After

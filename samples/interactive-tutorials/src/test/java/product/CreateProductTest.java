@@ -54,10 +54,10 @@ public class CreateProductTest {
 
   @Test
   public void testCreateProduct() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Create product request");
-    assertThat(got).contains("Created product");
+    assertThat(outputResult).contains("Create product request");
+    assertThat(outputResult).contains("Created product");
   }
 
   @After

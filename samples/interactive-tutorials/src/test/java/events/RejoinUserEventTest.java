@@ -49,11 +49,11 @@ public class RejoinUserEventTest {
 
   @Test
   public void testPurgeUserEvent() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("The user event is written");
-    assertThat(got).contains("Rejoin user events request");
-    assertThat(got).contains("The rejoin operation was started");
+    assertThat(outputResult).contains("The user event is written");
+    assertThat(outputResult).contains("Rejoin user events request");
+    assertThat(outputResult).contains("The rejoin operation was started");
   }
 
   @After

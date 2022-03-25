@@ -48,10 +48,10 @@ public class DeleteProductTest {
 
   @Test
   public void testDeleteProduct() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Delete product request");
-    assertThat(got).contains("was deleted");
+    assertThat(outputResult).contains("Delete product request");
+    assertThat(outputResult).contains("was deleted");
   }
 
   @After

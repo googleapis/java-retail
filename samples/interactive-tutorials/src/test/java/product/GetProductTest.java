@@ -51,11 +51,11 @@ public class GetProductTest {
 
   @Test
   public void testGetProduct() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Create product request");
-    assertThat(got).contains("Created product");
-    assertThat(got).contains("Get product response");
+    assertThat(outputResult).contains("Create product request");
+    assertThat(outputResult).contains("Created product");
+    assertThat(outputResult).contains("Get product response");
   }
 
   @After

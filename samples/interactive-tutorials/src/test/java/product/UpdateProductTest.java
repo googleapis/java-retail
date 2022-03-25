@@ -56,10 +56,10 @@ public class UpdateProductTest {
 
   @Test
   public void testUpdateProduct() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Update product request");
-    assertThat(got).contains("Updated product");
+    assertThat(outputResult).contains("Update product request");
+    assertThat(outputResult).contains("Updated product");
   }
 
   @After

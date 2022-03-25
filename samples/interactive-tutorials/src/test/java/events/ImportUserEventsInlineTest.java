@@ -47,12 +47,12 @@ public class ImportUserEventsInlineTest {
 
   @Test
   public void testImportUserEventsInline() {
-    String got = bout.toString();
+    String outputResult = bout.toString();
 
-    assertThat(got).contains("Import user events from inline source request");
-    assertThat(got).contains("The operation was started");
-    assertThat(got).contains("Number of successfully imported events");
-    assertThat(got).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Import user events from inline source request");
+    assertThat(outputResult).contains("The operation was started");
+    assertThat(outputResult).contains("Number of successfully imported events");
+    assertThat(outputResult).contains("Number of failures during the importing");
   }
 
   @After
