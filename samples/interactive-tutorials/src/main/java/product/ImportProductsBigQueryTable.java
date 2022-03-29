@@ -32,7 +32,6 @@ import com.google.cloud.retail.v2.ProductInputConfig;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
-import init.CreateTestResources;
 import java.io.IOException;
 
 public class ImportProductsBigQueryTable {

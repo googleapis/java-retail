@@ -32,7 +32,6 @@ import com.google.cloud.retail.v2.UserEventInputConfig;
 import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
-import init.CreateTestResources;
 import java.io.IOException;
 
 public class ImportUserEventsBigQuery {
