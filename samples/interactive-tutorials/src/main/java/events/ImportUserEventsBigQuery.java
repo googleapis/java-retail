@@ -48,7 +48,6 @@ public class ImportUserEventsBigQuery {
     String tableId = "events";
     // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
 
-    CreateTestResources.main();
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
 

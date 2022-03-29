@@ -51,7 +51,6 @@ public class ImportProductsGcs {
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
     // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
 
-    CreateTestResources.main();
     ImportProductsRequest importGcsRequest =
         getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
     waitForOperationCompletion(importGcsRequest);

@@ -51,7 +51,6 @@ public class ImportProductsBigQueryTable {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
 
-    CreateTestResources.main();
     ImportProductsRequest importBigQueryRequest =
         getImportProductsBigQueryRequest(
             reconciliationMode, projectId, datasetId, tableId, dataSchema, branchName);

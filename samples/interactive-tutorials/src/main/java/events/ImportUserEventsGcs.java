@@ -51,7 +51,6 @@ public class ImportUserEventsGcs {
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT: gcsEventsObject =
     // "user_events_some_invalid.json"
 
-    CreateTestResources.main();
     importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
   }
 
