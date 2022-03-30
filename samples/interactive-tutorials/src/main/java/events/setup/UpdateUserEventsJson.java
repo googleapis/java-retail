@@ -38,13 +38,13 @@ public class UpdateUserEventsJson {
 
   public static void updateEventsTimestamp(String jsonFile) throws IOException {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    Timestamp yesterdayDate = Timestamp.from(
-        Instant.now().minus(1, ChronoUnit.DAYS));
+    Timestamp yesterdayDate = Timestamp.from(Instant.now().minus(1, ChronoUnit.DAYS));
 
     String json = new String(Files.readAllBytes(Paths.get(jsonFile)));
-    json = json.replaceAll(
-        "(\"eventTime\"\\s*:\\s*\"(\\d{4}-\\d{2}-\\d{2}(T.*Z)?))",
-        "\"eventTime\":\"" + dateFormat.format(yesterdayDate) + "");
+    json =
+        json.replaceAll(
+            "(\"eventTime\"\\s*:\\s*\"(\\d{4}-\\d{2}-\\d{2}(T.*Z)?))",
+            "\"eventTime\":\"" + dateFormat.format(yesterdayDate) + "");
 
     BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFile));
     writer.write(json);
