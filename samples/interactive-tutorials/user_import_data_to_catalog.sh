@@ -18,9 +18,9 @@
 export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
 
 # Change the working directory
-cd ~/cloudshell_open/java-retail/samples/interactive-tutorials/ || exit
+cd ~/cloudshell_open/java-retail/samples/interactive-tutorials/
 
-# Run the sample for creating the GCS bucket and extract the output of that execution
+# Create a GCS bucket and upload the product data to the bucket
 output=$(mvn compile exec:java -Dexec.mainClass="product.setup.ProductsCreateGcsBucket")
 
 # Get the bucket name and store it in the env variable BUCKET_NAME
@@ -31,6 +31,6 @@ export BUCKET_NAME=$bucket_name
 # Import products to the Retail catalog
 mvn compile exec:java -Dexec.mainClass="product.ImportProductsGcs"
 
-echo "====================================="
+echo =====================================
 echo "Your Retail catalog is ready to use!"
-echo "====================================="
+echo =====================================
