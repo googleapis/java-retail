@@ -1,6 +1,6 @@
-#Retail Search Interactive Tutorials
+# Retail Search Interactive Tutorials
 
-##Run tutorials in Cloud Shell
+## Run tutorials in Cloud Shell
 
 To advance with the interactive tutorials, use Retail Search step-by-step manuals on the right side of the Cloud Shell IDE: 
 ![Interactive tutorials](images/tutorial1.png)
@@ -76,15 +76,6 @@ To access the Retail API, you must create a service account.
 
 To run a code sample from the Cloud Shell, you need to be authenticated using the service account credentials.
 
-1. Login with your user credentials.
-    ```bash
-    gcloud auth login
-    ```
-
-1. Type `Y` and press **Enter**. Click the link in a Terminal. A browser window should appear asking you to log in using your Gmail account.
-
-1. Provide the Google Auth Library with access to your credentials and paste the code from the browser to the Terminal.
-
 1. Upload your service account key JSON file and use it to activate the service account:
 
     ```bash
@@ -116,9 +107,8 @@ In your own project, create a Cloud Storage bucket and put the JSON file there.
 The bucket name must be unique. For convenience, you can name it `<YOUR_PROJECT_ID>_<TIMESTAMP>`.
 
 1. To create the bucket and upload the JSON file, run the following command in the Terminal:
-<!--TODO update with the correct file path when will be merged-->
     ```bash
-    pmvn compile exec:java -Dexec.mainClass=CreateGcsBucket
+    mvn compile exec:java -Dexec.mainClass="product.setup.ProductsCreateGcsBucket"
     ```
 
     Now you can see the bucket is created in the [Cloud Storage](https://console.cloud.google.com/storage/browser), and the files are uploaded.
@@ -132,9 +122,8 @@ The bucket name must be unique. For convenience, you can name it `<YOUR_PROJECT_
 ### Import products to the Retail Catalog
 
 To import the prepared products to a catalog, run the following command in the Terminal:
-<!--TODO update with the correct file path when will be merged-->
     ```bash
-    pmvn compile exec:java -Dexec.mainClass=ImportProductsGcs
+    mvn compile exec:java -Dexec.mainClass="product.ImportProductsGcs"
     ```
  
 ### Running code samples
