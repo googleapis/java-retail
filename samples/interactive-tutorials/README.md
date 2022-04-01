@@ -55,6 +55,7 @@ If you don't have a Google Cloud project yet or you're not the owner of an exist
 After the project is created, set your PROJECT_ID to a ```project``` variable.
 
 1. Run the following command in Terminal:
+
     ```bash
     gcloud config set project <YOUR_PROJECT_ID>
     ```
@@ -122,6 +123,7 @@ The bucket name must be unique. For convenience, you can name it `<YOUR_PROJECT_
 ### Import products to the Retail Catalog
 
 To import the prepared products to a catalog, run the following command in the Terminal:
+
     ```bash
     mvn compile exec:java -Dexec.mainClass="product.ImportProductsGcs"
     ```
