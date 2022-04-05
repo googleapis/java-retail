@@ -356,7 +356,7 @@ public class SetupCleanup {
                 + job.getStatus().getError());
       }
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Column not added during load append \n" + e);
+      System.out.printf("Column not added during load append: %s%n", e);
     }
   }
 

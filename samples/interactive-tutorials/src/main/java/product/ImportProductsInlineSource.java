@@ -180,7 +180,7 @@ public class ImportProductsInlineSource {
       throws IOException, InterruptedException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
-      System.out.printf("OperationName = %s\n", operationName);
+      System.out.printf("OperationName = %s%n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
@@ -194,9 +194,9 @@ public class ImportProductsInlineSource {
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
         System.out.printf(
-            "Number of successfully imported products: %s\n", metadata.getSuccessCount());
+            "Number of successfully imported products: %s%n", metadata.getSuccessCount());
         System.out.printf(
-            "Number of failures during the importing: %s\n", metadata.getFailureCount());
+            "Number of failures during the importing: %s%n", metadata.getFailureCount());
       }
 
       if (operation.hasResponse()) {

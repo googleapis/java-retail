@@ -36,10 +36,10 @@ public class EventsCreateBigQueryTable {
     String invalidEventsTable = "events_some_invalid";
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
     String validEventsSourceFile =
-        String.format("gs://%s/user_events.json", EventsCreateGcsBucket.getBucketName());
+        String.format("gs://%s/user_events.json", System.getenv("EVENTS_BUCKET_NAME"));
     String invalidEventsSourceFile =
         String.format(
-            "gs://%s/user_events_some_invalid.json", EventsCreateGcsBucket.getBucketName());
+            "gs://%s/user_events_some_invalid.json", System.getenv("EVENTS_BUCKET_NAME"));
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());

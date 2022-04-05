@@ -22,6 +22,7 @@
 
 package product;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
@@ -41,30 +42,30 @@ public class ImportProductsGcs {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
+    String branchName = String.format("projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    String bucketName = System.getenv("BUCKET_NAME");
+    String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String gscProductsObject = "products.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
-    // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
+    // gscProductsObject = "products_some_invalid.json"
 
     ImportProductsRequest importGcsRequest =
         getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
-    waitForOperationCompletion(importGcsRequest);
+    importProductsFromGcs(importGcsRequest);
   }
 
-  public static ImportProductsRequest getImportProductsGcsRequest(
-      String gcsObjectName, String gcsBucket, String gcsErrorBucket, String branchName) {
+  public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName,
+      String gcsBucket, String gcsErrorBucket, String branchName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
                 Collections.singleton(String.format("%s/%s", gcsBucket, gcsObjectName)))
             .build();
 
-    ProductInputConfig inputConfig =
-        ProductInputConfig.newBuilder().setGcsSource(gcsSource).build();
+    ProductInputConfig inputConfig = ProductInputConfig.newBuilder()
+        .setGcsSource(gcsSource)
+        .build();
 
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
@@ -79,22 +80,25 @@ public class ImportProductsGcs {
             .setErrorsConfig(errorsConfig)
             .build();
 
-    System.out.println("Import products from google cloud source request: " + importRequest);
+    System.out.printf("Import products from google cloud source request: %s%n", importRequest);
 
     return importRequest;
   }
 
-  public static void waitForOperationCompletion(ImportProductsRequest importRequest)
+  public static void importProductsFromGcs(ImportProductsRequest importRequest)
       throws IOException, InterruptedException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
-      System.out.printf("OperationName = %s\n", operationName);
+      String operationName = serviceClient.importProductsCallable()
+          .call(importRequest).getName();
+
+      System.out.println("The operation was started.");
+      System.out.printf("OperationName = %s%n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
       while (!operation.getDone()) {
-        // Keep polling the operation periodically until the import task is done.
+        System.out.println("Please wait till operation is done.");
         Thread.sleep(30_000);
         operation = operationsClient.getOperation(operationName);
       }
@@ -102,16 +106,25 @@ public class ImportProductsGcs {
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
         System.out.printf(
-            "Number of successfully imported products: %s\n", metadata.getSuccessCount());
+            "Number of successfully imported products: %s%n", metadata.getSuccessCount());
         System.out.printf(
-            "Number of failures during the importing: %s\n", metadata.getFailureCount());
+            "Number of failures during the importing: %s%n", metadata.getFailureCount());
+      } else {
+        System.out.println("Metadata is empty.");
       }
 
       if (operation.hasResponse()) {
         ImportProductsResponse response =
             operation.getResponse().unpack(ImportProductsResponse.class);
         System.out.printf("Operation result: %s%n", response);
+      } else {
+        System.out.println("Operation result is empty.");
       }
+    } catch (InvalidArgumentException e) {
+      System.out.printf(
+          "Given GCS input path was not found. %n%s%n"
+              + "Please run CreateTestResources class to create resources.",
+          e.getMessage());
     }
   }
 }

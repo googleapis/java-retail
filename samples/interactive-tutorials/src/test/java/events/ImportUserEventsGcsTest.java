@@ -17,9 +17,12 @@
 package events;
 
 import static com.google.common.truth.Truth.assertThat;
+import static events.ImportUserEventsGcs.getImportEventsGcsRequest;
+import static events.ImportUserEventsGcs.importUserEventsFromGcs;
+import static events.setup.EventsCreateGcsBucket.createGcsBucketAndUploadData;
 
 import com.google.cloud.ServiceOptions;
-import events.setup.EventsCreateGcsBucket;
+import com.google.cloud.retail.v2.ImportUserEventsRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -34,18 +37,23 @@ public class ImportUserEventsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException {
-    EventsCreateGcsBucket.main();
-
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String bucketName = "events_tests_bucket";
+    String gcsBucket = String.format("gs://%s", bucketName);
+    String gcsErrorsBucket = String.format("%s/error", gcsBucket);
     String gcsEventsObject = "user_events.json";
+
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
-    ImportUserEventsGcs.importUserEventsFromGcs(gcsEventsObject, defaultCatalog);
+    createGcsBucketAndUploadData(bucketName);
+    ImportUserEventsRequest importEventsGcsRequest = getImportEventsGcsRequest(
+        gcsEventsObject, gcsBucket, gcsErrorsBucket, defaultCatalog);
+    importUserEventsFromGcs(importEventsGcsRequest);
   }
 
   @Test

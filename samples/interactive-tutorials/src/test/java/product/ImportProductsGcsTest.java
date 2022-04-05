@@ -18,7 +18,8 @@ package product;
 
 import static com.google.common.truth.Truth.assertThat;
 import static product.ImportProductsGcs.getImportProductsGcsRequest;
-import static product.ImportProductsGcs.waitForOperationCompletion;
+import static product.ImportProductsGcs.importProductsFromGcs;
+import static product.setup.ProductsCreateGcsBucket.createGcsBucketAndUploadData;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ImportProductsRequest;
@@ -29,7 +30,6 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import product.setup.ProductsCreateGcsBucket;
 
 public class ImportProductsGcsTest {
 
@@ -38,13 +38,12 @@ public class ImportProductsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    ProductsCreateGcsBucket.main();
-
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String gcsBucket = String.format("gs://%s", ProductsCreateGcsBucket.getBucketName());
+    String bucketName = "products_tests_bucket";
+    String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String gscProductsObject = "products.json";
     bout = new ByteArrayOutputStream();
@@ -52,9 +51,10 @@ public class ImportProductsGcsTest {
     originalPrintStream = System.out;
     System.setOut(out);
 
+    createGcsBucketAndUploadData(bucketName);
     ImportProductsRequest importGcsRequest =
         getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
-    waitForOperationCompletion(importGcsRequest);
+    importProductsFromGcs(importGcsRequest);
   }
 
   @Test

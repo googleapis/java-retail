@@ -36,11 +36,11 @@ import product.setup.ProductsCreateGcsBucket;
 
 public class CreateTestResources {
 
-  public static void main(String... args) throws IOException, InterruptedException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String bucketName = System.getenv("BUCKET_NAME");
-    String gcsBucket = String.format("gs://%s", System.getenv("BUCKET_NAME"));
+    String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String branchName =
         String.format(
@@ -78,7 +78,7 @@ public class CreateTestResources {
 
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
-      System.out.printf("OperationName = %s\n", operationName);
+      System.out.printf("OperationName = %s%n", operationName);
 
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
@@ -95,9 +95,9 @@ public class CreateTestResources {
       if (operation.hasMetadata()) {
         ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
         System.out.printf(
-            "Number of successfully imported products: %s\n", metadata.getSuccessCount());
+            "Number of successfully imported products: %s%n", metadata.getSuccessCount());
         System.out.printf(
-            "Number of failures during the importing: %s\n", metadata.getFailureCount());
+            "Number of failures during the importing: %s%n", metadata.getFailureCount());
       }
 
       if (operation.hasResponse()) {
