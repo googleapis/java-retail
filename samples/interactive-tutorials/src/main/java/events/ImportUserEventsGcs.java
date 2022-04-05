@@ -40,7 +40,8 @@ public class ImportUserEventsGcs {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog = String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String defaultCatalog =
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String bucketName = System.getenv("EVENTS_BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorsBucket = String.format("%s/error", gcsBucket);
@@ -53,22 +54,20 @@ public class ImportUserEventsGcs {
     importUserEventsFromGcs(importEventsGcsRequest);
   }
 
-  public static ImportUserEventsRequest getImportEventsGcsRequest(String gcsEventsObject,
-      String gcsBucket, String gcsErrorsBucket, String defaultCatalog) {
+  public static ImportUserEventsRequest getImportEventsGcsRequest(
+      String gcsEventsObject, String gcsBucket, String gcsErrorsBucket, String defaultCatalog) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addInputUris(String.format("%s/%s", gcsBucket, gcsEventsObject))
             .build();
 
-    UserEventInputConfig inputConfig = UserEventInputConfig.newBuilder()
-        .setGcsSource(gcsSource)
-        .build();
+    UserEventInputConfig inputConfig =
+        UserEventInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
-    ImportErrorsConfig errorsConfig = ImportErrorsConfig.newBuilder()
-        .setGcsPrefix(gcsErrorsBucket)
-        .build();
+    ImportErrorsConfig errorsConfig =
+        ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorsBucket).build();
 
     ImportUserEventsRequest importRequest =
         ImportUserEventsRequest.newBuilder()
@@ -77,8 +76,7 @@ public class ImportUserEventsGcs {
             .setErrorsConfig(errorsConfig)
             .build();
 
-    System.out.printf(
-        "Import user events from google cloud source request: %s%n", importRequest);
+    System.out.printf("Import user events from google cloud source request: %s%n", importRequest);
 
     return importRequest;
   }
@@ -86,8 +84,8 @@ public class ImportUserEventsGcs {
   public static void importUserEventsFromGcs(ImportUserEventsRequest importEventsGcsRequest)
       throws IOException, InterruptedException {
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-      String operationName = serviceClient.importUserEventsCallable()
-              .call(importEventsGcsRequest).getName();
+      String operationName =
+          serviceClient.importUserEventsCallable().call(importEventsGcsRequest).getName();
 
       System.out.println("The operation was started.");
       System.out.printf("OperationName = %s%n", operationName);

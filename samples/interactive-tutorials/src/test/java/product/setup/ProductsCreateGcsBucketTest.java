@@ -50,8 +50,11 @@ public class ProductsCreateGcsBucketTest {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Products gcs bucket products_tests_bucket was created.");
-    assertThat(outputResult).contains("File 'products.json' was uploaded into bucket 'products_tests_bucket'.");
-    assertThat(outputResult).contains("File 'products_some_invalid.json' was uploaded into bucket 'products_tests_bucket'.");
+    assertThat(outputResult)
+        .contains("File 'products.json' was uploaded into bucket 'products_tests_bucket'.");
+    assertThat(outputResult)
+        .contains(
+            "File 'products_some_invalid.json' was uploaded into bucket 'products_tests_bucket'.");
   }
 
   @After

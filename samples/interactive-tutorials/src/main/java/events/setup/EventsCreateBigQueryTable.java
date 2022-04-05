@@ -38,8 +38,7 @@ public class EventsCreateBigQueryTable {
     String validEventsSourceFile =
         String.format("gs://%s/user_events.json", System.getenv("EVENTS_BUCKET_NAME"));
     String invalidEventsSourceFile =
-        String.format(
-            "gs://%s/user_events_some_invalid.json", System.getenv("EVENTS_BUCKET_NAME"));
+        String.format("gs://%s/user_events_some_invalid.json", System.getenv("EVENTS_BUCKET_NAME"));
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());

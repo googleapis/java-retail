@@ -42,7 +42,9 @@ public class ImportProductsGcs {
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName = String.format("projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    String branchName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = System.getenv("BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
@@ -55,17 +57,16 @@ public class ImportProductsGcs {
     importProductsFromGcs(importGcsRequest);
   }
 
-  public static ImportProductsRequest getImportProductsGcsRequest(String gcsObjectName,
-      String gcsBucket, String gcsErrorBucket, String branchName) {
+  public static ImportProductsRequest getImportProductsGcsRequest(
+      String gcsObjectName, String gcsBucket, String gcsErrorBucket, String branchName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
                 Collections.singleton(String.format("%s/%s", gcsBucket, gcsObjectName)))
             .build();
 
-    ProductInputConfig inputConfig = ProductInputConfig.newBuilder()
-        .setGcsSource(gcsSource)
-        .build();
+    ProductInputConfig inputConfig =
+        ProductInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
     System.out.println("GRS source: " + gcsSource.getInputUrisList());
 
@@ -88,8 +89,7 @@ public class ImportProductsGcs {
   public static void importProductsFromGcs(ImportProductsRequest importRequest)
       throws IOException, InterruptedException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      String operationName = serviceClient.importProductsCallable()
-          .call(importRequest).getName();
+      String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
 
       System.out.println("The operation was started.");
       System.out.printf("OperationName = %s%n", operationName);

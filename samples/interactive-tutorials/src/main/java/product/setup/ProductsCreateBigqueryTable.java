@@ -38,8 +38,7 @@ public class ProductsCreateBigqueryTable {
     String validProductsSourceFile =
         String.format("gs://%s/products.json", System.getenv("BUCKET_NAME"));
     String invalidProductsSourceFile =
-        String.format(
-            "gs://%s/products_some_invalid.json", System.getenv("BUCKET_NAME"));
+        String.format("gs://%s/products_some_invalid.json", System.getenv("BUCKET_NAME"));
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());

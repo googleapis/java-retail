@@ -51,8 +51,8 @@ public class ImportUserEventsGcsTest {
     System.setOut(out);
 
     createGcsBucketAndUploadData(bucketName);
-    ImportUserEventsRequest importEventsGcsRequest = getImportEventsGcsRequest(
-        gcsEventsObject, gcsBucket, gcsErrorsBucket, defaultCatalog);
+    ImportUserEventsRequest importEventsGcsRequest =
+        getImportEventsGcsRequest(gcsEventsObject, gcsBucket, gcsErrorsBucket, defaultCatalog);
     importUserEventsFromGcs(importEventsGcsRequest);
   }
 

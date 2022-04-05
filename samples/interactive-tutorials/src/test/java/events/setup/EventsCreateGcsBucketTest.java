@@ -50,8 +50,11 @@ public class EventsCreateGcsBucketTest {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Events gcs bucket events_tests_bucket was created.");
-    assertThat(outputResult).contains("File 'user_events.json' was uploaded into bucket 'events_tests_bucket'.");
-    assertThat(outputResult).contains("File 'user_events_some_invalid.json' was uploaded into bucket 'events_tests_bucket'.");
+    assertThat(outputResult)
+        .contains("File 'user_events.json' was uploaded into bucket 'events_tests_bucket'.");
+    assertThat(outputResult)
+        .contains(
+            "File 'user_events_some_invalid.json' was uploaded into bucket 'events_tests_bucket'.");
   }
 
   @After

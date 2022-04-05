@@ -49,8 +49,11 @@ public class UpdateUserEventsJsonTest {
   public void testUpdateUserEventsJson() {
     String outputResult = bout.toString();
 
-    assertThat(outputResult).contains("User events file 'src/test/java/resources/user_events.json' updated.");
-    assertThat(outputResult).contains("User events file 'src/test/java/resources/user_events_some_invalid.json' updated.");
+    assertThat(outputResult)
+        .contains("User events file 'src/test/java/resources/user_events.json' updated.");
+    assertThat(outputResult)
+        .contains(
+            "User events file 'src/test/java/resources/user_events_some_invalid.json' updated.");
   }
 
   @After

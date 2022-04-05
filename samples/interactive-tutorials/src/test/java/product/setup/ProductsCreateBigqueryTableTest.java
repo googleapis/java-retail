@@ -48,11 +48,9 @@ public class ProductsCreateBigqueryTableTest {
     String invalidProductsTable = "products_some_invalid";
     String bucketName = "products_tests_bucket";
     String productSchemaFilePath = "src/main/resources/product_schema.json";
-    String validProductsSourceFile =
-        String.format("gs://%s/products.json", bucketName);
+    String validProductsSourceFile = String.format("gs://%s/products.json", bucketName);
     String invalidProductsSourceFile =
-        String.format(
-            "gs://%s/products_some_invalid.json", bucketName);
+        String.format("gs://%s/products_some_invalid.json", bucketName);
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
@@ -78,7 +76,8 @@ public class ProductsCreateBigqueryTableTest {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Json from GCS successfully loaded in a table 'products'.");
-    assertThat(outputResult).contains("Json from GCS successfully loaded in a table 'products_some_invalid'.");
+    assertThat(outputResult)
+        .contains("Json from GCS successfully loaded in a table 'products_some_invalid'.");
   }
 
   @After

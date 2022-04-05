@@ -48,11 +48,9 @@ public class EventsCreateBigQueryTableTest {
     String invalidEventsTable = "events_some_invalid";
     String bucketName = "events_tests_bucket";
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
-    String validEventsSourceFile =
-        String.format("gs://%s/user_events.json", bucketName);
+    String validEventsSourceFile = String.format("gs://%s/user_events.json", bucketName);
     String invalidEventsSourceFile =
-        String.format(
-            "gs://%s/user_events_some_invalid.json", bucketName);
+        String.format("gs://%s/user_events_some_invalid.json", bucketName);
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());
@@ -78,7 +76,8 @@ public class EventsCreateBigQueryTableTest {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Json from GCS successfully loaded in a table 'events'.");
-    assertThat(outputResult).contains("Json from GCS successfully loaded in a table 'events_some_invalid'.");
+    assertThat(outputResult)
+        .contains("Json from GCS successfully loaded in a table 'events_some_invalid'.");
   }
 
   @After

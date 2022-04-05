@@ -32,8 +32,7 @@ public class EventsCreateGcsBucket {
             .setSeconds(Instant.now().getEpochSecond())
             .setNanos(Instant.now().getNano())
             .build();
-    String eventsBucketName =
-        String.format("%s_events_%s", projectId, currentDate.getSeconds());
+    String eventsBucketName = String.format("%s_events_%s", projectId, currentDate.getSeconds());
 
     createGcsBucketAndUploadData(eventsBucketName);
   }
