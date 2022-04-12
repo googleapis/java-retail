@@ -41,7 +41,6 @@ public class AddFulfillmentPlacesTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
     String productName =

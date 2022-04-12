@@ -36,7 +36,6 @@ import java.util.UUID;
 public class SearchWithQueryExpansionSpec {
 
   public static void main(String[] args) throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalogName =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);

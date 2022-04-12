@@ -40,7 +40,6 @@ import java.util.Collections;
 public class ImportProductsGcs {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(

@@ -40,7 +40,6 @@ public class RejoinUserEvent {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);

@@ -81,7 +81,6 @@ import java.util.concurrent.ExecutionException;
 
 public class SetupCleanup {
 
-  // TODO(developer): Replace these variables before running the sample.
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
   private static final String DEFAULT_CATALOG =
       String.format("projects/%s/locations/global/catalogs/default_catalog", PROJECT_ID);
