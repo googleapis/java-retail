@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class ProductsCreateBigqueryTable {
 
-  public static void main(String... args) throws IOException {
+  public static void main(String[] args) throws IOException {
     String dataset = "products";
     String validProductsTable = "products";
     String invalidProductsTable = "products_some_invalid";

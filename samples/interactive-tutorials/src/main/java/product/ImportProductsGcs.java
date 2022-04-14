@@ -23,6 +23,7 @@
 package product;
 
 import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
@@ -36,6 +37,7 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 public class ImportProductsGcs {
 
@@ -45,23 +47,22 @@ public class ImportProductsGcs {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = System.getenv("BUCKET_NAME");
+
+    importProductsFromGcs(branchName, bucketName);
+  }
+
+  public static void importProductsFromGcs(String branchName, String bucketName)
+      throws IOException, InterruptedException {
     String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String gscProductsObject = "products.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
     // gscProductsObject = "products_some_invalid.json"
 
-    ImportProductsRequest importGcsRequest =
-        getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);
-    importProductsFromGcs(importGcsRequest);
-  }
-
-  public static ImportProductsRequest getImportProductsGcsRequest(
-      String gcsObjectName, String gcsBucket, String gcsErrorBucket, String branchName) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
-                Collections.singleton(String.format("%s/%s", gcsBucket, gcsObjectName)))
+                Collections.singleton(String.format("%s/%s", gcsBucket, gscProductsObject)))
             .build();
 
     ProductInputConfig inputConfig =
@@ -82,11 +83,10 @@ public class ImportProductsGcs {
 
     System.out.printf("Import products from google cloud source request: %s%n", importRequest);
 
-    return importRequest;
-  }
-
-  public static void importProductsFromGcs(ImportProductsRequest importRequest)
-      throws IOException, InterruptedException {
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
 
@@ -96,9 +96,11 @@ public class ImportProductsGcs {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      while (!operation.getDone()) {
+      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+
+      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
         System.out.println("Please wait till operation is done.");
-        Thread.sleep(30_000);
+        TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);
       }
 
@@ -120,10 +122,11 @@ public class ImportProductsGcs {
         System.out.println("Operation result is empty.");
       }
     } catch (InvalidArgumentException e) {
-      System.out.printf(
-          "Given GCS input path was not found. %n%s%n"
-              + "Please run CreateTestResources class to create resources.",
-          e.getMessage());
+      System.out.printf("%s%n'%s' file does not exist in the bucket. Please "
+              + "make sure you have followed the setting up instructions.",
+          e.getMessage(), gscProductsObject);
+    } catch (PermissionDeniedException e) {
+      System.out.println(e.getMessage());
     }
   }
 }

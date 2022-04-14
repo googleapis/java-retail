@@ -33,6 +33,7 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ImportProductsBigQueryTable {
 
@@ -41,27 +42,21 @@ public class ImportProductsBigQueryTable {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+
+    importProductsFromBigQuery(projectId, branchName);
+  }
+
+  public static void importProductsFromBigQuery(String projectId, String branchName)
+      throws IOException, InterruptedException {
     String datasetId = "products";
     String tableId = "products";
     // TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS:
-    // TABLE_ID = "products_some_invalid"
-    String dataSchema = "product";
+    // tableId = "products_some_invalid"
+
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
+    String dataSchema = "product";
 
-    ImportProductsRequest importBigQueryRequest =
-        getImportProductsBigQueryRequest(
-            reconciliationMode, projectId, datasetId, tableId, dataSchema, branchName);
-    waitForOperationCompletion(importBigQueryRequest);
-  }
-
-  public static ImportProductsRequest getImportProductsBigQueryRequest(
-      ReconciliationMode reconciliationMode,
-      String projectId,
-      String datasetId,
-      String tableId,
-      String dataSchema,
-      String branchName) {
     BigQuerySource bigQuerySource =
         BigQuerySource.newBuilder()
             .setProjectId(projectId)
@@ -81,11 +76,10 @@ public class ImportProductsBigQueryTable {
             .build();
     System.out.printf("Import products from big query table request: %s%n", importRequest);
 
-    return importRequest;
-  }
-
-  public static void waitForOperationCompletion(ImportProductsRequest importRequest)
-      throws IOException, InterruptedException {
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       String operationName = serviceClient.importProductsCallable().call(importRequest).getName();
       System.out.printf("OperationName = %s%n", operationName);
@@ -93,9 +87,11 @@ public class ImportProductsBigQueryTable {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      while (!operation.getDone()) {
+      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+
+      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
         // Keep polling the operation periodically until the import task is done.
-        Thread.sleep(30_000);
+        TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);
       }
 

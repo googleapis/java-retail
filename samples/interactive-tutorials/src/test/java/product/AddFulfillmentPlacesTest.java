@@ -33,7 +33,10 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class AddFulfillmentPlacesTest {
 
   private ByteArrayOutputStream bout;
@@ -47,19 +50,13 @@ public class AddFulfillmentPlacesTest {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0/products/%s",
             projectId, generatedProductId);
-    Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
     createProduct(generatedProductId);
-    System.out.printf("Add fulfilment places with current date: %s", currentDate);
-    addFulfillmentPlaces(productName, currentDate, "store2");
+    addFulfillmentPlaces(productName, "store2");
     getProduct(productName);
     deleteProduct(productName);
   }

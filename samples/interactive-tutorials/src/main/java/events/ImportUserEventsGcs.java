@@ -23,6 +23,7 @@
 package events;
 
 import com.google.api.gax.rpc.InvalidArgumentException;
+import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
@@ -34,6 +35,7 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsGcs {
 
@@ -42,22 +44,21 @@ public class ImportUserEventsGcs {
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String bucketName = System.getenv("EVENTS_BUCKET_NAME");
+
+    importUserEventsFromGcs(defaultCatalog, bucketName);
+  }
+
+  public static void importUserEventsFromGcs(String defaultCatalog, String bucketName)
+      throws IOException, InterruptedException {
     String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorsBucket = String.format("%s/error", gcsBucket);
     String gcsUserEventsObject = "user_events.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT:
     // gcsEventsObject = "user_events_some_invalid.json"
 
-    ImportUserEventsRequest importEventsGcsRequest =
-        getImportEventsGcsRequest(gcsUserEventsObject, gcsBucket, gcsErrorsBucket, defaultCatalog);
-    importUserEventsFromGcs(importEventsGcsRequest);
-  }
-
-  public static ImportUserEventsRequest getImportEventsGcsRequest(
-      String gcsEventsObject, String gcsBucket, String gcsErrorsBucket, String defaultCatalog) {
     GcsSource gcsSource =
         GcsSource.newBuilder()
-            .addInputUris(String.format("%s/%s", gcsBucket, gcsEventsObject))
+            .addInputUris(String.format("%s/%s", gcsBucket, gcsUserEventsObject))
             .build();
 
     UserEventInputConfig inputConfig =
@@ -74,17 +75,15 @@ public class ImportUserEventsGcs {
             .setInputConfig(inputConfig)
             .setErrorsConfig(errorsConfig)
             .build();
-
     System.out.printf("Import user events from google cloud source request: %s%n", importRequest);
 
-    return importRequest;
-  }
-
-  public static void importUserEventsFromGcs(ImportUserEventsRequest importEventsGcsRequest)
-      throws IOException, InterruptedException {
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
       String operationName =
-          serviceClient.importUserEventsCallable().call(importEventsGcsRequest).getName();
+          serviceClient.importUserEventsCallable().call(importRequest).getName();
 
       System.out.println("The operation was started.");
       System.out.printf("OperationName = %s%n", operationName);
@@ -92,9 +91,11 @@ public class ImportUserEventsGcs {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      while (!operation.getDone()) {
+      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+
+      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
         System.out.println("Please wait till operation is done.");
-        Thread.sleep(30_000);
+        TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);
       }
 
@@ -116,10 +117,11 @@ public class ImportUserEventsGcs {
         System.out.println("Operation result is empty.");
       }
     } catch (InvalidArgumentException e) {
-      System.out.printf(
-          "Given GCS input path was not found. %n%s%n"
-              + "Please run CreateTestResources class to create resources.",
-          e.getMessage());
+      System.out.printf("%s%n'%s' file does not exist in the bucket. Please "
+              + "make sure you have followed the setting up instructions.",
+          e.getMessage(), gcsUserEventsObject);
+    } catch (PermissionDeniedException e) {
+      System.out.println(e.getMessage());
     }
   }
 }

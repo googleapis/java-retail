@@ -41,10 +41,10 @@ public class SearchWithQueryExpansionSpec {
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String defaultSearchPlacementName = defaultCatalogName + "/placements/default_search";
 
-    getSearchResponse(defaultSearchPlacementName);
+    searchResponse(defaultSearchPlacementName);
   }
 
-  public static SearchResponse getSearchResponse(String defaultSearchPlacementName)
+  public static void searchResponse(String defaultSearchPlacementName)
       throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
@@ -65,11 +65,13 @@ public class SearchWithQueryExpansionSpec {
             .build();
     System.out.println("Search request: " + searchRequest);
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (SearchServiceClient client = SearchServiceClient.create()) {
       SearchResponse searchResponse = client.search(searchRequest).getPage().getResponse();
       System.out.println("Search response: " + searchResponse);
-
-      return searchResponse;
     }
   }
 }

@@ -26,7 +26,7 @@ import java.time.Instant;
 
 public class ProductsCreateGcsBucket {
 
-  public static void main(String... args) throws IOException {
+  public static void main(String[] args) throws IOException {
     String projectId = ServiceOptions.getDefaultProjectId();
 
     Timestamp currentDate =

@@ -52,7 +52,7 @@ public class CrudProduct {
     deleteProduct(productName);
   }
 
-  // generate product for create
+  // Generate product for create
   public static Product generateProduct() {
     float price = 30.0f;
     float originalPrice = 35.5f;
@@ -74,7 +74,7 @@ public class CrudProduct {
         .build();
   }
 
-  // generate product for update
+  // Generate product for update
   public static Product generateProductForUpdate(String productId, String productName) {
     final float price = 20.0f;
     final float originalPrice = 25.5f;
@@ -98,7 +98,7 @@ public class CrudProduct {
         .build();
   }
 
-  // call the Retail API to create product
+  // Call the Retail API to create product
   public static Product createProduct(String productId, String branchName) throws IOException {
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()
@@ -108,19 +108,28 @@ public class CrudProduct {
             .build();
     System.out.printf("Create product request: %s%n", createProductRequest);
 
-    Product createdProduct = ProductServiceClient.create().createProduct(createProductRequest);
-    System.out.printf("Created product: %s%n", createdProduct);
-
-    return createdProduct;
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
+    try(ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      Product createdProduct = serviceClient.createProduct(createProductRequest);
+      System.out.printf("Created product: %s%n", createdProduct);
+      return createdProduct;
+    }
   }
 
-  // get product
+  // Get product
   public static Product getProduct(String productName) throws IOException {
     Product product = Product.newBuilder().build();
 
     GetProductRequest getProductRequest =
         GetProductRequest.newBuilder().setName(productName).build();
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       product = serviceClient.getProduct(getProductRequest);
       System.out.println("Get product response: " + product);
@@ -131,7 +140,7 @@ public class CrudProduct {
     }
   }
 
-  // update product
+  // Update product
   public static void updateProduct(Product originalProduct, String productName) throws IOException {
     UpdateProductRequest updateProductRequest =
         UpdateProductRequest.newBuilder()
@@ -140,18 +149,26 @@ public class CrudProduct {
             .build();
     System.out.printf("Update product request: %s%n", updateProductRequest);
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       Product updatedProduct = serviceClient.updateProduct(updateProductRequest);
       System.out.printf("Updated product: %s%n", updatedProduct);
     }
   }
 
-  // delete product
+  // Delete product
   public static void deleteProduct(String productName) throws IOException {
     DeleteProductRequest deleteProductRequest =
         DeleteProductRequest.newBuilder().setName(productName).build();
     System.out.printf("Delete product request %s%n", deleteProductRequest);
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.deleteProduct(deleteProductRequest);
       System.out.printf("Product %s was deleted.%n", productName);

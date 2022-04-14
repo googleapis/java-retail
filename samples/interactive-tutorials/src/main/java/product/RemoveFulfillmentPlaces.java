@@ -30,8 +30,8 @@ import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class RemoveFulfillmentPlaces {
 
@@ -42,38 +42,37 @@ public class RemoveFulfillmentPlaces {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0/products/%s",
             projectId, generatedProductId);
-    Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
-    /*
-     * The time when the fulfillment updates are issued. If set with outdated time
-     * (yesterday), the fulfillment information will not updated.
-     */
-    Timestamp outdatedDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().minus(1, ChronoUnit.DAYS).getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
 
     createProduct(generatedProductId);
-    System.out.printf("Remove fulfilment places with current date: %s", currentDate);
-    removeFulfillmentPlaces(productName, currentDate, "store0");
-    getProduct(productName);
-    System.out.printf("Remove outdated fulfilment places: %s", outdatedDate);
-    removeFulfillmentPlaces(productName, outdatedDate, "store1");
+    removeFulfillmentPlaces(productName, "store0");
     getProduct(productName);
     deleteProduct(productName);
   }
 
   // remove fulfillment places to product
-  public static void removeFulfillmentPlaces(
-      String productName, Timestamp timestamp, String storeId)
+  public static void removeFulfillmentPlaces(String productName, String storeId)
       throws IOException, InterruptedException {
-    RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
-        getRemoveFulfillmentRequest(productName, timestamp, storeId);
+    Timestamp currentDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
 
+    System.out.printf("Remove fulfilment places with current date: %s", currentDate);
+    RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
+        RemoveFulfillmentPlacesRequest.newBuilder()
+            .setProduct(productName)
+            .setType("pickup-in-store")
+            .addPlaceIds(storeId)
+            .setRemoveTime(currentDate)
+            .setAllowMissing(true)
+            .build();
+    System.out.println("Remove fulfillment request " + removeFulfillmentRequest);
+
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest);
       /*
@@ -81,24 +80,8 @@ public class RemoveFulfillmentPlaces {
       present with get operations,thus we simulate wait with sleep method.
       */
       System.out.println("Remove fulfillment places, wait 30 seconds.");
-      Thread.sleep(30_000);
+      TimeUnit.SECONDS.sleep(30);
     }
-  }
-
-  // remove fulfillment request
-  public static RemoveFulfillmentPlacesRequest getRemoveFulfillmentRequest(
-      String productName, Timestamp timestamp, String storeId) {
-    RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
-        RemoveFulfillmentPlacesRequest.newBuilder()
-            .setProduct(productName)
-            .setType("pickup-in-store")
-            .addPlaceIds(storeId)
-            .setRemoveTime(timestamp)
-            .setAllowMissing(true)
-            .build();
-    System.out.println("Remove fulfillment request " + removeFulfillmentRequest);
-
-    return removeFulfillmentRequest;
   }
 }
 

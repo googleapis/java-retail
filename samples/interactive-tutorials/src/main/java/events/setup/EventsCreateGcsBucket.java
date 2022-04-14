@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.time.Instant;
 
 public class EventsCreateGcsBucket {
-  public static void main(String... args) throws IOException {
+  public static void main(String[] args) throws IOException {
     String projectId = ServiceOptions.getDefaultProjectId();
     Timestamp currentDate =
         Timestamp.newBuilder()

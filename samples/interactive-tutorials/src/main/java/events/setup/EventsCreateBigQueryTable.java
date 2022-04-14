@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class EventsCreateBigQueryTable {
 
-  public static void main(String... args) throws IOException {
+  public static void main(String[] args) throws IOException {
     String dataset = "user_events";
     String validEventsTable = "events";
     String invalidEventsTable = "events_some_invalid";

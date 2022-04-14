@@ -49,8 +49,9 @@ public class UpdateProduct {
     deleteProduct(createdProduct.getName());
   }
 
-  // generate product for update
-  public static Product generateProductForUpdate(String productId, String branchName) {
+  // call the Retail API to update product
+  public static void updateProduct(Product originalProduct, String defaultBranchName)
+      throws IOException {
     final float price = 20.0f;
     final float originalPrice = 25.5f;
 
@@ -61,9 +62,9 @@ public class UpdateProduct {
             .setCurrencyCode("EUR")
             .build();
 
-    return Product.newBuilder()
-        .setId(productId)
-        .setName(branchName + "/products/" + productId)
+    Product generatedProduct = Product.newBuilder()
+        .setId(originalProduct.getId())
+        .setName(defaultBranchName + "/products/" + originalProduct.getId())
         .setTitle("Updated Nest Mini")
         .setType(Type.PRIMARY)
         .addCategories("Updated Speakers and displays")
@@ -71,25 +72,21 @@ public class UpdateProduct {
         .setAvailability(Availability.OUT_OF_STOCK)
         .setPriceInfo(priceInfo)
         .build();
-  }
 
-  // get update product request
-  public static UpdateProductRequest getUpdateProductRequest(Product productToUpdate) {
-    UpdateProductRequest updateProductRequest =
-        UpdateProductRequest.newBuilder().setProduct(productToUpdate).setAllowMissing(true).build();
-    System.out.printf("Update product request: %s%n", updateProductRequest);
-
-    return updateProductRequest;
-  }
-
-  // call the Retail API to update product
-  public static void updateProduct(Product originalProduct, String defaultBranchName)
-      throws IOException {
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      UpdateProductRequest updateProductRequest =
+          UpdateProductRequest.newBuilder()
+              .setProduct(generatedProduct)
+              .setAllowMissing(true)
+              .build();
+      System.out.printf("Update product request: %s%n", updateProductRequest);
+
       Product updatedProduct =
-          serviceClient.updateProduct(
-              getUpdateProductRequest(
-                  generateProductForUpdate(originalProduct.getId(), defaultBranchName)));
+          serviceClient.updateProduct(updateProductRequest);
       System.out.printf("Updated product: %s%n", updatedProduct);
     }
   }

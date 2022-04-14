@@ -33,6 +33,7 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsBigQuery {
 
@@ -42,16 +43,17 @@ public class ImportUserEventsBigQuery {
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
     // "invalid_catalog_name"
+
+    importUserEventsFromBigQuery(projectId, defaultCatalog);
+  }
+
+  public static void importUserEventsFromBigQuery(
+      String projectId, String defaultCatalog)
+      throws IOException, InterruptedException {
     String datasetId = "user_events";
     String tableId = "events";
     // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
 
-    importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
-  }
-
-  public static void importUserEventsFromBigQuery(
-      String projectId, String defaultCatalog, String datasetId, String tableId)
-      throws IOException, InterruptedException {
     try {
       String dataSchema = "user_event";
 
@@ -74,9 +76,10 @@ public class ImportUserEventsBigQuery {
 
       System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
 
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests. After completing all of your requests, call
-      // the "close" method on the client to safely clean up any remaining background resources.
+      // Initialize client that will be used to send requests. This client only
+      // needs to be created once, and can be reused for multiple requests. After
+      // completing all of your requests, call the "close" method on the client to
+      // safely clean up any remaining background resources.
       try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
         String operationName =
             serviceClient.importUserEventsCallable().call(importRequest).getName();
@@ -85,10 +88,11 @@ public class ImportUserEventsBigQuery {
         OperationsClient operationsClient = serviceClient.getOperationsClient();
         Operation operation = operationsClient.getOperation(operationName);
 
-        while (!operation.getDone()) {
+        long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+
+        while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
           // Keep polling the operation periodically until the import task is done.
-          int awaitDuration = 30000;
-          Thread.sleep(awaitDuration);
+          TimeUnit.SECONDS.sleep(30);
           operation = operationsClient.getOperation(operationName);
         }
 

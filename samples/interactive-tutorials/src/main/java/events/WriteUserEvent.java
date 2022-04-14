@@ -49,9 +49,10 @@ public class WriteUserEvent {
 
   public static void writeUserEvent(String defaultCatalog, String visitorId)
       throws IOException, ExecutionException, InterruptedException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources.
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
       Timestamp timestamp =
           Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build();

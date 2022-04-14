@@ -26,7 +26,10 @@ import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+@RunWith(JUnit4.class)
 public class ImportUserEventsBigQueryTest {
 
   private ByteArrayOutputStream bout;
@@ -37,15 +40,13 @@ public class ImportUserEventsBigQueryTest {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String datasetId = "user_events";
-    String tableId = "events";
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
     ImportUserEventsBigQuery.importUserEventsFromBigQuery(
-        projectId, defaultCatalog, datasetId, tableId);
+        projectId, defaultCatalog);
   }
 
   @Test

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package init;
+package product.setup;
 
 import static setup.SetupCleanup.deleteBucket;
 import static setup.SetupCleanup.deleteDataset;
@@ -28,7 +28,7 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.ProductServiceClient.ListProductsPagedResponse;
 import java.io.IOException;
 
-public class RemoveTestResources {
+public class RemoveProductsResources {
 
   public static void main(String[] args) throws IOException {
     String projectId = ServiceOptions.getDefaultProjectId();
@@ -39,7 +39,6 @@ public class RemoveTestResources {
 
     deleteBucket(bucketName);
     deleteAllProducts(branchName);
-    deleteDataset(projectId, "products");
     deleteDataset(projectId, "user_events");
   }
 
