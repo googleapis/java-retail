@@ -22,6 +22,7 @@
 
 package events;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
@@ -41,18 +42,19 @@ public class ImportUserEventsBigQuery {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
-    // "invalid_catalog_name"
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
+    // defaultCatalog = "invalid_catalog_name"
+    String datasetId = "user_events";
+    String tableId = "events";
+    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS:
+    // tableId = "events_some_invalid"
 
-    importUserEventsFromBigQuery(projectId, defaultCatalog);
+    importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
 
   public static void importUserEventsFromBigQuery(
-      String projectId, String defaultCatalog)
+      String projectId, String defaultCatalog, String datasetId, String tableId)
       throws IOException, InterruptedException {
-    String datasetId = "user_events";
-    String tableId = "events";
-    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
 
     try {
       String dataSchema = "user_event";
@@ -112,6 +114,8 @@ public class ImportUserEventsBigQuery {
       }
     } catch (BigQueryException e) {
       System.out.printf("Exception message: %s", e.getMessage());
+    } catch (NotFoundException e) {
+      System.out.printf("Catalog name is not found.%n%s%n", e.getMessage());
     }
   }
 }

@@ -39,27 +39,52 @@ public class ImportProductsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
+    bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
+  }
+
+  @Test
+  public void testValidImportProductsGcs()
+      throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = "products_tests_bucket";
-    bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
+    String gcsBucket = String.format("gs://%s", bucketName);
+    String gscProductsObject = "products.json";
 
     createGcsBucketAndUploadData(bucketName);
-    importProductsFromGcs(branchName, bucketName);
-  }
+    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
 
-  @Test
-  public void testImportProductsGcs() {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Import products from google cloud source request");
-    assertThat(outputResult).contains("Number of successfully imported products");
-    assertThat(outputResult).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Number of successfully imported products:");
+    assertThat(outputResult).contains("Number of failures during the importing: 0");
+  }
+
+  @Test
+  public void testInvalidImportProductsGcs()
+      throws IOException, InterruptedException {
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String branchName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    String bucketName = "products_tests_bucket";
+    String gcsBucket = String.format("gs://%s", bucketName);
+    String gscProductsObject = "products_some_invalid.json";
+
+    createGcsBucketAndUploadData(bucketName);
+    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
+
+    String outputResult = bout.toString();
+
+    assertThat(outputResult).contains("Import products from google cloud source request");
+    assertThat(outputResult).contains("Number of successfully imported products:");
+    assertThat(outputResult).contains("Number of failures during the importing:");
   }
 
   @After

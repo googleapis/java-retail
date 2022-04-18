@@ -42,17 +42,16 @@ public class ImportProductsBigQueryTable {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-
-    importProductsFromBigQuery(projectId, branchName);
-  }
-
-  public static void importProductsFromBigQuery(String projectId, String branchName)
-      throws IOException, InterruptedException {
     String datasetId = "products";
     String tableId = "products";
     // TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS:
     // tableId = "products_some_invalid"
 
+    importProductsFromBigQuery(projectId, branchName, datasetId, tableId);
+  }
+
+  public static void importProductsFromBigQuery(String projectId, String branchName, String datasetId, String tableId)
+      throws IOException, InterruptedException {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;
     String dataSchema = "product";

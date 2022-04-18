@@ -44,17 +44,17 @@ public class ImportUserEventsGcs {
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String bucketName = System.getenv("EVENTS_BUCKET_NAME");
-
-    importUserEventsFromGcs(defaultCatalog, bucketName);
-  }
-
-  public static void importUserEventsFromGcs(String defaultCatalog, String bucketName)
-      throws IOException, InterruptedException {
-    String gcsBucket = String.format("gs://%s", bucketName);
-    String gcsErrorsBucket = String.format("%s/error", gcsBucket);
     String gcsUserEventsObject = "user_events.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT:
     // gcsEventsObject = "user_events_some_invalid.json"
+
+    importUserEventsFromGcs(defaultCatalog, bucketName, gcsUserEventsObject);
+  }
+
+  public static void importUserEventsFromGcs(String defaultCatalog, String bucketName, String gcsUserEventsObject)
+      throws IOException, InterruptedException {
+    String gcsBucket = String.format("gs://%s", bucketName);
+    String gcsErrorsBucket = String.format("%s/error", gcsBucket);
 
     GcsSource gcsSource =
         GcsSource.newBuilder()

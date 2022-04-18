@@ -47,17 +47,17 @@ public class ImportProductsGcs {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = System.getenv("BUCKET_NAME");
-
-    importProductsFromGcs(branchName, bucketName);
-  }
-
-  public static void importProductsFromGcs(String branchName, String bucketName)
-      throws IOException, InterruptedException {
     String gcsBucket = String.format("gs://%s", bucketName);
-    String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String gscProductsObject = "products.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
     // gscProductsObject = "products_some_invalid.json"
+
+    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
+  }
+
+  public static void importProductsFromGcs(String branchName, String bucketName, String gcsBucket, String gscProductsObject)
+      throws IOException, InterruptedException {
+    String gcsErrorBucket = String.format("%s/errors", gcsBucket);
 
     GcsSource gcsSource =
         GcsSource.newBuilder()
