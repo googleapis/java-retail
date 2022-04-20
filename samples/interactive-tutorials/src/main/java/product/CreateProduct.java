@@ -59,14 +59,15 @@ public class CreateProduct {
             .setCurrencyCode("USD")
             .build();
 
-    Product generatedProduct = Product.newBuilder()
-        .setTitle("Nest Mini")
-        .setType(Type.PRIMARY)
-        .addCategories("Speakers and displays")
-        .addBrands("Google")
-        .setPriceInfo(priceInfo)
-        .setAvailability(Availability.IN_STOCK)
-        .build();
+    Product generatedProduct =
+        Product.newBuilder()
+            .setTitle("Nest Mini")
+            .setType(Type.PRIMARY)
+            .addCategories("Speakers and displays")
+            .addBrands("Google")
+            .setPriceInfo(priceInfo)
+            .setAvailability(Availability.IN_STOCK)
+            .build();
 
     CreateProductRequest createProductRequest =
         CreateProductRequest.newBuilder()

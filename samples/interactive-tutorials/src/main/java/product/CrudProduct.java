@@ -112,7 +112,7 @@ public class CrudProduct {
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
-    try(ProductServiceClient serviceClient = ProductServiceClient.create()) {
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
       Product createdProduct = serviceClient.createProduct(createProductRequest);
       System.out.printf("Created product: %s%n", createdProduct);
       return createdProduct;

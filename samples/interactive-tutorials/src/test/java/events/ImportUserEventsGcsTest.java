@@ -45,8 +45,7 @@ public class ImportUserEventsGcsTest {
   }
 
   @Test
-  public void testValidImportUserEventsGcs()
-      throws IOException, InterruptedException {
+  public void testValidImportUserEventsGcs() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
@@ -64,8 +63,7 @@ public class ImportUserEventsGcsTest {
   }
 
   @Test
-  public void testInvalidImportUserEventsGcs()
-      throws IOException, InterruptedException {
+  public void testInvalidImportUserEventsGcs() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);

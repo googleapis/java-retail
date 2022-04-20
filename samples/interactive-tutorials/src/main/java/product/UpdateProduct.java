@@ -62,16 +62,17 @@ public class UpdateProduct {
             .setCurrencyCode("EUR")
             .build();
 
-    Product generatedProduct = Product.newBuilder()
-        .setId(originalProduct.getId())
-        .setName(defaultBranchName + "/products/" + originalProduct.getId())
-        .setTitle("Updated Nest Mini")
-        .setType(Type.PRIMARY)
-        .addCategories("Updated Speakers and displays")
-        .addBrands("Updated Google")
-        .setAvailability(Availability.OUT_OF_STOCK)
-        .setPriceInfo(priceInfo)
-        .build();
+    Product generatedProduct =
+        Product.newBuilder()
+            .setId(originalProduct.getId())
+            .setName(defaultBranchName + "/products/" + originalProduct.getId())
+            .setTitle("Updated Nest Mini")
+            .setType(Type.PRIMARY)
+            .addCategories("Updated Speakers and displays")
+            .addBrands("Updated Google")
+            .setAvailability(Availability.OUT_OF_STOCK)
+            .setPriceInfo(priceInfo)
+            .build();
 
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
@@ -85,8 +86,7 @@ public class UpdateProduct {
               .build();
       System.out.printf("Update product request: %s%n", updateProductRequest);
 
-      Product updatedProduct =
-          serviceClient.updateProduct(updateProductRequest);
+      Product updatedProduct = serviceClient.updateProduct(updateProductRequest);
       System.out.printf("Updated product: %s%n", updatedProduct);
     }
   }

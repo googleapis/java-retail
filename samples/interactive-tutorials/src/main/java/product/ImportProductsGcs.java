@@ -55,7 +55,8 @@ public class ImportProductsGcs {
     importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
   }
 
-  public static void importProductsFromGcs(String branchName, String bucketName, String gcsBucket, String gscProductsObject)
+  public static void importProductsFromGcs(
+      String branchName, String bucketName, String gcsBucket, String gscProductsObject)
       throws IOException, InterruptedException {
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
 
@@ -122,7 +123,8 @@ public class ImportProductsGcs {
         System.out.println("Operation result is empty.");
       }
     } catch (InvalidArgumentException e) {
-      System.out.printf("%s%n'%s' file does not exist in the bucket. Please "
+      System.out.printf(
+          "%s%n'%s' file does not exist in the bucket. Please "
               + "make sure you have followed the setting up instructions.",
           e.getMessage(), gscProductsObject);
     } catch (PermissionDeniedException e) {

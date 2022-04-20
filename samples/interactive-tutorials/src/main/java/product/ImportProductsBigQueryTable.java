@@ -50,7 +50,8 @@ public class ImportProductsBigQueryTable {
     importProductsFromBigQuery(projectId, branchName, datasetId, tableId);
   }
 
-  public static void importProductsFromBigQuery(String projectId, String branchName, String datasetId, String tableId)
+  public static void importProductsFromBigQuery(
+      String projectId, String branchName, String datasetId, String tableId)
       throws IOException, InterruptedException {
     // TRY THE FULL RECONCILIATION MODE HERE:
     ReconciliationMode reconciliationMode = ReconciliationMode.INCREMENTAL;

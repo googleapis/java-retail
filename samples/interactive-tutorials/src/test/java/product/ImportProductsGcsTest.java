@@ -46,8 +46,7 @@ public class ImportProductsGcsTest {
   }
 
   @Test
-  public void testValidImportProductsGcs()
-      throws IOException, InterruptedException {
+  public void testValidImportProductsGcs() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
@@ -67,8 +66,7 @@ public class ImportProductsGcsTest {
   }
 
   @Test
-  public void testInvalidImportProductsGcs()
-      throws IOException, InterruptedException {
+  public void testInvalidImportProductsGcs() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(

@@ -38,8 +38,7 @@ public class SearchWithFacetSpec {
     searchResponse(defaultSearchPlacementName);
   }
 
-  public static void searchResponse(String defaultSearchPlacementName)
-      throws IOException {
+  public static void searchResponse(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT CONDITIONS HERE:
     String searchQuery = "Tee";
     String facetKeyParam = "colorFamilies";

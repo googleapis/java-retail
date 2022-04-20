@@ -44,8 +44,7 @@ public class SearchWithQueryExpansionSpec {
     searchResponse(defaultSearchPlacementName);
   }
 
-  public static void searchResponse(String defaultSearchPlacementName)
-      throws IOException {
+  public static void searchResponse(String defaultSearchPlacementName) throws IOException {
     // TRY DIFFERENT QUERY EXPANSION CONDITION HERE:
     Condition condition = Condition.AUTO;
     int pageSize = 10;

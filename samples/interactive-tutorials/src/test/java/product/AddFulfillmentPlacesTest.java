@@ -23,11 +23,9 @@ import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
 import com.google.cloud.ServiceOptions;
-import com.google.protobuf.Timestamp;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;

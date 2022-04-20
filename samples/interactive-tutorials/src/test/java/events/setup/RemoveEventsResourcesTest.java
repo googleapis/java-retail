@@ -44,10 +44,8 @@ public class RemoveEventsResourcesTest {
   public void testRemoveEventsResources() {
     String outputResult = bout.toString();
 
-    assertThat(outputResult)
-        .contains("Deleting products in process, please wait...");
-    assertThat(outputResult)
-        .contains("products were deleted from");
+    assertThat(outputResult).contains("Deleting products in process, please wait...");
+    assertThat(outputResult).contains("products were deleted from");
   }
 
   @After

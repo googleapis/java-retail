@@ -51,7 +51,8 @@ public class ImportUserEventsGcs {
     importUserEventsFromGcs(defaultCatalog, bucketName, gcsUserEventsObject);
   }
 
-  public static void importUserEventsFromGcs(String defaultCatalog, String bucketName, String gcsUserEventsObject)
+  public static void importUserEventsFromGcs(
+      String defaultCatalog, String bucketName, String gcsUserEventsObject)
       throws IOException, InterruptedException {
     String gcsBucket = String.format("gs://%s", bucketName);
     String gcsErrorsBucket = String.format("%s/error", gcsBucket);
@@ -82,8 +83,7 @@ public class ImportUserEventsGcs {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
-      String operationName =
-          serviceClient.importUserEventsCallable().call(importRequest).getName();
+      String operationName = serviceClient.importUserEventsCallable().call(importRequest).getName();
 
       System.out.println("The operation was started.");
       System.out.printf("OperationName = %s%n", operationName);
@@ -117,7 +117,8 @@ public class ImportUserEventsGcs {
         System.out.println("Operation result is empty.");
       }
     } catch (InvalidArgumentException e) {
-      System.out.printf("%s%n'%s' file does not exist in the bucket. Please "
+      System.out.printf(
+          "%s%n'%s' file does not exist in the bucket. Please "
               + "make sure you have followed the setting up instructions.",
           e.getMessage(), gcsUserEventsObject);
     } catch (PermissionDeniedException e) {

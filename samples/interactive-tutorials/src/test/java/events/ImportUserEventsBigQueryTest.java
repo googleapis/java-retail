@@ -44,15 +44,15 @@ public class ImportUserEventsBigQueryTest {
   }
 
   @Test
-  public void testValidImportUserEventsBigQuery()
-      throws IOException, InterruptedException {
+  public void testValidImportUserEventsBigQuery() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String datasetId = "user_events";
     String tableId = "events";
 
-    ImportUserEventsBigQuery.importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
+    ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+        projectId, defaultCatalog, datasetId, tableId);
 
     String outputResult = bout.toString();
 
@@ -63,15 +63,15 @@ public class ImportUserEventsBigQueryTest {
   }
 
   @Test
-  public void testInvalidImportUserEventsBigQuery()
-      throws IOException, InterruptedException {
+  public void testInvalidImportUserEventsBigQuery() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/invalid_catalog_name", projectId);
     String datasetId = "user_events";
     String tableId = "events_some_invalid";
 
-    ImportUserEventsBigQuery.importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
+    ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+        projectId, defaultCatalog, datasetId, tableId);
 
     String outputResult = bout.toString();
 

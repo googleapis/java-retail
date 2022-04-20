@@ -89,13 +89,14 @@ public class SetInventory {
             .addAllPlaceIds(Arrays.asList("store1", "store2"))
             .build();
 
-    Product product = Product.newBuilder()
-        .setName(productName)
-        .setPriceInfo(priceInfo)
-        .addFulfillmentInfo(fulfillmentInfo)
-        .setAvailability(Availability.IN_STOCK)
-        .setAvailableQuantity(Int32Value.newBuilder().setValue(5).build())
-        .build();
+    Product product =
+        Product.newBuilder()
+            .setName(productName)
+            .setPriceInfo(priceInfo)
+            .addFulfillmentInfo(fulfillmentInfo)
+            .setAvailability(Availability.IN_STOCK)
+            .setAvailableQuantity(Int32Value.newBuilder().setValue(5).build())
+            .build();
 
     SetInventoryRequest setInventoryRequest =
         SetInventoryRequest.newBuilder()

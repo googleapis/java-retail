@@ -45,8 +45,7 @@ public class ImportProductsBigQueryTableTest {
   }
 
   @Test
-  public void testValidImportProductsBigQueryTable()
-      throws IOException, InterruptedException {
+  public void testValidImportProductsBigQueryTable() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
@@ -64,8 +63,7 @@ public class ImportProductsBigQueryTableTest {
   }
 
   @Test
-  public void testInvalidImportProductsBigQueryTable()
-      throws IOException, InterruptedException {
+  public void testInvalidImportProductsBigQueryTable() throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
         String.format(
