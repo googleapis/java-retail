@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package events;
+package events.setup;
 
 import static com.google.common.truth.Truth.assertThat;
+import static events.setup.EventsCreateGcsBucket.createGcsBucketAndUploadData;
 
-import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
@@ -31,32 +30,34 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class PurgeUserEventTest {
+public class EventsCreateGcsBucketTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String visitorId = UUID.randomUUID().toString();
+
+    String bucketName = "events_tests_bucket";
+
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
-    PurgeUserEvent.callPurgeUserEvents(defaultCatalog, visitorId);
+    createGcsBucketAndUploadData(bucketName);
   }
 
   @Test
-  public void testPurgeUserEvent() {
+  public void testEventsCreateGcsBucket() {
     String outputResult = bout.toString();
 
-    assertThat(outputResult).contains("The user event is written");
-    assertThat(outputResult).contains("Purge user events request");
-    assertThat(outputResult).contains("The purge operation was started");
+    assertThat(outputResult).contains("Events gcs bucket events_tests_bucket was created.");
+    assertThat(outputResult)
+        .contains("File 'user_events.json' was uploaded into bucket 'events_tests_bucket'.");
+    assertThat(outputResult)
+        .contains(
+            "File 'user_events_some_invalid.json' was uploaded into bucket 'events_tests_bucket'.");
   }
 
   @After
