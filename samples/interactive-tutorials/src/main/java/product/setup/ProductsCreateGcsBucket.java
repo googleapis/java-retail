@@ -26,31 +26,31 @@ import java.time.Instant;
 
 public class ProductsCreateGcsBucket {
 
-  private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
+  public static void main(String[] args) throws IOException {
+    String projectId = ServiceOptions.getDefaultProjectId();
 
-  private static final Timestamp CURRENT_DATE =
-      Timestamp.newBuilder()
-          .setSeconds(Instant.now().getEpochSecond())
-          .setNanos(Instant.now().getNano())
-          .build();
+    Timestamp currentDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
 
-  private static final String BUCKET_NAME =
-      String.format("%s_products_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
+    String productsBucketName =
+        String.format("%s_products_%s", projectId, currentDate.getSeconds());
 
-  public static void main(String... args) throws IOException {
-    createBucket(BUCKET_NAME);
-    System.out.printf("Products gcs bucket %s was created.", BUCKET_NAME);
-
-    uploadObject(BUCKET_NAME, "products.json", "src/main/resources/products.json");
-    System.out.printf("File 'products.json' was uploaded into bucket '%s'.", BUCKET_NAME);
-
-    uploadObject(
-        BUCKET_NAME, "products_some_invalid.json", "src/main/resources/products_some_invalid.json");
-    System.out.printf(
-        "File 'products_some_invalid.json' was uploaded into bucket '%s'.", BUCKET_NAME);
+    createGcsBucketAndUploadData(productsBucketName);
   }
 
-  public static String getBucketName() {
-    return BUCKET_NAME;
+  public static void createGcsBucketAndUploadData(String bucketName) throws IOException {
+    createBucket(bucketName);
+    System.out.printf("Products gcs bucket %s was created.%n", bucketName);
+
+    uploadObject(bucketName, "products.json", "src/main/resources/products.json");
+    System.out.printf("File 'products.json' was uploaded into bucket '%s'.%n", bucketName);
+
+    uploadObject(
+        bucketName, "products_some_invalid.json", "src/main/resources/products_some_invalid.json");
+    System.out.printf(
+        "File 'products_some_invalid.json' was uploaded into bucket '%s'.%n", bucketName);
   }
 }
