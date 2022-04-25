@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package init;
+package product.setup;
 
 import static setup.SetupCleanup.deleteBucket;
 import static setup.SetupCleanup.deleteDataset;
@@ -28,10 +28,9 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.ProductServiceClient.ListProductsPagedResponse;
 import java.io.IOException;
 
-public class RemoveTestResources {
+public class RemoveProductsResources {
 
-  public static void main(String... args) throws IOException {
-    // TODO(developer): Replace these variables before running the sample.
+  public static void main(String[] args) throws IOException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String bucketName = System.getenv("BUCKET_NAME");
     String branchName =
@@ -41,12 +40,15 @@ public class RemoveTestResources {
     deleteBucket(bucketName);
     deleteAllProducts(branchName);
     deleteDataset(projectId, "products");
-    deleteDataset(projectId, "user_events");
   }
 
   public static void deleteAllProducts(String branchName) throws IOException {
     System.out.println("Deleting products in process, please wait...");
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (ProductServiceClient productServiceClient = ProductServiceClient.create()) {
       ListProductsRequest listRequest =
           ListProductsRequest.newBuilder().setParent(branchName).build();

@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package product;
+package product.setup;
 
 import static com.google.common.truth.Truth.assertThat;
-import static product.CreateProduct.createProduct;
-import static product.CrudProduct.deleteProduct;
-import static product.CrudProduct.getProduct;
-import static product.CrudProduct.updateProduct;
+import static product.setup.ProductsCreateGcsBucket.createGcsBucketAndUploadData;
 
-import com.google.cloud.ServiceOptions;
-import com.google.cloud.retail.v2.Product;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
@@ -36,40 +30,34 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class CrudProductTest {
+public class ProductsCreateGcsBucketTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String generatedProductId = UUID.randomUUID().toString();
-    String branchName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String productName = String.format("%s/products/%s", branchName, generatedProductId);
+
+    String bucketName = "products_tests_bucket";
+
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
-    Product createdProduct = createProduct(generatedProductId, branchName);
-    getProduct(productName);
-    updateProduct(createdProduct, productName);
-    deleteProduct(productName);
+    createGcsBucketAndUploadData(bucketName);
   }
 
   @Test
-  public void testCrudProduct() {
+  public void testProductsCreateGcsBucket() {
     String outputResult = bout.toString();
 
-    assertThat(outputResult).contains("Create product request");
-    assertThat(outputResult).contains("Created product");
-    assertThat(outputResult).contains("Get product response");
-    assertThat(outputResult).contains("Update product request");
-    assertThat(outputResult).contains("Updated product");
-    assertThat(outputResult).contains("Delete product request name");
+    assertThat(outputResult).contains("Products gcs bucket products_tests_bucket was created.");
+    assertThat(outputResult)
+        .contains("File 'products.json' was uploaded into bucket 'products_tests_bucket'.");
+    assertThat(outputResult)
+        .contains(
+            "File 'products_some_invalid.json' was uploaded into bucket 'products_tests_bucket'.");
   }
 
   @After
