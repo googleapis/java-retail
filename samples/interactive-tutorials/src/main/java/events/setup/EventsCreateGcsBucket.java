@@ -25,34 +25,30 @@ import java.io.IOException;
 import java.time.Instant;
 
 public class EventsCreateGcsBucket {
+  public static void main(String[] args) throws IOException {
+    String projectId = ServiceOptions.getDefaultProjectId();
+    Timestamp currentDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
+    String eventsBucketName = String.format("%s_events_%s", projectId, currentDate.getSeconds());
 
-  private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
+    createGcsBucketAndUploadData(eventsBucketName);
+  }
 
-  private static final Timestamp CURRENT_DATE =
-      Timestamp.newBuilder()
-          .setSeconds(Instant.now().getEpochSecond())
-          .setNanos(Instant.now().getNano())
-          .build();
+  public static void createGcsBucketAndUploadData(String bucketName) throws IOException {
+    createBucket(bucketName);
+    System.out.printf("Events gcs bucket %s was created.%n", bucketName);
 
-  private static final String BUCKET_NAME =
-      String.format("%s_events_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
-
-  public static void main(String... args) throws IOException {
-    createBucket(BUCKET_NAME);
-    System.out.printf("Events gcs bucket %s was created.", BUCKET_NAME);
-
-    uploadObject(BUCKET_NAME, "user_events.json", "src/main/resources/user_events.json");
-    System.out.printf("File 'user_events.json' was uploaded into bucket '%s'.", BUCKET_NAME);
+    uploadObject(bucketName, "user_events.json", "src/main/resources/user_events.json");
+    System.out.printf("File 'user_events.json' was uploaded into bucket '%s'.%n", bucketName);
 
     uploadObject(
-        BUCKET_NAME,
+        bucketName,
         "user_events_some_invalid.json",
         "src/main/resources/user_events_some_invalid.json");
     System.out.printf(
-        "File 'user_events_some_invalid.json' was uploaded into bucket '%s'.", BUCKET_NAME);
-  }
-
-  public static String getBucketName() {
-    return BUCKET_NAME;
+        "File 'user_events_some_invalid.json' was uploaded into bucket '%s'.%n", bucketName);
   }
 }

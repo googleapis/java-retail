@@ -45,7 +45,6 @@ public class ImportUserEventsInline {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
@@ -90,9 +89,10 @@ public class ImportUserEventsInline {
               .build();
       System.out.printf("Import user events from inline source request: %s%n", importRequest);
 
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests. After completing all of your requests, call
-      // the "close" method on the client to safely clean up any remaining background resources.
+      // Initialize client that will be used to send requests. This client only
+      // needs to be created once, and can be reused for multiple requests. After
+      // completing all of your requests, call the "close" method on the client to
+      // safely clean up any remaining background resources.
       try (UserEventServiceClient userEventServiceClient = UserEventServiceClient.create()) {
         OperationFuture<ImportUserEventsResponse, ImportMetadata> importOperation =
             userEventServiceClient.importUserEventsAsync(importRequest);
