@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package product;
+package product.setup;
 
 import static com.google.common.truth.Truth.assertThat;
-import static product.ImportProductsInlineSource.importProductsInlineSource;
+import static product.setup.ProductsCreateGcsBucket.createGcsBucketAndUploadData;
 
-import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,32 +30,34 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class ImportProductsInlineSourceTest {
+public class ProductsCreateGcsBucketTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+
+    String bucketName = "products_tests_bucket";
+
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
 
-    importProductsInlineSource(branchName);
+    createGcsBucketAndUploadData(bucketName);
   }
 
   @Test
-  public void testImportProductsInlineSource() {
+  public void testProductsCreateGcsBucket() {
     String outputResult = bout.toString();
 
-    assertThat(outputResult).contains("Import products from inline source request");
-    assertThat(outputResult).contains("Number of successfully imported products");
-    assertThat(outputResult).contains("Number of failures during the importing");
+    assertThat(outputResult).contains("Products gcs bucket products_tests_bucket was created.");
+    assertThat(outputResult)
+        .contains("File 'products.json' was uploaded into bucket 'products_tests_bucket'.");
+    assertThat(outputResult)
+        .contains(
+            "File 'products_some_invalid.json' was uploaded into bucket 'products_tests_bucket'.");
   }
 
   @After
