@@ -46,21 +46,24 @@ public class SimplePredictionTest {
   public void testPredict() {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     String placementId = System.getenv("GOOGLE_CLOUD_PLACEMENT");
-    String predictPlacement = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
-        projectId, placementId);
+    String predictPlacement =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
+            projectId, placementId);
 
     predict(predictPlacement);
 
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Predict request");
-    assertThat(outputResult).contains("params {\n"
-        + "  key: \"returnProduct\"\n"
-        + "  value {\n"
-        + "    bool_value: true\n"
-        + "  }\n"
-        + "}");
+    assertThat(outputResult)
+        .contains(
+            "params {\n"
+                + "  key: \"returnProduct\"\n"
+                + "  value {\n"
+                + "    bool_value: true\n"
+                + "  }\n"
+                + "}");
     assertThat(outputResult).contains("Predict response");
   }
 

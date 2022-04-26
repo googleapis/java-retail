@@ -35,17 +35,18 @@ public class PredictionWithParameters {
   public static void main(String[] args) {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     String placementId = System.getenv("GOOGLE_CLOUD_PLACEMENT");
-    String predictPlacement = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
-        projectId, placementId);
+    String predictPlacement =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
+            projectId, placementId);
 
     predict(predictPlacement);
   }
 
   public static void predict(String predictPlacement) {
     try (PredictionServiceClient predictionServiceClient = PredictionServiceClient.create()) {
-      PredictResponse predictResponse = predictionServiceClient.predict(
-          getPredictRequest(predictPlacement));
+      PredictResponse predictResponse =
+          predictionServiceClient.predict(getPredictRequest(predictPlacement));
       System.out.printf("Predict response: %n%s", predictResponse);
     } catch (IOException e) {
       e.printStackTrace();
@@ -54,28 +55,31 @@ public class PredictionWithParameters {
 
   private static PredictRequest getPredictRequest(String predictPlacement) {
     // create product object
-    Product product = Product.newBuilder()
-        .setId("55106") // Id of real product
-        .build();
+    Product product =
+        Product.newBuilder()
+            .setId("55106") // Id of real product
+            .build();
 
     // create product detail object
-    ProductDetail productDetail = ProductDetail.newBuilder()
-        .setProduct(product)
-        .build();
+    ProductDetail productDetail = ProductDetail.newBuilder().setProduct(product).build();
 
     // create user event object
-    UserEvent userEvent = UserEvent.newBuilder()
-        .setEventType("detail-page-view")
-        .setVisitorId("281790") // Unique identifier to track visitors
-        .addProductDetails(productDetail)
-        .build();
+    UserEvent userEvent =
+        UserEvent.newBuilder()
+            .setEventType("detail-page-view")
+            .setVisitorId("281790") // Unique identifier to track visitors
+            .addProductDetails(productDetail)
+            .build();
 
-    PredictRequest predictRequest = PredictRequest.newBuilder()
-        .setPlacement(predictPlacement) // Placement is used to identify the Serving Config name
-        .setUserEvent(userEvent) // Context about the user is required for event logging
-        // TRY TO ADD/UPDATE PARAMETERS `priceRerankLevel` OR `diversityLevel` HERE:
-        .putParams("priceRerankLevel", Value.newBuilder().setStringValue("low-price-reranking").build())
-        .build();
+    PredictRequest predictRequest =
+        PredictRequest.newBuilder()
+            .setPlacement(predictPlacement) // Placement is used to identify the Serving Config name
+            .setUserEvent(userEvent) // Context about the user is required for event logging
+            // TRY TO ADD/UPDATE PARAMETERS `priceRerankLevel` OR `diversityLevel` HERE:
+            .putParams(
+                "priceRerankLevel",
+                Value.newBuilder().setStringValue("low-price-reranking").build())
+            .build();
     System.out.printf("Predict request: %n%s", predictRequest);
 
     return predictRequest;

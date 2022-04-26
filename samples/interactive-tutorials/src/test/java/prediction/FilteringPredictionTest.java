@@ -46,9 +46,10 @@ public class FilteringPredictionTest {
   public void testPredict() {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     String placementId = System.getenv("GOOGLE_CLOUD_PLACEMENT");
-    String predictPlacement = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
-        projectId, placementId);
+    String predictPlacement =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
+            projectId, placementId);
 
     predict(predictPlacement);
 

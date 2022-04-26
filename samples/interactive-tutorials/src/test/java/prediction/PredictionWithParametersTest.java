@@ -46,21 +46,24 @@ public class PredictionWithParametersTest {
   public void testPredict() {
     String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
     String placementId = System.getenv("GOOGLE_CLOUD_PLACEMENT");
-    String predictPlacement = String.format(
-        "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
-        projectId, placementId);
+    String predictPlacement =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/placements/%s",
+            projectId, placementId);
 
     predict(predictPlacement);
 
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Predict request");
-    assertThat(outputResult).contains("params {\n"
-        + "  key: \"priceRerankLevel\"\n"
-        + "  value {\n"
-        + "    string_value: \"low-price-reranking\"\n"
-        + "  }\n"
-        + "}");
+    assertThat(outputResult)
+        .contains(
+            "params {\n"
+                + "  key: \"priceRerankLevel\"\n"
+                + "  value {\n"
+                + "    string_value: \"low-price-reranking\"\n"
+                + "  }\n"
+                + "}");
     assertThat(outputResult).contains("Predict response");
   }
 
