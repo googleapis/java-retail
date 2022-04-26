@@ -115,10 +115,8 @@ public class SetInventory {
       serviceClient.setInventoryAsync(setInventoryRequest);
     }
 
-    /*
-    This is a long-running operation and its result is not immediately
-    present with get operations,thus we simulate wait with sleep method.
-    */
+    // This is a long-running operation and its result is not immediately
+    // present with get operations,thus we simulate wait with sleep method.
     System.out.println("Set inventory, wait 30 seconds.");
     TimeUnit.SECONDS.sleep(30);
   }
