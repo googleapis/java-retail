@@ -99,7 +99,24 @@
       <scope>test</scope>
     </dependency>
     <!-- Need testing utility classes for generated gRPC clients tests -->
-    https://github.com/googleapis/java-analytics-admin/pull/402/commits/22ca0e34bb5e85d53eec331b1241ffd3ee15fc63
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax</artifactId>
+      <classifier>testlib</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-grpc</artifactId>
+      <classifier>testlib</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-httpjson</artifactId>
+      <classifier>testlib</classifier>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
