@@ -66,6 +66,10 @@
       <groupId>com.google.api</groupId>
       <artifactId>gax-grpc</artifactId>
     </dependency>
+     <dependency>
+      <groupId>com.google.api</groupId>
+      <artifactId>gax-httpjson</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.threeten</groupId>
       <artifactId>threetenbp</artifactId>
@@ -95,12 +99,7 @@
       <scope>test</scope>
     </dependency>
     <!-- Need testing utility classes for generated gRPC clients tests -->
-    <dependency>
-      <groupId>com.google.api</groupId>
-      <artifactId>gax-grpc</artifactId>
-      <classifier>testlib</classifier>
-      <scope>test</scope>
-    </dependency>
+    https://github.com/googleapis/java-analytics-admin/pull/402/commits/22ca0e34bb5e85d53eec331b1241ffd3ee15fc63
   </dependencies>
 
   <profiles>
