@@ -54,8 +54,6 @@ To prepare the work environment you should perform the following steps:
 
 - If you want to **speed up the process** of setting up the working environment, run the script java-retail/samples/interactive-tutorials/samples/interactive-tutorials/src/main/java/user_environment_setup.sh and skip the next **set up the work environment step-by-step** tutorial step:
 
-1. Run the following command in Terminal:
-
     ```bash
     bash java-retail/samples/interactive-tutorials/user_environment_setup.sh
     ```
