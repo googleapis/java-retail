@@ -26,6 +26,7 @@ import static setup.SetupCleanup.getProduct;
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.AddFulfillmentPlacesRequest;
+import com.google.cloud.retail.v2.Product;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
@@ -35,23 +36,17 @@ import java.util.UUID;
 public class AddFulfillmentPlaces {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
-    String productName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0/products/%s",
-            projectId, generatedProductId);
+    Product product = createProduct(generatedProductId);
     Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
-    createProduct(generatedProductId);
+            Timestamp.newBuilder()
+                    .setSeconds(Instant.now().getEpochSecond())
+                    .setNanos(Instant.now().getNano())
+                    .build();
     System.out.printf("Add fulfilment places with current date: %s", currentDate);
-    addFulfillmentPlaces(productName, currentDate, "store2");
-    getProduct(productName);
-    deleteProduct(productName);
+    addFulfillmentPlaces(product.getName(), currentDate, "store2");
+    getProduct(product.getName());
+    deleteProduct(product.getName());
   }
 
   public static void addFulfillmentPlaces(String productName, Timestamp timestamp, String placeId)
@@ -64,8 +59,8 @@ public class AddFulfillmentPlaces {
       This is a long-running operation and its result is not immediately
       present with get operations,thus we simulate wait with sleep method.
       */
-      System.out.println("Add fulfillment places, wait 30 seconds: ");
-      Thread.sleep(30_000);
+      System.out.println("Add fulfillment places, wait 50 seconds: ");
+      Thread.sleep(50_000);
     }
   }
 
