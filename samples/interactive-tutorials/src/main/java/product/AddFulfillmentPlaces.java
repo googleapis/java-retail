@@ -59,8 +59,8 @@ public class AddFulfillmentPlaces {
       This is a long-running operation and its result is not immediately
       present with get operations,thus we simulate wait with sleep method.
       */
-      System.out.println("Add fulfillment places, wait 50 seconds: ");
-      Thread.sleep(50_000);
+      System.out.println("Add fulfillment places, wait 90 seconds: ");
+      Thread.sleep(90_000);
     }
   }
 
