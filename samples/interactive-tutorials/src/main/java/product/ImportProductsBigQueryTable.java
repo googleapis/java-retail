@@ -87,9 +87,7 @@ public class ImportProductsBigQueryTable {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
-
-      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
+      while (!operation.getDone()) {
         // Keep polling the operation periodically until the import task is done.
         TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);
