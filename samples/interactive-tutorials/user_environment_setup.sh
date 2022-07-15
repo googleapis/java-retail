@@ -20,6 +20,8 @@
   echo "Project ID: $project_id"
   gcloud config set project "$project_id"
 
+} && {
+
   timestamp=$(date +%s)
 
   service_account_id="service-acc-$timestamp"
@@ -28,11 +30,15 @@
   # create service account (your service-acc-$timestamp)
   gcloud iam service-accounts create "$service_account_id"
 
+} && {
+
   # assign necessary roles to your new service account
   for role in {retail.admin,editor,bigquery.admin}
     do
       gcloud projects add-iam-policy-binding "$project_id" --member="serviceAccount:$service_account_id@$project_id.iam.gserviceaccount.com" --role=roles/"${role}"
   done
+
+} && {
 
   echo "Wait ~60 seconds to be sure the appropriate roles have been assigned to your service account"
   sleep 60
@@ -43,6 +49,8 @@
 
   # activate the service account using the key
   gcloud auth activate-service-account --key-file ~/key.json
+
+} && {
 
   # install needed Google client libraries
   cd ~/cloudshell_open/java-retail/samples/interactive-tutorials || exit
@@ -60,7 +68,7 @@
 
   # Print error message
   echo "========================================"
-  echo "The Google Cloud setup is not completed."
+  echo "The Google Cloud setup was not completed."
   echo "Please fix the errors above!"
   echo "========================================"
 }
