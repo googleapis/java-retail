@@ -34,6 +34,7 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsBigQuery {
@@ -42,12 +43,8 @@ public class ImportUserEventsBigQuery {
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
-    // defaultCatalog = "invalid_catalog_name"
     String datasetId = "user_events";
     String tableId = "events";
-    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS:
-    // tableId = "events_some_invalid"
 
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
@@ -90,9 +87,9 @@ public class ImportUserEventsBigQuery {
         OperationsClient operationsClient = serviceClient.getOperationsClient();
         Operation operation = operationsClient.getOperation(operationName);
 
-        long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+        Instant deadline = Instant.now().plusSeconds(60);
 
-        while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
+        while (!operation.getDone() || Instant.now().isBefore(deadline)) {
           // Keep polling the operation periodically until the import task is done.
           TimeUnit.SECONDS.sleep(30);
           operation = operationsClient.getOperation(operationName);

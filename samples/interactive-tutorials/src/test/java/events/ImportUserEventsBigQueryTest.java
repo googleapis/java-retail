@@ -17,7 +17,9 @@
 package events;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,6 +79,17 @@ public class ImportUserEventsBigQueryTest {
 
     assertThat(outputResult).contains("table_id: \"events_some_invalid\"");
     assertThat(outputResult).contains("Catalog name is not found.");
+  }
+
+  @Test
+  public void testInvalidDefaultCatalogBigQuery() {
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String defaultCatalog = "invalid_catalog_name";
+    String datasetId = "user_events";
+    String tableId = "events";
+
+    assertThrows(InvalidArgumentException.class, () -> ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+            projectId, defaultCatalog, datasetId, tableId));
   }
 
   @After
