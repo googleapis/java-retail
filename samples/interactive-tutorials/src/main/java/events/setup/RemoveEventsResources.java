@@ -21,10 +21,7 @@ import static setup.SetupCleanup.deleteDataset;
 
 import com.google.api.gax.rpc.PermissionDeniedException;
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.retail.v2.DeleteProductRequest;
-import com.google.cloud.retail.v2.ListProductsRequest;
-import com.google.cloud.retail.v2.Product;
-import com.google.cloud.retail.v2.ProductServiceClient;
+import com.google.cloud.retail.v2.*;
 import com.google.cloud.retail.v2.ProductServiceClient.ListProductsPagedResponse;
 import java.io.IOException;
 
@@ -38,8 +35,18 @@ public class RemoveEventsResources {
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
 
     deleteBucket(bucketName);
-    deleteAllProducts(branchName);
+    deleteAllEvents(branchName);
     deleteDataset(projectId, "user_events");
+  }
+
+  public static void deleteAllEvents(String branchName) throws IOException {
+    System.out.println("Deleting events in process, please wait...");
+
+    try (UserEventServiceClient eventServiceClient = UserEventServiceClient.create()) {
+      PurgeUserEventsRequest purgeUserEventsRequest = PurgeUserEventsRequest.newBuilder().setParent(branchName).build();
+      eventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
+      System.out.printf("Events were deleted from %s%n", branchName);
+    }
   }
 
   public static void deleteAllProducts(String branchName) throws IOException {

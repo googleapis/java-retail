@@ -18,10 +18,7 @@ package events.setup;
 
 import static com.google.common.truth.Truth.assertThat;
 import static events.setup.EventsCreateGcsBucket.createGcsBucketAndUploadData;
-import static setup.SetupCleanup.createBqDataset;
-import static setup.SetupCleanup.createBqTable;
-import static setup.SetupCleanup.getGson;
-import static setup.SetupCleanup.uploadDataToBqTable;
+import static setup.SetupCleanup.*;
 
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
@@ -43,13 +40,13 @@ public class EventsCreateBigQueryTableTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
+  private static final String bucketName = "events_tests_bucket";
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
     String dataset = "user_events";
     String validEventsTable = "events";
     String invalidEventsTable = "events_some_invalid";
-    String bucketName = "events_tests_bucket";
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
     String validEventsSourceFile = String.format("gs://%s/user_events.json", bucketName);
     String invalidEventsSourceFile =
@@ -72,6 +69,11 @@ public class EventsCreateBigQueryTableTest {
     uploadDataToBqTable(dataset, validEventsTable, validEventsSourceFile, eventsSchema);
     createBqTable(dataset, invalidEventsTable, eventsSchema);
     uploadDataToBqTable(dataset, invalidEventsTable, invalidEventsSourceFile, eventsSchema);
+  }
+
+  @After
+  public void cleanUp() {
+    deleteBucket(bucketName);
   }
 
   @Test

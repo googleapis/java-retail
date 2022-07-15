@@ -18,6 +18,7 @@ package events.setup;
 
 import static com.google.common.truth.Truth.assertThat;
 import static events.setup.EventsCreateGcsBucket.createGcsBucketAndUploadData;
+import static setup.SetupCleanup.deleteBucket;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,11 +35,10 @@ public class EventsCreateGcsBucketTest {
 
   private ByteArrayOutputStream bout;
   private PrintStream originalPrintStream;
+  private static final String bucketName = "events_tests_bucket";
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-
-    String bucketName = "events_tests_bucket";
 
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
@@ -46,6 +46,11 @@ public class EventsCreateGcsBucketTest {
     System.setOut(out);
 
     createGcsBucketAndUploadData(bucketName);
+  }
+
+  @After
+  public void cleanUp() {
+    deleteBucket(bucketName);
   }
 
   @Test
