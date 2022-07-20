@@ -36,6 +36,7 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -97,9 +98,9 @@ public class ImportProductsGcs {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+      Instant deadline = Instant.now().plusSeconds(60);
 
-      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
+      while (!operation.getDone() || Instant.now().isBefore(deadline)) {
         System.out.println("Please wait till operation is done.");
         TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);
