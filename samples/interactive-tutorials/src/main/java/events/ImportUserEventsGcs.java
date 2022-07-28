@@ -35,18 +35,18 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsGcs {
 
   public static void main(String[] args) throws IOException, InterruptedException {
+    // TODO(developer): Replace these variables before running the sample.
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String bucketName = System.getenv("EVENTS_BUCKET_NAME");
     String gcsUserEventsObject = "user_events.json";
-    // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT:
-    // gcsEventsObject = "user_events_some_invalid.json"
 
     importUserEventsFromGcs(defaultCatalog, bucketName, gcsUserEventsObject);
   }
@@ -91,9 +91,9 @@ public class ImportUserEventsGcs {
       OperationsClient operationsClient = serviceClient.getOperationsClient();
       Operation operation = operationsClient.getOperation(operationName);
 
-      long assuredBreak = System.currentTimeMillis() + 60000; // 60 seconds delay
+      Instant deadline = Instant.now().plusSeconds(60);
 
-      while (!operation.getDone() || System.currentTimeMillis() < assuredBreak) {
+      while (!operation.getDone() || Instant.now().isBefore(deadline)) {
         System.out.println("Please wait till operation is done.");
         TimeUnit.SECONDS.sleep(30);
         operation = operationsClient.getOperation(operationName);

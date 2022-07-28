@@ -42,6 +42,10 @@ public class RemoveEventsResources {
   public static void deleteAllEvents(String branchName) throws IOException {
     System.out.println("Deleting events in process, please wait...");
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
     try (UserEventServiceClient eventServiceClient = UserEventServiceClient.create()) {
       PurgeUserEventsRequest purgeUserEventsRequest = PurgeUserEventsRequest.newBuilder().setParent(branchName).build();
       eventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
