@@ -32,51 +32,55 @@ import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class AddFulfillmentPlaces {
 
   public static void main(String[] args) throws IOException, InterruptedException {
+    String projectId = ServiceOptions.getDefaultProjectId();
     String generatedProductId = UUID.randomUUID().toString();
-    Product product = createProduct(generatedProductId);
-    Timestamp currentDate =
-            Timestamp.newBuilder()
-                    .setSeconds(Instant.now().getEpochSecond())
-                    .setNanos(Instant.now().getNano())
-                    .build();
-    System.out.printf("Add fulfilment places with current date: %s", currentDate);
-    addFulfillmentPlaces(product.getName(), currentDate, "store2");
-    getProduct(product.getName());
-    deleteProduct(product.getName());
+    String productName =
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0/products/%s",
+            projectId, generatedProductId);
+
+    createProduct(generatedProductId);
+    addFulfillmentPlaces(productName, "store2");
+    getProduct(productName);
+    deleteProduct(productName);
   }
 
-  public static void addFulfillmentPlaces(String productName, Timestamp timestamp, String placeId)
+  public static void addFulfillmentPlaces(String productName, String placeId)
       throws IOException, InterruptedException {
-    AddFulfillmentPlacesRequest addFulfillmentRequest =
-        getAddFulfillmentRequest(productName, timestamp, placeId);
-    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      serviceClient.addFulfillmentPlacesAsync(addFulfillmentRequest);
-      /*
-      This is a long-running operation and its result is not immediately
-      present with get operations,thus we simulate wait with sleep method.
-      */
-      System.out.println("Add fulfillment places, wait 90 seconds: ");
-      Thread.sleep(90_000);
-    }
-  }
+    Timestamp currentDate =
+        Timestamp.newBuilder()
+            .setSeconds(Instant.now().getEpochSecond())
+            .setNanos(Instant.now().getNano())
+            .build();
 
-  public static AddFulfillmentPlacesRequest getAddFulfillmentRequest(
-      String productName, Timestamp timestamp, String placeId) {
-    AddFulfillmentPlacesRequest addfulfillmentPlacesRequest =
+    System.out.printf("Add fulfilment places with current date: %s", currentDate);
+
+    AddFulfillmentPlacesRequest addFulfillmentPlacesRequest =
         AddFulfillmentPlacesRequest.newBuilder()
             .setProduct(productName)
             .setType("pickup-in-store")
             .addPlaceIds(placeId)
-            .setAddTime(timestamp)
+            .setAddTime(currentDate)
             .setAllowMissing(true)
             .build();
-    System.out.println("Add fulfillment request " + addfulfillmentPlacesRequest);
+    System.out.println("Add fulfillment request " + addFulfillmentPlacesRequest);
 
-    return addfulfillmentPlacesRequest;
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests. After
+    // completing all of your requests, call the "close" method on the client to
+    // safely clean up any remaining background resources.
+    try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
+      serviceClient.addFulfillmentPlacesAsync(addFulfillmentPlacesRequest);
+      // This is a long-running operation and its result is not immediately
+      // present with get operations,thus we simulate wait with sleep method.
+      System.out.println("Add fulfillment places, wait 45 seconds: ");
+      TimeUnit.SECONDS.sleep(45);
+    }
   }
 }
 
