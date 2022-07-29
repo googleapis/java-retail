@@ -32,6 +32,7 @@ import com.google.cloud.retail.v2.Product.Availability;
 import com.google.cloud.retail.v2.Product.Type;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.UpdateProductRequest;
+
 import java.io.IOException;
 import java.util.UUID;
 
@@ -79,6 +80,7 @@ public class UpdateProduct {
     UpdateProductRequest updateProductRequest =
         UpdateProductRequest.newBuilder().setProduct(productToUpdate).setAllowMissing(true).build();
     System.out.printf("Update product request: %s%n", updateProductRequest);
+    // PASTE UPDATE MASK HERE: required import com.google.protobuf.FieldMask
 
     return updateProductRequest;
   }
