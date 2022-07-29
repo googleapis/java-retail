@@ -65,7 +65,7 @@ public class ImportUserEventsGcs {
     UserEventInputConfig inputConfig =
         UserEventInputConfig.newBuilder().setGcsSource(gcsSource).build();
 
-    System.out.println("GRS source: " + gcsSource.getInputUrisList());
+    System.out.println("GCS source: " + gcsSource.getInputUrisList());
 
     ImportErrorsConfig errorsConfig =
         ImportErrorsConfig.newBuilder().setGcsPrefix(gcsErrorsBucket).build();
