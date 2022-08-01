@@ -26,14 +26,8 @@ import java.time.Instant;
 
 public class EventsCreateGcsBucket {
   public static void main(String[] args) throws IOException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
-    String eventsBucketName = String.format("%s_events_%s", projectId, currentDate.getSeconds());
-
+    // TODO(developer): Replace these variables before running the sample.
+    String eventsBucketName = String.format("your-bucket-prefix_%s", Instant.now().getEpochSecond());
     createGcsBucketAndUploadData(eventsBucketName);
   }
 

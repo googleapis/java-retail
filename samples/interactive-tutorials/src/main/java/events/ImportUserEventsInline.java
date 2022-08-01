@@ -45,7 +45,8 @@ public class ImportUserEventsInline {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    String projectId = ServiceOptions.getDefaultProjectId();
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
 
