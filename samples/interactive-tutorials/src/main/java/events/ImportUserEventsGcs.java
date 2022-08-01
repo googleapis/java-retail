@@ -45,8 +45,12 @@ public class ImportUserEventsGcs {
     String projectId = "your-project-id";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
+    // defaultCatalog = "invalid_catalog_name";
     String bucketName = System.getenv("EVENTS_BUCKET_NAME");
     String gcsUserEventsObject = "user_events.json";
+    // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID USER EVENT:
+    // gcsUserEventsObject = "user_events_some_invalid.json";
 
     importUserEventsFromGcs(defaultCatalog, bucketName, gcsUserEventsObject);
   }

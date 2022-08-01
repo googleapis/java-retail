@@ -48,7 +48,7 @@ public class ImportProductsGcs {
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
     String gscProductsObject = "products.json";
     // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
-    // GCS_PRODUCTS_OBJECT = "products_some_invalid.json"
+    // gscProductsObject = "products_some_invalid.json";
 
     ImportProductsRequest importGcsRequest =
         getImportProductsGcsRequest(gscProductsObject, gcsBucket, gcsErrorBucket, branchName);

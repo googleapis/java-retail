@@ -44,8 +44,12 @@ public class ImportUserEventsBigQuery {
     String projectId = "your-project-id";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE:
+    // defaultCatalog = "invalid_catalog_name";
     String datasetId = "user_events";
     String tableId = "events";
+    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS:
+    // tableId = "events_some_invalid";
 
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
