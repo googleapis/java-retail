@@ -25,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
+
+import com.google.cloud.Timestamp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +53,12 @@ public class ImportProductsGcsTest {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String bucketName = "products_tests_bucket";
+    String bucketName = String.format("%s_products_tests_bucket_%s", projectId, Timestamp.now());
     String gcsBucket = String.format("gs://%s", bucketName);
     String gscProductsObject = "products.json";
 
     createGcsBucketAndUploadData(bucketName);
+
     importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
 
     String outputResult = bout.toString();
@@ -71,7 +74,7 @@ public class ImportProductsGcsTest {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String bucketName = "products_tests_bucket";
+    String bucketName = String.format("%s_products_tests_invalid_bucket_%s", projectId, Timestamp.now());
     String gcsBucket = String.format("gs://%s", bucketName);
     String gscProductsObject = "products_some_invalid.json";
 
