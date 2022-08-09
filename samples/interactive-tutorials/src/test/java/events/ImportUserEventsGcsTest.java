@@ -62,24 +62,6 @@ public class ImportUserEventsGcsTest {
     assertThat(outputResult).contains("Number of failures during the importing: 0");
   }
 
-  @Test
-  public void testInvalidImportUserEventsGcs() throws IOException, InterruptedException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String bucketName = "invalid_events_tests_bucket";
-    String gcsEventsObject = "user_events_some_invalid.json";
-
-    createGcsBucketAndUploadData(bucketName);
-    importUserEventsFromGcs(defaultCatalog, bucketName, gcsEventsObject);
-
-    String outputResult = bout.toString();
-
-    assertThat(outputResult).contains("Import user events from google cloud source request");
-    assertThat(outputResult).contains("Number of successfully imported events:");
-    assertThat(outputResult).contains("Number of failures during the importing:");
-  }
-
   @After
   public void tearDown() {
     System.out.flush();
