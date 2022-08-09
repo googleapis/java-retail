@@ -65,26 +65,6 @@ public class ImportProductsGcsTest {
     assertThat(outputResult).contains("Number of failures during the importing: 0");
   }
 
-  @Test
-  public void testInvalidImportProductsGcs() throws IOException, InterruptedException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String branchName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String bucketName = "products_tests_invalid_bucket";
-    String gcsBucket = String.format("gs://%s", bucketName);
-    String gscProductsObject = "products_some_invalid.json";
-
-    createGcsBucketAndUploadData(bucketName);
-    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
-
-    String outputResult = bout.toString();
-
-    assertThat(outputResult).contains("Import products from google cloud source request");
-    assertThat(outputResult).contains("Number of successfully imported products:");
-    assertThat(outputResult).contains("Number of failures during the importing:");
-  }
-
   @After
   public void tearDown() {
     System.out.flush();
