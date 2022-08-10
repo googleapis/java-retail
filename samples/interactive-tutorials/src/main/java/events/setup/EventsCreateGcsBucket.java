@@ -19,15 +19,14 @@ package events.setup;
 import static setup.SetupCleanup.createBucket;
 import static setup.SetupCleanup.uploadObject;
 
-import com.google.cloud.ServiceOptions;
-import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 
 public class EventsCreateGcsBucket {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String eventsBucketName = String.format("your-bucket-prefix_%s", Instant.now().getEpochSecond());
+    String eventsBucketName =
+        String.format("your-bucket-prefix_%s", Instant.now().getEpochSecond());
     createGcsBucketAndUploadData(eventsBucketName);
   }
 

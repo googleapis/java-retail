@@ -88,8 +88,11 @@ public class ImportUserEventsBigQueryTest {
     String datasetId = "user_events";
     String tableId = "events";
 
-    assertThrows(InvalidArgumentException.class, () -> ImportUserEventsBigQuery.importUserEventsFromBigQuery(
-            projectId, defaultCatalog, datasetId, tableId));
+    assertThrows(
+        InvalidArgumentException.class,
+        () ->
+            ImportUserEventsBigQuery.importUserEventsFromBigQuery(
+                projectId, defaultCatalog, datasetId, tableId));
   }
 
   @After

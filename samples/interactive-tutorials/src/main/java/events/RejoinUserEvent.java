@@ -26,7 +26,6 @@ import static setup.SetupCleanup.purgeUserEvent;
 import static setup.SetupCleanup.writeUserEvent;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.RejoinUserEventsMetadata;
 import com.google.cloud.retail.v2.RejoinUserEventsRequest;
 import com.google.cloud.retail.v2.RejoinUserEventsRequest.UserEventRejoinScope;

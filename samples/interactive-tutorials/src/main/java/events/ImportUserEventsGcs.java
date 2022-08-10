@@ -24,7 +24,6 @@ package events;
 
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.PermissionDeniedException;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.GcsSource;
 import com.google.cloud.retail.v2.ImportErrorsConfig;
 import com.google.cloud.retail.v2.ImportMetadata;

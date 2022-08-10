@@ -47,7 +47,8 @@ public class RemoveEventsResources {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (UserEventServiceClient eventServiceClient = UserEventServiceClient.create()) {
-      PurgeUserEventsRequest purgeUserEventsRequest = PurgeUserEventsRequest.newBuilder().setParent(branchName).build();
+      PurgeUserEventsRequest purgeUserEventsRequest =
+          PurgeUserEventsRequest.newBuilder().setParent(branchName).build();
       eventServiceClient.purgeUserEventsAsync(purgeUserEventsRequest);
       System.out.printf("Events were deleted from %s%n", branchName);
     }

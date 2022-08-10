@@ -23,7 +23,6 @@
 package events;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;

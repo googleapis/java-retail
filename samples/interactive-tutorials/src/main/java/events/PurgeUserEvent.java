@@ -25,7 +25,6 @@ package events;
 import static setup.SetupCleanup.writeUserEvent;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.PurgeMetadata;
 import com.google.cloud.retail.v2.PurgeUserEventsRequest;
 import com.google.cloud.retail.v2.PurgeUserEventsResponse;

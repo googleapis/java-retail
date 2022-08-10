@@ -23,7 +23,6 @@
 package events;
 
 import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.ImportMetadata;
 import com.google.cloud.retail.v2.ImportUserEventsRequest;
