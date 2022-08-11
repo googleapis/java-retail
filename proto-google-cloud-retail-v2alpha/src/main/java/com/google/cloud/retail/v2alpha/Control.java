@@ -393,7 +393,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
    *
    * <pre>
    * Immutable. Fully qualified name
-   * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+   * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
    * </pre>
    *
    * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -417,7 +417,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
    *
    * <pre>
    * Immutable. Fully qualified name
-   * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+   * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
    * </pre>
    *
    * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -1819,7 +1819,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      *
      * <pre>
      * Immutable. Fully qualified name
-     * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+     * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
      * </pre>
      *
      * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -1842,7 +1842,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      *
      * <pre>
      * Immutable. Fully qualified name
-     * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+     * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
      * </pre>
      *
      * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -1865,7 +1865,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      *
      * <pre>
      * Immutable. Fully qualified name
-     * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+     * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
      * </pre>
      *
      * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -1887,7 +1887,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      *
      * <pre>
      * Immutable. Fully qualified name
-     * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+     * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
      * </pre>
      *
      * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -1905,7 +1905,7 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      *
      * <pre>
      * Immutable. Fully qualified name
-     * projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;
+     * `projects/&#42;&#47;locations/global/catalogs/&#42;&#47;controls/&#42;`
      * </pre>
      *
      * <code>string name = 1 [(.google.api.field_behavior) = IMMUTABLE];</code>
@@ -2496,8 +2496,8 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      * repeated .google.cloud.retail.v2alpha.SolutionType solution_types = 6 [(.google.api.field_behavior) = REQUIRED, (.google.api.field_behavior) = IMMUTABLE];
      * </code>
      *
-     * @param index The index of the value to return.
-     * @return The enum numeric value on the wire of solutionTypes at the given index.
+     * @param index The index to set the value at.
+     * @param value The enum numeric value on the wire for solutionTypes to set.
      * @return This builder for chaining.
      */
     public Builder setSolutionTypesValue(int index, int value) {
@@ -2797,8 +2797,8 @@ public final class Control extends com.google.protobuf.GeneratedMessageV3
      * repeated .google.cloud.retail.v2alpha.SearchSolutionUseCase search_solution_use_case = 7 [(.google.api.field_behavior) = REQUIRED];
      * </code>
      *
-     * @param index The index of the value to return.
-     * @return The enum numeric value on the wire of searchSolutionUseCase at the given index.
+     * @param index The index to set the value at.
+     * @param value The enum numeric value on the wire for searchSolutionUseCase to set.
      * @return This builder for chaining.
      */
     public Builder setSearchSolutionUseCaseValue(int index, int value) {
