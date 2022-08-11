@@ -49,22 +49,22 @@ public class ImportProductsGcs {
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = System.getenv("BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", bucketName);
-    String gscProductsObject = "products.json";
-    // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
-    // gscProductsObject = "products_some_invalid.json"
+    String gcsProductsObject = "products.json";
+    // To check error handling, use an invalid product JSON.
+    // gcsProductsObject = "products_some_invalid.json"
 
-    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
+    importProductsFromGcs(branchName, bucketName, gcsBucket, gcsProductsObject);
   }
 
   public static void importProductsFromGcs(
-      String branchName, String bucketName, String gcsBucket, String gscProductsObject)
+      String branchName, String bucketName, String gcsBucket, String gcsProductsObject)
       throws IOException, InterruptedException {
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
 
     GcsSource gcsSource =
         GcsSource.newBuilder()
             .addAllInputUris(
-                Collections.singleton(String.format("%s/%s", gcsBucket, gscProductsObject)))
+                Collections.singleton(String.format("%s/%s", gcsBucket, gcsProductsObject)))
             .build();
 
     ProductInputConfig inputConfig =
@@ -127,7 +127,7 @@ public class ImportProductsGcs {
       System.out.printf(
           "%s%n'%s' file does not exist in the bucket. Please "
               + "make sure you have followed the setting up instructions.",
-          e.getMessage(), gscProductsObject);
+          e.getMessage(), gcsProductsObject);
     } catch (PermissionDeniedException e) {
       System.out.println(e.getMessage());
     }
