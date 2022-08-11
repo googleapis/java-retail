@@ -44,7 +44,7 @@ public class ImportProductsGcs {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    // TO CHECK ERROR HANDLING USE INVALID CATALOG IN REQUEST
+    // To check error handling, use an invalid catalog in request
     // branchName =
     // String.format("projects/%s/locations/global/catalogs/invalid_catalog/branches/default_branch", projectId);
 
