@@ -47,8 +47,15 @@ public class ImportProductsGcs {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+
     String bucketName = System.getenv("BUCKET_NAME");
     String gcsBucket = String.format("gs://%s", bucketName);
+    String gcsErrorBucket = String.format("%s/errors", gcsBucket);
+    
+    // To check error handling, use an invalid catalog in request
+    // branchName =
+    // String.format("projects/%s/locations/global/catalogs/invalid_catalog/branches/default_branch", projectId);
+
     String gcsProductsObject = "products.json";
     // To check error handling, use an invalid product JSON.
     // gcsProductsObject = "products_some_invalid.json"
