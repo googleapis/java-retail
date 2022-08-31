@@ -18,18 +18,19 @@ package product;
 
 import static com.google.common.truth.Truth.assertThat;
 import static product.ImportProductsGcs.importProductsFromGcs;
-import static product.setup.ProductsCreateGcsBucket.createGcsBucketAndUploadData;
 
 import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import product.setup.ProductsCreateGcsBucket;
 
 @RunWith(JUnit4.class)
 public class ImportProductsGcsTest {
@@ -47,15 +48,15 @@ public class ImportProductsGcsTest {
 
   @Test
   public void testValidImportProductsGcs() throws IOException, InterruptedException {
+    ProductsCreateGcsBucket.main();
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
-        String.format(
-            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    String bucketName = "products_tests_bucket";
+            String.format(
+                    "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    String bucketName = ProductsCreateGcsBucket.getBucketName();
     String gcsBucket = String.format("gs://%s", bucketName);
     String gscProductsObject = "products.json";
 
-    createGcsBucketAndUploadData(bucketName);
     importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
 
     String outputResult = bout.toString();
