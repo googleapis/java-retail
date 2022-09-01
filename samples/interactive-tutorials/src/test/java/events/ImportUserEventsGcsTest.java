@@ -18,12 +18,13 @@ package events;
 
 import static com.google.common.truth.Truth.assertThat;
 import static events.ImportUserEventsGcs.importUserEventsFromGcs;
-import static events.setup.EventsCreateGcsBucket.createGcsBucketAndUploadData;
 
 import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
+import events.setup.EventsCreateGcsBucket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,23 +39,23 @@ public class ImportUserEventsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException {
+    EventsCreateGcsBucket.main();
+
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String defaultCatalog =
+            String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+    String bucketName = EventsCreateGcsBucket.getBucketName();
+    String gcsEventsObject = "user_events.json";
     bout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
+
+    importUserEventsFromGcs(defaultCatalog, bucketName, gcsEventsObject);
   }
 
   @Test
-  public void testValidImportUserEventsGcs() throws IOException, InterruptedException {
-    String projectId = ServiceOptions.getDefaultProjectId();
-    String defaultCatalog =
-        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    String bucketName = "events_tests_bucket";
-    String gcsEventsObject = "user_events.json";
-
-    createGcsBucketAndUploadData(bucketName);
-    importUserEventsFromGcs(defaultCatalog, bucketName, gcsEventsObject);
-
+  public void testValidImportUserEventsGcs() {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Import user events from google cloud source request");
