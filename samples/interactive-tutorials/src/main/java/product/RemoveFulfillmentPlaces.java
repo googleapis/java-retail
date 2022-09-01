@@ -24,9 +24,12 @@ import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ProductServiceClient;
+import com.google.cloud.retail.v2.RemoveFulfillmentPlacesMetadata;
 import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
+import com.google.cloud.retail.v2.RemoveFulfillmentPlacesResponse;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
@@ -74,11 +77,12 @@ public class RemoveFulfillmentPlaces {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest);
+      OperationFuture<RemoveFulfillmentPlacesResponse, RemoveFulfillmentPlacesMetadata> response =
+              serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest);
       // This is a long-running operation and its result is not immediately
       // present with get operations,thus we simulate wait with sleep method.
-      System.out.println("Remove fulfillment places, wait 30 seconds.");
-      TimeUnit.SECONDS.sleep(30);
+      System.out.println("Waiting for operation to finish...");
+      while (!response.isDone()) {}
     }
   }
 }
