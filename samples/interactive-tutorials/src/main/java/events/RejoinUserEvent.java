@@ -17,7 +17,7 @@
 // [START retail_rejoin_user_event]
 
 /*
- * Rejoin user events into a catalog from inline source using Retail API
+ * Starts a user event rejoin operation using Retail API.
  */
 
 package events;
@@ -40,11 +40,11 @@ public class RejoinUserEvent {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = ServiceOptions.getDefaultProjectId();
+    // TODO: Set projectId to your Google Cloud Platform project ID.
+    String projectId = "my-project";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // visitorId generated randomly.
+
     String visitorId = UUID.randomUUID().toString();
 
     callRejoinUserEvents(defaultCatalog, visitorId);

@@ -22,7 +22,6 @@
 
 package events;
 
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -37,15 +36,19 @@ import java.io.IOException;
 public class ImportUserEventsBigQuery {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO(developer): Replace these variables before running the sample.
-    String projectId = ServiceOptions.getDefaultProjectId();
+    // TODO: Set projectId to your Google Cloud Platform project ID.
+    String projectId = "my-project";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE: defaultCatalog =
-    // "invalid_catalog_name"
+    // To check error handling use invalid catalog name here:
+    // defaultCatalog = "invalid_catalog_name";
+
+    // TODO: Set datasetId to your datasetId
     String datasetId = "user_events";
+    // TODO: Set tableId to your tableId
     String tableId = "events";
-    // TO CHECK ERROR HANDLING USE THE TABLE OF INVALID USER EVENTS: tableId = "events_some_invalid"
+    // To check error handling use table of invalid user events here:
+    // tableId = "events_some_invalid"
 
     importUserEventsFromBigQuery(projectId, defaultCatalog, datasetId, tableId);
   }
