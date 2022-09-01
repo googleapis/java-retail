@@ -60,11 +60,11 @@ public class ImportProductsGcs {
     // To check error handling, use an invalid product JSON.
     // gcsProductsObject = "products_some_invalid.json"
 
-    importProductsFromGcs(branchName, bucketName, gcsBucket, gcsProductsObject);
+    importProductsFromGcs(branchName, gcsBucket, gcsProductsObject);
   }
 
   public static void importProductsFromGcs(
-      String branchName, String bucketName, String gcsBucket, String gcsProductsObject)
+      String branchName, String gcsBucket, String gcsProductsObject)
       throws IOException, InterruptedException {
     String gcsErrorBucket = String.format("%s/errors", gcsBucket);
 

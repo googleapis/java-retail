@@ -40,14 +40,6 @@ public class ImportProductsGcsTest {
 
   @Before
   public void setUp() throws IOException, InterruptedException, ExecutionException {
-    bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
-    originalPrintStream = System.out;
-    System.setOut(out);
-  }
-
-  @Test
-  public void testValidImportProductsGcs() throws IOException, InterruptedException {
     ProductsCreateGcsBucket.main();
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
@@ -56,9 +48,16 @@ public class ImportProductsGcsTest {
     String bucketName = ProductsCreateGcsBucket.getBucketName();
     String gcsBucket = String.format("gs://%s", bucketName);
     String gscProductsObject = "products.json";
+    bout = new ByteArrayOutputStream();
+    PrintStream out = new PrintStream(bout);
+    originalPrintStream = System.out;
+    System.setOut(out);
 
-    importProductsFromGcs(branchName, bucketName, gcsBucket, gscProductsObject);
+    importProductsFromGcs(branchName, gcsBucket, gscProductsObject);
+  }
 
+  @Test
+  public void testValidImportProductsGcs() {
     String outputResult = bout.toString();
 
     assertThat(outputResult).contains("Import products from google cloud source request");
