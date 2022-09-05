@@ -24,18 +24,14 @@ import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
-import com.google.cloud.retail.v2.AddFulfillmentPlacesMetadata;
 import com.google.cloud.retail.v2.AddFulfillmentPlacesRequest;
-import com.google.cloud.retail.v2.AddFulfillmentPlacesResponse;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.longrunning.Operation;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
 public class AddFulfillmentPlaces {
 
@@ -78,12 +74,12 @@ public class AddFulfillmentPlaces {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      OperationFuture<AddFulfillmentPlacesResponse, AddFulfillmentPlacesMetadata> response =
-              serviceClient.addFulfillmentPlacesAsync(addFulfillmentPlacesRequest);
       // This is a long-running operation and its result is not immediately
       // present with get operations,thus we simulate wait with sleep method.
       System.out.println("Waiting for operation to finish...");
-      while (!response.isDone()) {}
+      serviceClient.addFulfillmentPlacesAsync(addFulfillmentPlacesRequest).getPollingFuture().get();
+    } catch (ExecutionException e) {
+      System.out.printf("Exception occurred during longrunning operation: %s%n", e.getMessage());
     }
   }
 }

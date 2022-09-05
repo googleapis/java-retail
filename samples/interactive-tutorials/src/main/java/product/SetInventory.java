@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class SetInventory {
@@ -109,12 +110,12 @@ public class SetInventory {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      OperationFuture<SetInventoryResponse, SetInventoryMetadata> response =
-              serviceClient.setInventoryAsync(setInventoryRequest);
       // This is a long-running operation and its result is not immediately
       // present with get operations,thus we simulate wait with sleep method.
       System.out.println("Waiting for operation to finish...");
-      while (!response.isDone()) {}
+      serviceClient.setInventoryAsync(setInventoryRequest).getPollingFuture().get();
+    } catch (ExecutionException e) {
+      System.out.printf("Exception occurred during longrunning operation: %s%n", e.getMessage());
     }
   }
 }

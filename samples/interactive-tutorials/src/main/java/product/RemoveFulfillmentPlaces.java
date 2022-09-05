@@ -34,6 +34,7 @@ import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class RemoveFulfillmentPlaces {
@@ -77,12 +78,12 @@ public class RemoveFulfillmentPlaces {
     // completing all of your requests, call the "close" method on the client to
     // safely clean up any remaining background resources.
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      OperationFuture<RemoveFulfillmentPlacesResponse, RemoveFulfillmentPlacesMetadata> response =
-              serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest);
       // This is a long-running operation and its result is not immediately
       // present with get operations,thus we simulate wait with sleep method.
       System.out.println("Waiting for operation to finish...");
-      while (!response.isDone()) {}
+      serviceClient.removeFulfillmentPlacesAsync(removeFulfillmentRequest).getPollingFuture().get();
+    } catch (ExecutionException e) {
+      System.out.printf("Exception occurred during longrunning operation: %s%n", e.getMessage());
     }
   }
 }
