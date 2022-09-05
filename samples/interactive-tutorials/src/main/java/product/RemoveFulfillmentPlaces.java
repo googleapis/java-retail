@@ -52,21 +52,17 @@ public class RemoveFulfillmentPlaces {
   // remove fulfillment places to product
   public static void removeFulfillmentPlaces(String productName, String storeId)
       throws IOException, InterruptedException {
-    Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
 
-    System.out.printf("Remove fulfilment places with current date: %s", currentDate);
+    System.out.println("Remove fulfilment places with current date");
+
     RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
         RemoveFulfillmentPlacesRequest.newBuilder()
             .setProduct(productName)
             .setType("pickup-in-store")
             .addPlaceIds(storeId)
-            .setRemoveTime(currentDate)
             .setAllowMissing(true)
             .build();
+
     System.out.println("Remove fulfillment request " + removeFulfillmentRequest);
 
     // Initialize client that will be used to send requests. This client only

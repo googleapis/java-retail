@@ -61,13 +61,6 @@ public class SetInventory {
     float originalPrice = 20.0f;
     float cost = 8.0f;
 
-    // The request timestamp
-    Timestamp requestTime =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
-
     FieldMask setMask =
         FieldMask.newBuilder()
             .addAllPaths(
@@ -101,7 +94,6 @@ public class SetInventory {
     SetInventoryRequest setInventoryRequest =
         SetInventoryRequest.newBuilder()
             .setInventory(product)
-            .setSetTime(requestTime)
             .setAllowMissing(true)
             .setSetMask(setMask)
             .build();
