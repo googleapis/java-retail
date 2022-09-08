@@ -29,13 +29,13 @@ public class ProductsCreateGcsBucket {
   private static final String PROJECT_ID = ServiceOptions.getDefaultProjectId();
 
   private static final Timestamp CURRENT_DATE =
-          Timestamp.newBuilder()
-                  .setSeconds(Instant.now().getEpochSecond())
-                  .setNanos(Instant.now().getNano())
-                  .build();
+      Timestamp.newBuilder()
+          .setSeconds(Instant.now().getEpochSecond())
+          .setNanos(Instant.now().getNano())
+          .build();
 
   private static final String BUCKET_NAME =
-          String.format("%s_products_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
+      String.format("%s_products_%s", PROJECT_ID, CURRENT_DATE.getSeconds());
 
   public static void main(String... args) throws IOException {
     createGcsBucketAndUploadData(BUCKET_NAME);

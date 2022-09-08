@@ -24,7 +24,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +42,8 @@ public class ImportProductsGcsTest {
     ProductsCreateGcsBucket.main();
     String projectId = ServiceOptions.getDefaultProjectId();
     String branchName =
-            String.format(
-                    "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+        String.format(
+            "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String bucketName = ProductsCreateGcsBucket.getBucketName();
     String gcsBucket = String.format("gs://%s", bucketName);
     String gscProductsObject = "products.json";
