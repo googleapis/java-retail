@@ -23,12 +23,11 @@ import static setup.SetupCleanup.uploadDataToBqTable;
 
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
-import product.setup.ProductsCreateBigqueryTable;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
+import product.setup.ProductsCreateBigqueryTable;
 
 public class EventsCreateBigQueryTable {
 
@@ -37,9 +36,10 @@ public class EventsCreateBigQueryTable {
     String validEventsTable = "events";
     String invalidEventsTable = "events_some_invalid";
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
-    String validEventsSourceFile = ProductsCreateBigqueryTable.class.getResource("/user_events.json").getPath();
+    String validEventsSourceFile =
+        ProductsCreateBigqueryTable.class.getResource("/user_events.json").getPath();
     String invalidEventsSourceFile =
-            ProductsCreateBigqueryTable.class.getResource("/user_events_some_invalid.json").getPath();
+        ProductsCreateBigqueryTable.class.getResource("/user_events_some_invalid.json").getPath();
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(eventsSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());

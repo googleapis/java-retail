@@ -35,9 +35,10 @@ public class ProductsCreateBigqueryTable {
     String validProductsTable = "products";
     String invalidProductsTable = "products_some_invalid";
     String productSchemaFilePath = "src/main/resources/product_schema.json";
-    String validProductsSourceFile = ProductsCreateBigqueryTable.class.getResource("/products.json").getPath();
+    String validProductsSourceFile =
+        ProductsCreateBigqueryTable.class.getResource("/products.json").getPath();
     String invalidProductsSourceFile =
-            ProductsCreateBigqueryTable.class.getResource("products_some_invalid.json").getPath();
+        ProductsCreateBigqueryTable.class.getResource("products_some_invalid.json").getPath();
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(productSchemaFilePath));
     String jsonToString = bufferedReader.lines().collect(Collectors.joining());

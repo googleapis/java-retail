@@ -23,25 +23,25 @@ import com.google.api.gax.paging.Page;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.DatasetInfo;
+import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
-import com.google.cloud.bigquery.BigQueryException;
-import com.google.cloud.bigquery.TableId;
-import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.DatasetId;
-import com.google.cloud.bigquery.TableDefinition;
-import com.google.cloud.bigquery.StandardTableDefinition;
-import com.google.cloud.bigquery.TableInfo;
-import com.google.cloud.bigquery.WriteChannelConfiguration;
-import com.google.cloud.bigquery.Job;
-import com.google.cloud.bigquery.JobId;
-import com.google.cloud.bigquery.FormatOptions;
-import com.google.cloud.bigquery.TableDataWriteChannel;
-import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldList;
-import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
+import com.google.cloud.bigquery.FormatOptions;
+import com.google.cloud.bigquery.Job;
+import com.google.cloud.bigquery.JobId;
+import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardTableDefinition;
+import com.google.cloud.bigquery.TableDataWriteChannel;
+import com.google.cloud.bigquery.TableDefinition;
+import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.TableInfo;
+import com.google.cloud.bigquery.WriteChannelConfiguration;
 import com.google.cloud.retail.v2.CreateProductRequest;
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.FulfillmentInfo;
@@ -75,7 +75,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
@@ -353,20 +352,21 @@ public class SetupCleanup {
     }
   }
 
-  public static void uploadDataToBqTable(
-      String datasetName, String tableName, String sourceUri) {
+  public static void uploadDataToBqTable(String datasetName, String tableName, String sourceUri) {
     try {
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
       TableId tableId = TableId.of(datasetName, tableName);
 
       WriteChannelConfiguration writeChannelConfiguration =
-              WriteChannelConfiguration.newBuilder(tableId).setFormatOptions(FormatOptions.json()).build();
+          WriteChannelConfiguration.newBuilder(tableId)
+              .setFormatOptions(FormatOptions.json())
+              .build();
 
       String jobName = "jobId_" + UUID.randomUUID();
       JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
       try (TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
-           OutputStream stream = Channels.newOutputStream(writer)) {
+          OutputStream stream = Channels.newOutputStream(writer)) {
         Files.copy(Paths.get(sourceUri), stream);
       }
 
@@ -376,8 +376,8 @@ public class SetupCleanup {
         System.out.printf("Json successfully loaded in a table '%s'.%n", tableName);
       } else {
         System.out.println(
-                "BigQuery was unable to load into the table due to an error:"
-                        + job.getStatus().getError());
+            "BigQuery was unable to load into the table due to an error:"
+                + job.getStatus().getError());
       }
     } catch (BigQueryException | InterruptedException e) {
       System.out.printf("Column not added during load append: %s%n", e.getMessage());
