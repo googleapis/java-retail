@@ -20,11 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static events.ImportUserEventsGcs.importUserEventsFromGcs;
 
 import com.google.cloud.ServiceOptions;
+import events.setup.EventsCreateGcsBucket;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import events.setup.EventsCreateGcsBucket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +42,7 @@ public class ImportUserEventsGcsTest {
 
     String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
-            String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
+        String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     String bucketName = EventsCreateGcsBucket.getBucketName();
     String gcsEventsObject = "user_events.json";
     bout = new ByteArrayOutputStream();
