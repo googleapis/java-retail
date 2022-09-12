@@ -24,7 +24,6 @@ import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.*;
 import com.google.cloud.retail.v2.Product.Availability;
@@ -36,7 +35,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class SetInventory {
 
