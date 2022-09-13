@@ -24,18 +24,14 @@ import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ProductServiceClient;
-import com.google.cloud.retail.v2.RemoveFulfillmentPlacesMetadata;
 import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
-import com.google.cloud.retail.v2.RemoveFulfillmentPlacesResponse;
 import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class RemoveFulfillmentPlaces {
 
