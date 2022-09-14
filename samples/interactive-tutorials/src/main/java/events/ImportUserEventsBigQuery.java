@@ -36,16 +36,16 @@ import java.io.IOException;
 public class ImportUserEventsBigQuery {
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    // TODO: Set projectId to your Google Cloud Platform project ID.
+    // TODO(developer): Set projectId to your Google Cloud Platform project ID.
     String projectId = "my-project";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     // To check error handling use invalid catalog name here:
     // defaultCatalog = "invalid_catalog_name";
 
-    // TODO: Set datasetId to your datasetId
+    // TODO(developer): Set datasetId to your datasetId
     String datasetId = "user_events";
-    // TODO: Set tableId to your tableId
+    // TODO(developer): Set tableId to your tableId
     String tableId = "events";
     // To check error handling use table of invalid user events here:
     // tableId = "events_some_invalid"

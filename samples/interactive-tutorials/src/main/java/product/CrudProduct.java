@@ -39,7 +39,7 @@ import java.util.UUID;
 public class CrudProduct {
 
   public static void main(String[] args) throws IOException {
-    // TODO: Set projectId to your Google Cloud Platform project ID.
+    // TODO(developer): Set projectId to your Google Cloud Platform project ID.
     String projectId = "my-project";
     String generatedProductId = UUID.randomUUID().toString();
     String branchName =

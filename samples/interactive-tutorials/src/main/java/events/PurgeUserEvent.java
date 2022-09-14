@@ -38,11 +38,11 @@ public class PurgeUserEvent {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    // TODO: Set projectId to your Google Cloud Platform project ID.
+    // TODO(developer): Set projectId to your Google Cloud Platform project ID.
     String projectId = "my-project";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-
+    // visitorId is generated randomly
     String visitorId = UUID.randomUUID().toString();
 
     callPurgeUserEvents(defaultCatalog, visitorId);
@@ -61,6 +61,8 @@ public class PurgeUserEvent {
               // To check error handling set invalid filter here:
               .setFilter(String.format("visitorId=\"%s\"", visitorId))
               .setParent(defaultCatalog)
+              // Setting the force field to true deletes user events. If set to false will return
+              // number of events to be deleted without actually deleting them
               .setForce(true)
               .build();
       System.out.printf("Purge user events request: %s%n", purgeUserEventsRequest);

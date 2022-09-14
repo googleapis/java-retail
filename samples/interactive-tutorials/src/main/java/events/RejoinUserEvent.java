@@ -40,11 +40,11 @@ public class RejoinUserEvent {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException {
-    // TODO: Set projectId to your Google Cloud Platform project ID.
+    // TODO(developer): Set projectId to your Google Cloud Platform project ID.
     String projectId = "my-project";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
-
+    // visitorId is generated randomly
     String visitorId = UUID.randomUUID().toString();
 
     callRejoinUserEvents(defaultCatalog, visitorId);
