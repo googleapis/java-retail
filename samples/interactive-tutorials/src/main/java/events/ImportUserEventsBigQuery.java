@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-// [START retail_import_user_events_from_big_query]
-
 /*
  * Import user events into a catalog from GCS using Retail API
  */
 
 package events;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -32,12 +31,14 @@ import com.google.cloud.retail.v2.UserEventServiceClient;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class ImportUserEventsBigQuery {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Set projectId to your Google Cloud Platform project ID.
-    String projectId = "my-project";
+    String projectId = "your-project-id";
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     // To check error handling use invalid catalog name here:
@@ -56,6 +57,7 @@ public class ImportUserEventsBigQuery {
   public static void importUserEventsFromBigQuery(
       String projectId, String defaultCatalog, String datasetId, String tableId)
       throws IOException, InterruptedException {
+
     try {
       String dataSchema = "user_event";
 
@@ -78,30 +80,32 @@ public class ImportUserEventsBigQuery {
 
       System.out.printf("Import user events from BigQuery source request: %s%n", importRequest);
 
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests. After completing all of your requests, call
-      // the "close" method on the client to safely clean up any remaining background resources.
+      // Initialize client that will be used to send requests. This client only
+      // needs to be created once, and can be reused for multiple requests. After
+      // completing all of your requests, call the "close" method on the client to
+      // safely clean up any remaining background resources.
       try (UserEventServiceClient serviceClient = UserEventServiceClient.create()) {
         String operationName =
             serviceClient.importUserEventsCallable().call(importRequest).getName();
 
-        System.out.printf("OperationName = %s\n", operationName);
+        System.out.printf("OperationName = %s%n", operationName);
         OperationsClient operationsClient = serviceClient.getOperationsClient();
         Operation operation = operationsClient.getOperation(operationName);
 
-        while (!operation.getDone()) {
+        Instant deadline = Instant.now().plusSeconds(60);
+
+        while (!operation.getDone() || Instant.now().isBefore(deadline)) {
           // Keep polling the operation periodically until the import task is done.
-          int awaitDuration = 30000;
-          Thread.sleep(awaitDuration);
+          TimeUnit.SECONDS.sleep(30);
           operation = operationsClient.getOperation(operationName);
         }
 
         if (operation.hasMetadata()) {
           ImportMetadata metadata = operation.getMetadata().unpack(ImportMetadata.class);
           System.out.printf(
-              "Number of successfully imported events: %s\n", metadata.getSuccessCount());
+              "Number of successfully imported events: %s%n", metadata.getSuccessCount());
           System.out.printf(
-              "Number of failures during the importing: %s\n", metadata.getFailureCount());
+              "Number of failures during the importing: %s%n", metadata.getFailureCount());
         }
 
         if (operation.hasResponse()) {
@@ -112,8 +116,8 @@ public class ImportUserEventsBigQuery {
       }
     } catch (BigQueryException e) {
       System.out.printf("Exception message: %s", e.getMessage());
+    } catch (NotFoundException e) {
+      System.out.printf("Catalog name is not found.%n%s%n", e.getMessage());
     }
   }
 }
-
-// [END retail_import_user_events_from_big_query]
