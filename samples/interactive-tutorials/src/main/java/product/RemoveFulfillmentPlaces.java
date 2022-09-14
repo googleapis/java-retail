@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * [START retail_remove_fulfillment_places]
- */
-
 package product;
 
 import static setup.SetupCleanup.createProduct;
@@ -27,9 +23,7 @@ import static setup.SetupCleanup.getProduct;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
-import com.google.protobuf.Timestamp;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -52,21 +46,17 @@ public class RemoveFulfillmentPlaces {
   // remove fulfillment places to product
   public static void removeFulfillmentPlaces(String productName, String storeId)
       throws IOException, InterruptedException {
-    Timestamp currentDate =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
 
-    System.out.printf("Remove fulfilment places with current date: %s", currentDate);
+    System.out.println("Remove fulfilment places with current date");
+
     RemoveFulfillmentPlacesRequest removeFulfillmentRequest =
         RemoveFulfillmentPlacesRequest.newBuilder()
             .setProduct(productName)
             .setType("pickup-in-store")
             .addPlaceIds(storeId)
-            .setRemoveTime(currentDate)
             .setAllowMissing(true)
             .build();
+
     System.out.println("Remove fulfillment request " + removeFulfillmentRequest);
 
     // Initialize client that will be used to send requests. This client only
@@ -83,5 +73,3 @@ public class RemoveFulfillmentPlaces {
     }
   }
 }
-
-// [END retail_remove_fulfillment_places]

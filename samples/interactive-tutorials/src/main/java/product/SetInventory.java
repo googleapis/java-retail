@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * [START retail_set_inventory]
- */
-
 package product;
 
 import static setup.SetupCleanup.createProduct;
@@ -29,9 +25,7 @@ import com.google.cloud.retail.v2.*;
 import com.google.cloud.retail.v2.Product.Availability;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Int32Value;
-import com.google.protobuf.Timestamp;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -56,13 +50,6 @@ public class SetInventory {
     float price = 15.0f;
     float originalPrice = 20.0f;
     float cost = 8.0f;
-
-    // The request timestamp
-    Timestamp requestTime =
-        Timestamp.newBuilder()
-            .setSeconds(Instant.now().getEpochSecond())
-            .setNanos(Instant.now().getNano())
-            .build();
 
     FieldMask setMask =
         FieldMask.newBuilder()
@@ -97,7 +84,6 @@ public class SetInventory {
     SetInventoryRequest setInventoryRequest =
         SetInventoryRequest.newBuilder()
             .setInventory(product)
-            .setSetTime(requestTime)
             .setAllowMissing(true)
             .setSetMask(setMask)
             .build();
@@ -117,5 +103,3 @@ public class SetInventory {
     }
   }
 }
-
-// [END retail_set_inventory]
