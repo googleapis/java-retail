@@ -93,6 +93,13 @@ public class SetInventory {
             .build();
     System.out.printf("Set inventory request: %s%n", setInventoryRequest);
 
+    // To send an out-of-order request assign the invalid AddTime here:
+    // Timestamp previousDay = Timestamp.newBuilder()
+    //        .setSeconds(Instant.now().minusSeconds(86400).getEpochSecond())
+    //        .setNanos(Instant.now().minusSeconds(86400).getNano())
+    //        .build();
+    // setInventoryRequest = setInventoryRequest.toBuilder().setAddTime(previousDay).build();
+
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
