@@ -36,6 +36,7 @@ public class EventsCreateBigQueryTable {
     String validEventsTable = "events";
     String invalidEventsTable = "events_some_invalid";
     String eventsSchemaFilePath = "src/main/resources/events_schema.json";
+    // user_events.json and user_events_some_invalid.json are located in the resources folder
     String validEventsSourceFile =
         ProductsCreateBigqueryTable.class.getResource("/user_events.json").getPath();
     String invalidEventsSourceFile =
