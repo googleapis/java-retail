@@ -29,7 +29,12 @@ import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.SetInventoryRequest;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Int32Value;
+import com.google.protobuf.Timestamp;
+
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -94,11 +99,12 @@ public class SetInventory {
     System.out.printf("Set inventory request: %s%n", setInventoryRequest);
 
     // To send an out-of-order request assign the invalid AddTime here:
+    // Instant instant = LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC);
     // Timestamp previousDay = Timestamp.newBuilder()
-    //        .setSeconds(Instant.now().minusSeconds(86400).getEpochSecond())
-    //        .setNanos(Instant.now().minusSeconds(86400).getNano())
-    //        .build();
-    // setInventoryRequest = setInventoryRequest.toBuilder().setAddTime(previousDay).build();
+    //          .setSeconds(instant.getEpochSecond())
+    //          .setNanos(instant.getNano())
+    //          .build();
+    // setInventoryRequest = setInventoryRequest.toBuilder().setSetTime(previousDay).build();
 
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
