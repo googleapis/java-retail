@@ -62,7 +62,7 @@ public class RemoveFulfillmentPlaces {
             .setAllowMissing(true)
             .build();
 
-    // To send an out-of-order request assign the invalid AddTime here:
+    // To send an out-of-order request assign the invalid RemoveTime here:
     // Instant instant = LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC);
     // Timestamp previousDay = Timestamp.newBuilder()
     //          .setSeconds(instant.getEpochSecond())
