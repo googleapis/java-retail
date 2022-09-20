@@ -37,7 +37,7 @@ public class ImportProductsBigQueryTable {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    // To check for error handling, replace the below variable with the invalid branch name
+    // To check for error handling, replace the below variable with the invalid branch name.
     // String branchName = "invalid_branch_name";
     String branchName =
         String.format(
