@@ -40,10 +40,12 @@ public class ImportProductsBigQueryTable {
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
+    // TO CHECK ERROR HANDLING PASTE THE INVALID BRANCH NAME HERE:
+    // branchName = "invalid_branch_name";
     String datasetId = "products";
     String tableId = "products";
     // TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS:
-    // tableId = "products_some_invalid"
+    // tableId = "products_some_invalid";
 
     importProductsFromBigQuery(projectId, branchName, datasetId, tableId);
   }
