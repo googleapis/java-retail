@@ -37,15 +37,15 @@ public class ImportProductsBigQueryTable {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     String projectId = ServiceOptions.getDefaultProjectId();
+    // To check for error handling, replace the below variable with the invalid branch name
+    // String branchName = "invalid_branch_name";
     String branchName =
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
-    // TO CHECK ERROR HANDLING PASTE THE INVALID BRANCH NAME HERE:
-    // branchName = "invalid_branch_name";
     String datasetId = "products";
+    // To check for error handling, replace the below variable with table id that contains invalid products
+    // String tableId = "products_some_invalid";
     String tableId = "products";
-    // TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS:
-    // tableId = "products_some_invalid";
 
     importProductsFromBigQuery(projectId, branchName, datasetId, tableId);
   }
