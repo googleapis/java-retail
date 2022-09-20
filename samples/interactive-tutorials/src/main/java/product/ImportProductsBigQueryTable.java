@@ -43,7 +43,7 @@ public class ImportProductsBigQueryTable {
         String.format(
             "projects/%s/locations/global/catalogs/default_catalog/branches/0", projectId);
     String datasetId = "products";
-    // To check for error handling, replace the below variable with table id that contains invalid products
+    // To check for error handling, replace the below variable with table id that contains invalid products.
     // String tableId = "products_some_invalid";
     String tableId = "products";
 
