@@ -23,9 +23,14 @@ import static setup.SetupCleanup.getProduct;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ProductServiceClient;
 import com.google.cloud.retail.v2.RemoveFulfillmentPlacesRequest;
+import com.google.protobuf.Timestamp;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public class RemoveFulfillmentPlaces {
 
