@@ -21,6 +21,7 @@
 package events;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.retail.v2.BigQuerySource;
 import com.google.cloud.retail.v2.ImportMetadata;
@@ -38,7 +39,7 @@ public class ImportUserEventsBigQuery {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     // TODO(developer): Set projectId to your Google Cloud Platform project ID.
-    String projectId = "your-project-id";
+    String projectId = ServiceOptions.getDefaultProjectId();
     String defaultCatalog =
         String.format("projects/%s/locations/global/catalogs/default_catalog", projectId);
     // To check error handling use invalid catalog name here:
