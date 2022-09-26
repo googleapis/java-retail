@@ -21,7 +21,6 @@
 package product;
 
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.CreateProductRequest;
 import com.google.cloud.retail.v2.DeleteProductRequest;
 import com.google.cloud.retail.v2.GetProductRequest;
