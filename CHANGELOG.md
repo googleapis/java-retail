@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.2](https://github.com/googleapis/java-retail/compare/v2.5.1...v2.5.2) (2022-10-06)
+
+
+### Dependencies
+
+* Update dependency com.google.cloud:google-cloud-bigquery to v2.17.0 ([#578](https://github.com/googleapis/java-retail/issues/578)) ([ebb21ca](https://github.com/googleapis/java-retail/commit/ebb21ca6bff55085fba676e2315d235a9f3d7896))
+* Update dependency com.google.cloud:google-cloud-storage to v2.13.0 ([#581](https://github.com/googleapis/java-retail/issues/581)) ([c0451a3](https://github.com/googleapis/java-retail/commit/c0451a3194ae273ea6fe133a6fa96ff953b80282))
+
 ## [2.5.1](https://github.com/googleapis/java-retail/compare/v2.5.0...v2.5.1) (2022-10-03)
 
 
