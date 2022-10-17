@@ -77,7 +77,7 @@
       <dependency>
         <groupId>com.google.api.grpc</groupId>
         <artifactId>proto-google-cloud-retail-v2</artifactId>
-        <version>2.5.3-SNAPSHOT</version><!-- {x-version-update:proto-google-cloud-retail-v2:current} -->
+        <version>2.6.0</version><!-- {x-version-update:proto-google-cloud-retail-v2:current} -->
       </dependency>
       <dependency>
         <groupId>com.google.api.grpc</groupId>
